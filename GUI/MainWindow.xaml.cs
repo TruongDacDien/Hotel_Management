@@ -81,5 +81,38 @@ namespace GUI
                 }
             }
         }
+
+        private void ListViewItem_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (Tg_btn.IsChecked == true)
+            {
+                tt_home.Visibility = Visibility.Collapsed;
+                tt_room.Visibility = Visibility.Collapsed;
+                tt_room_selected.Visibility = Visibility.Collapsed;
+                tt_bill.Visibility = Visibility.Collapsed;
+                tt_person.Visibility = Visibility.Collapsed;
+                tt_room_management.Visibility = Visibility.Collapsed;
+                tt_roomtype.Visibility = Visibility.Collapsed;
+                tt_service.Visibility = Visibility.Collapsed;
+                tt_servicetype.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                tt_home.Visibility = Visibility.Visible;
+                tt_room.Visibility = Visibility.Visible;
+                tt_room_selected.Visibility = Visibility.Visible;
+                tt_bill.Visibility = Visibility.Visible;
+                tt_person.Visibility = Visibility.Visible;
+                tt_room_management.Visibility = Visibility.Visible;
+                tt_roomtype.Visibility = Visibility.Visible;
+                tt_service.Visibility = Visibility.Visible;
+                tt_servicetype.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void Tg_btn_Unchecked(object sender, RoutedEventArgs e)
+        {
+            //img_bg
+        }
     }
 }
