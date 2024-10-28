@@ -20,9 +20,31 @@ namespace GUI
 {
     public partial class MainWindow : Window
     {
+        private readonly FrameworkElement room;
+        private readonly FrameworkElement roomselect;
+        private readonly FrameworkElement bill;
+        private readonly FrameworkElement customer;
+        private readonly FrameworkElement room_management;
+        private readonly FrameworkElement roomtype;
+        private readonly FrameworkElement service;
+        private readonly FrameworkElement servicetype;
+        private readonly FrameworkElement home;
         public MainWindow()
         {
             InitializeComponent();
+            room = new Room();
+            roomselect = new Room_Select();
+            bill = new Bill();
+            customer = new Customer_Management();
+            room_management = new Room_Management();
+            roomtype = new RoomType();
+            service = new Service_Management();
+            servicetype = new ServiceType();
+            home = new Home();
+
+            // Hiển thị trang home khi khởi động
+            content.Content = home;
+
         }
 
         private string connectionString;
@@ -113,6 +135,56 @@ namespace GUI
         private void Tg_btn_Unchecked(object sender, RoutedEventArgs e)
         {
             //img_bg
+        }
+
+        private void CloseBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void RoomMenuItem_Click(object sender, MouseButtonEventArgs e)
+        {
+            content.Content = room;
+        }
+
+        private void RoomSelectedMenuItem_Click(object sender, MouseButtonEventArgs e)
+        {
+            content.Content = roomselect;
+        }
+
+        private void BillMenuItem_Click(object sender, MouseButtonEventArgs e)
+        {
+            content.Content = bill;
+        }
+
+        private void CustomerMenuItem_Click(object sender, MouseButtonEventArgs e)
+        {
+            content.Content = customer;
+        }
+
+        private void RoomManagementMenuItem_Click(object sender, MouseButtonEventArgs e)
+        {
+            content.Content = room_management;
+        }
+
+        private void RoomTypeMenuItem_Click(object sender, MouseButtonEventArgs e)
+        {
+            content.Content = roomtype;
+        }
+
+        private void ServiceMenuItem_Click(object sender, MouseButtonEventArgs e)
+        {
+            content.Content = service;
+        }
+
+        private void ServiceTypeMenuItem_Click(object sender, MouseButtonEventArgs e)
+        {
+            content.Content = servicetype;
+        }
+
+        private void HomeMenuItem_Click(object sender, MouseButtonEventArgs e)
+        {
+            content.Content = home;
         }
     }
 }
