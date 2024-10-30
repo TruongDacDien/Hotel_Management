@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1000">
+        x:Name="Mainwindow"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        Title="MainWindow" Height="700" Width="1200">
     <Window.Resources>
         <ImageBrush x:Key="tb_mouse_over"
                     ImageSource="Asset/menudefault.png"/>
@@ -23,7 +26,7 @@
                     Value="20"/>
 
         </Style>
-        
+
         <!--tool tip style-->
         <Style TargetType="ToolTip" x:Key="tt_style">
             <Setter Property="Placement" Value="Right"/>
@@ -40,7 +43,9 @@
             <Setter Property="HasDropShadow" Value="True"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
-        
+
+
+
         <Style x:Key="tb_style" TargetType="{x:Type ToggleButton}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -49,7 +54,7 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 Background="{TemplateBinding Background}"
                                 SnapsToDevicePixels="True">
-                            
+
                         </Border>
 
                         <ControlTemplate.Triggers>
@@ -75,17 +80,18 @@
     </Window.Resources>
     <Grid>
         <Button Content="Test Sever Connect" HorizontalAlignment="Center" Margin="0,119,0,0" VerticalAlignment="Top" Click="Button_Click" Grid.Column="2" Height="20" Width="104"/>
-        <DataGrid Name="NhanVienDataGrid" Margin="0,177,0,0" AutoGenerateColumns="True" Grid.ColumnSpan="7"/>
+        <DataGrid Name="NhanVienDataGrid" Margin="66,177,0,0" AutoGenerateColumns="True"/>
         <Grid >
-            
+          
+
             <Grid  x:Name="nav_pnl"
                    HorizontalAlignment="Left"
                    Width="65"
                    Background="Black">
-               
+
                 <StackPanel x:Name="st_pn1">
                     <!--menu toggle button-->
-                        <Grid Height="90">
+                    <Grid Height="90">
 
                         <TextBlock Grid.Row="1"
                                    Grid.Column="0"
@@ -103,9 +109,9 @@
                                                   ShadowDepth="1"
                                                   Direction="-90"
                                                   Color="White"/>
-                            </TextBlock.Effect>  
+                            </TextBlock.Effect>
                         </TextBlock>
-                        
+
                         <ToggleButton x:Name="Tg_btn"
                                       Grid.Column="0"
                                       VerticalAlignment="Center"
@@ -130,7 +136,7 @@
                                                 BeginTime="0:0:0"
                                                 From="230" To="65"
                                                 Duration="0:0:0.2">
-                                                
+
                                             </DoubleAnimation>
                                         </Storyboard>
                                     </BeginStoryboard>
@@ -145,19 +151,19 @@
                                                 BeginTime="0:0:0"
                                                 From="65" To="230"
                                                 Duration="0:0:0.3">
-                                                
+
                                             </DoubleAnimation>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>
                             </ToggleButton.Triggers>
                         </ToggleButton>
-                        
-                    </Grid>
-                    
-                        <!--Menu list item-->
 
-                        <ListView x:Name="LV"
+                    </Grid>
+
+                    <!--Menu list item-->
+
+                    <ListView x:Name="LV"
                               Background="Transparent"
                               BorderBrush="Transparent"
                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -165,7 +171,7 @@
                                   MaxHeight="500">
                         <!--Home-->
                         <ListViewItem HorizontalAlignment="Left"
-                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter">
+                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter" PreviewMouseDown="HomeMenuItem_Click">
 
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
@@ -175,19 +181,19 @@
                                 <TextBlock Text="Trang Chủ"
                                            Margin="25,0,0,0"
                                            Style="{StaticResource font_style}"/>
-                                
+
                             </StackPanel>
                             <ListViewItem.ToolTip>
                                 <ToolTip x:Name="tt_home"
                                          Content="Trang Chủ"
                                          Style="{StaticResource tt_style}"/>
                             </ListViewItem.ToolTip>
-                            
+
                         </ListViewItem>
 
-                        <!--Home-->
-                        <ListViewItem HorizontalAlignment="Left"
-                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter">
+                        <!--Phòng-->
+                        <ListViewItem x:Name="click" HorizontalAlignment="Left" Focusable="True"
+                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter"  PreviewMouseDown="RoomMenuItem_Click">
 
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
@@ -209,7 +215,7 @@
 
                         <!--Đặt phòng-->
                         <ListViewItem HorizontalAlignment="Left"
-                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter">
+                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter" PreviewMouseDown="RoomSelectedMenuItem_Click">
 
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
@@ -231,7 +237,7 @@
 
                         <!--háo đơn-->
                         <ListViewItem HorizontalAlignment="Left"
-                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter">
+                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter" PreviewMouseDown="BillMenuItem_Click">
 
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
@@ -253,7 +259,7 @@
 
                         <!--1l khách hàng-->
                         <ListViewItem HorizontalAlignment="Left"
-                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter">
+                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter" PreviewMouseDown="CustomerMenuItem_Click">
 
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
@@ -275,7 +281,7 @@
 
                         <!--ql Phòng-->
                         <ListViewItem HorizontalAlignment="Left"
-                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter">
+                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter" PreviewMouseDown="RoomManagementMenuItem_Click">
 
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
@@ -297,7 +303,7 @@
 
                         <!--ql loại phòng-->
                         <ListViewItem HorizontalAlignment="Left"
-                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter">
+                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter" PreviewMouseDown="RoomTypeMenuItem_Click">
 
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
@@ -319,7 +325,7 @@
 
                         <!--QL dịch vụ-->
                         <ListViewItem HorizontalAlignment="Left"
-                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter">
+                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter" PreviewMouseDown="ServiceMenuItem_Click">
 
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
@@ -341,7 +347,7 @@
 
                         <!--Ql Loại dịch vụ-->
                         <ListViewItem HorizontalAlignment="Left"
-                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter">
+                                      Margin="0,0,0,15" MouseEnter="ListViewItem_MouseEnter" PreviewMouseDown="ServiceTypeMenuItem_Click">
 
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
@@ -360,7 +366,7 @@
                             </ListViewItem.ToolTip>
 
                         </ListViewItem>
-                        
+
                         <!--List view item style-->
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
@@ -386,7 +392,7 @@
 
                                                     <MultiTrigger.Conditions>
                                                         <Condition Property="IsMouseOver" Value="True"/>
-                                                        
+
                                                     </MultiTrigger.Conditions>
 
                                                     <Setter Property="Background"
@@ -396,21 +402,45 @@
                                                             TargetName="Bd"
                                                             Value="#404DB5"/>
                                                 </MultiTrigger>
-                                                
+
                                             </ControlTemplate.Triggers>
-                                            
+
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
                             </Style>
                         </ListView.ItemContainerStyle>
-                        
+
                     </ListView>
-                    
+
                 </StackPanel>
-               
+
+
+                
             </Grid>
-           
+            <Frame x:Name="content" Margin="70,0,0,0"  NavigationUIVisibility="Hidden"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="30"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Button x:Name="CloseBtn"
+              Grid.Column="2"
+              BorderThickness="0" Click="CloseBtn_Click" Margin="0,10,10,0">
+                    <Button.Background>
+                        <ImageBrush ImageSource="Asset/close.png"/>
+                    </Button.Background>
+                </Button>
+
+
+            </Grid>
         </Grid>
 
     </Grid>
