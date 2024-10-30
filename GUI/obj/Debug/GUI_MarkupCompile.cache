@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\GUI\obj\Debug\
+C:\Users\Admin\Source\Repos\Hotel_Management\GUI\obj\Debug\
 GUI
 none
 false
 DEBUG;TRACE
-C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\GUI\App.xaml
+C:\Users\Admin\Source\Repos\Hotel_Management\GUI\App.xaml
 101935146794
 
-141538852764
-411447029096
+15-834336411
+411659085722
 Bill.xaml;Customer_Management.xaml;Home.xaml;MainWindow.xaml;Room.xaml;RoomType.xaml;Room_Management.xaml;Room_Select.xaml;ServiceType.xaml;Service_Management.xaml;
 
-False
+True
 
