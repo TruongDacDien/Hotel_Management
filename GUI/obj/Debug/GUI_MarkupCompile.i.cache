@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\GUI\App.xaml
-1219584333
+101935146794
 
-6-793535042
+15-834336411
 411447029096
-MainWindow.xaml;
+Bill.xaml;Customer_Management.xaml;Home.xaml;MainWindow.xaml;Room.xaml;RoomType.xaml;Room_Management.xaml;Room_Select.xaml;ServiceType.xaml;Service_Management.xaml;
 
-False
+True
 
