@@ -13,5 +13,6 @@ namespace DTO
         public string CHUCVU { get; set; }
         public string SDT { get; set; }
         public string DIACHI { get; set; }
-    }
+		public int MATK { get; set; }
+	}
 }

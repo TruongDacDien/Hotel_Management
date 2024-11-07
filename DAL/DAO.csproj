@@ -111,6 +111,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAO_KhachHang.cs" />
+    <Compile Include="DAO_TaiKhoan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
