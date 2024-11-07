@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("asset/background_dn.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("usercontrols/quytacdatten.txt")]
 
 
