@@ -93,7 +93,10 @@ C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\Google.Protobuf.dll
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\K4os.Compression.LZ4.dll
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\K4os.Compression.LZ4.Streams.dll
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\K4os.Hash.xxHash.dll
+C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\MaterialDesignColors.dll
+C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\MaterialDesignThemes.Wpf.dll
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\Microsoft.Xaml.Behaviors.dll
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\MySql.Data.dll
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\NuGet.Frameworks.dll
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\System.Buffers.dll
@@ -112,7 +115,12 @@ C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\Google.Protobuf.xml
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\K4os.Compression.LZ4.xml
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\K4os.Compression.LZ4.Streams.xml
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\K4os.Hash.xxHash.xml
+C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\MaterialDesignColors.pdb
+C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\MaterialDesignThemes.Wpf.pdb
+C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\MaterialDesignThemes.Wpf.xml
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
+C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\Microsoft.Xaml.Behaviors.pdb
+C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\Microsoft.Xaml.Behaviors.xml
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\MySql.Data.xml
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\System.Buffers.xml
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\System.Configuration.ConfigurationManager.xml
@@ -127,11 +135,3 @@ C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAO.csproj.CoreCompil
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAO.csproj.Up2Date
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAL.dll
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAL.pdb
-C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\MaterialDesignColors.dll
-C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\MaterialDesignThemes.Wpf.dll
-C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\Microsoft.Xaml.Behaviors.dll
-C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\MaterialDesignColors.pdb
-C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\MaterialDesignThemes.Wpf.pdb
-C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\MaterialDesignThemes.Wpf.xml
-C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\Microsoft.Xaml.Behaviors.pdb
-C:\Users\Admin\Source\Repos\Hotel_Management\DAL\bin\Debug\Microsoft.Xaml.Behaviors.xml
