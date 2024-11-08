@@ -43,7 +43,7 @@
                 <!--searchbox-->
                 <materialDesign:ColorZone Mode="Standard" Padding="8 0 8 0"
                         CornerRadius="5" Margin="200 5 0 5"
-                        materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                        materialDesign:ElevationAssist.Elevation="Dp2">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
