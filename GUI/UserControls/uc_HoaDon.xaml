@@ -22,7 +22,7 @@
                         materialDesign:HintAssist.Hint="Chọn ngày" Padding="10 10 10 5" Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
             <!--ô tìm kiếm-->
             <materialDesign:ColorZone Mode="Standard" CornerRadius="5" HorizontalAlignment="Right" Margin="0,0,208,0" 
-                                          VerticalAlignment="Center" materialDesign:ShadowAssist.ShadowDepth="Depth1" Width="250">
+                                          VerticalAlignment="Center" materialDesign:ElevationAssist.Elevation="Dp2" Width="250">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />

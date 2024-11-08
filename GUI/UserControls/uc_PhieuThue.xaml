@@ -40,7 +40,7 @@
             <Grid Grid.Column="0">
                 <!--ô tìm kiếm-->
                 <materialDesign:ColorZone Mode="Standard" CornerRadius="5" HorizontalAlignment="Left" Margin="160,0,0,0"
-                                          VerticalAlignment="Center" materialDesign:ShadowAssist.ShadowDepth="Depth1" Width="250">
+                                          VerticalAlignment="Center" materialDesign:ElevationAssist.Elevation="Dp2" Width="250">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
