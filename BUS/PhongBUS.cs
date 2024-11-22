@@ -59,5 +59,30 @@ namespace BUS
         {
             return PhongDAL.GetInstance().suaTinhTrangPhong(maPhong, text, out error);
         }
+
+        public List<PhongDTO> getDataPhong()
+        {
+            return PhongDAL.GetInstance().getPhong();
+        }
+
+        public bool addDataPhong(PhongDTO phong)
+        {
+            return PhongDAL.GetInstance().addDataPhong(phong);
+        }
+
+        public bool capNhatDataPhong(PhongDTO phong)
+        {
+            return PhongDAL.GetInstance().capNhatPhong(phong);
+        }
+
+        public void xoaDataPhong(PhongDTO phong)
+        {
+            PhongDAL.GetInstance().xoaThongTinPhong(phong);
+        }
+
+        public decimal layTienPhongTheoSoPhong(string soPhong, bool isDay)
+        {
+            return PhongDAL.GetInstance().layGiaTienTheoMaPhong(soPhong,isDay);
+        }
     }
 }
