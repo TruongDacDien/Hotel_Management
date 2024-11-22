@@ -32,3 +32,11 @@ C:\Users\Admin\Source\Repos\HotelManagement_WPF\QuanLyKhachSan\DAL\obj\Debug\DAL
 C:\Users\Admin\Source\Repos\HotelManagement_WPF\QuanLyKhachSan\DAL\obj\Debug\DAL.csproj.Up2Date
 C:\Users\Admin\Source\Repos\HotelManagement_WPF\QuanLyKhachSan\DAL\obj\Debug\DAL.exe
 C:\Users\Admin\Source\Repos\HotelManagement_WPF\QuanLyKhachSan\DAL\obj\Debug\DAL.pdb
+C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAL.csproj.AssemblyReference.cache
+C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\App.g.cs
+C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAL_MarkupCompile.cache
+C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAL.Properties.Resources.resources
+C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAL.csproj.GenerateResource.cache
+C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAL.csproj.CoreCompileInputs.cache
+C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAL.exe
+C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAL.pdb
