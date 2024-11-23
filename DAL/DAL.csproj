@@ -118,20 +118,38 @@
     </Compile>
     <Compile Include="Data\CTSDDV_DAL.cs" />
     <Compile Include="Data\CT_PhieuThueDAL.cs" />
+    <Compile Include="Data\CT_TienNghiDAL.cs" />
     <Compile Include="Data\DichVuDAL.cs" />
     <Compile Include="Data\HoaDonDAL.cs" />
     <Compile Include="Data\KhachHangDAL.cs" />
+    <Compile Include="Data\LoaiDichVuDAL.cs" />
+    <Compile Include="Data\LoaiPhongDAL.cs" />
     <Compile Include="Data\NhanVienDAL.cs" />
     <Compile Include="Data\PhongDAL.cs" />
     <Compile Include="Data\TaiKhoanDAL.cs" />
+    <Compile Include="Data\TienNghiDAL.cs" />
+    <Compile Include="DTO\CT_PhieuThue.cs" />
+    <Compile Include="DTO\CT_SDDichVu.cs" />
+    <Compile Include="DTO\CT_TienNghi.cs" />
+    <Compile Include="DTO\DichVu.cs" />
     <Compile Include="DTO\DichVu_Custom.cs" />
     <Compile Include="DTO\DichVu_DaChon.cs" />
+    <Compile Include="DTO\HoaDon.cs" />
+    <Compile Include="DTO\KhachHang.cs" />
+    <Compile Include="DTO\LoaiDV.cs" />
+    <Compile Include="DTO\LoaiPhong.cs" />
+    <Compile Include="DTO\NhanVien.cs" />
+    <Compile Include="DTO\PhanQuyen.cs" />
+    <Compile Include="DTO\PhieuThue.cs" />
     <Compile Include="DTO\PhieuThue_Custom.cs" />
+    <Compile Include="DTO\Phong.cs" />
     <Compile Include="DTO\PhongTrong.cs" />
     <Compile Include="DTO\Phong_Custom.cs" />
     <Compile Include="Data\PhieuThueDAL.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTO\TaiKhoan.cs" />
+    <Compile Include="DTO\TienNghi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

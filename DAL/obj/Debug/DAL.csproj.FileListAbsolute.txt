@@ -38,5 +38,3 @@ C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAL_MarkupCompile.cac
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAL.Properties.Resources.resources
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAL.csproj.GenerateResource.cache
 C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAL.csproj.CoreCompileInputs.cache
-C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAL.exe
-C:\Users\Admin\Source\Repos\Hotel_Management\DAL\obj\Debug\DAL.pdb

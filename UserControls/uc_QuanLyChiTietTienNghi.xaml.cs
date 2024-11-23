@@ -24,7 +24,7 @@ namespace GUI.UserControls
     /// </summary>
     public partial class uc_QuanLyChiTietTienNghi : UserControl
     {
-        ObservableCollection<CT_TienNghiDTO> list;
+        ObservableCollection<CT_TienNghi> list;
 
         public uc_QuanLyChiTietTienNghi()
         {
@@ -36,7 +36,7 @@ namespace GUI.UserControls
 
         private void TaiDanhSach()
         {
-            list = new ObservableCollection<CT_TienNghiDTO>(CT_TienNghiBUS.Instance.getData());
+            list = new ObservableCollection<CT_TienNghi>(CT_TienNghiBUS.Instance.getData());
             lsvCTTienNghi.ItemsSource = list;
         }
 
@@ -46,7 +46,7 @@ namespace GUI.UserControls
             if (String.IsNullOrEmpty(txtFilter.Text))
                 return true;
             else
-                return (obj as CT_TienNghiDTO).SoPhong.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
+                return (obj as CT_TienNghi).SoPhong.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private void btnThemCTTienNghi_Click(object sender, RoutedEventArgs e)
@@ -58,7 +58,7 @@ namespace GUI.UserControls
 
         private void btnSuaCTTienNghi_Click(object sender, RoutedEventArgs e)
         {
-            CT_TienNghiDTO CTTienNghi = (sender as Button).DataContext as CT_TienNghiDTO;
+            CT_TienNghi CTTienNghi = (sender as Button).DataContext as CT_TienNghi;
             Them_SuaChiTietTienNghi CapNhatCTTienNghi = new Them_SuaChiTietTienNghi(CTTienNghi);
             CapNhatCTTienNghi.suaCT = new Them_SuaChiTietTienNghi.suaData(capNhatData);
             CapNhatCTTienNghi.ShowDialog();
@@ -66,7 +66,7 @@ namespace GUI.UserControls
 
         private void btnXoaCTTienNghi_Click(object sender, RoutedEventArgs e)
         {
-            CT_TienNghiDTO cT_TienNghi = (sender as Button).DataContext as CT_TienNghiDTO;
+            CT_TienNghi cT_TienNghi = (sender as Button).DataContext as CT_TienNghi;
 
             var ThongBao = new DialogCustoms("Bạn có thật sự muốn xóa tiện nghi " + cT_TienNghi.TenTN + " ở phòng "+ cT_TienNghi.SoPhong, "Thông báo", DialogCustoms.YesNo);
 
@@ -78,7 +78,7 @@ namespace GUI.UserControls
             }
         }
 
-        void nhanData(CT_TienNghiDTO cT_TienNghi)
+        void nhanData(CT_TienNghi cT_TienNghi)
         {
             if (CT_TienNghiBUS.Instance.KiemTraTonTai(cT_TienNghi))
             {
@@ -94,7 +94,7 @@ namespace GUI.UserControls
             }
            
         }
-        void capNhatData(CT_TienNghiDTO cT_TienNghi)
+        void capNhatData(CT_TienNghi cT_TienNghi)
         {
             if (CT_TienNghiBUS.Instance.capNhatCTTienNghi(cT_TienNghi))
             {

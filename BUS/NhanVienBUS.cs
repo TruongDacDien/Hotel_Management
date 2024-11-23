@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using DAL.Data;
-using DAL;
+using DAL.DTO;
 
 namespace BUS
 {

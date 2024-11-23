@@ -133,6 +133,7 @@ C:\Users\Admin\Source\Repos\Hotel_Management\obj\Debug\UserControls\uc_QuanLyLoa
 C:\Users\Admin\Source\Repos\Hotel_Management\obj\Debug\UserControls\uc_QuanLyLoaiPhong.g.cs
 C:\Users\Admin\Source\Repos\Hotel_Management\obj\Debug\UserControls\uc_QuanLyPhong.g.cs
 C:\Users\Admin\Source\Repos\Hotel_Management\obj\Debug\UserControls\uc_QuanLyTienNghi.g.cs
+C:\Users\Admin\Source\Repos\Hotel_Management\obj\Debug\UserControls\uc_ThongKe.g.cs
 C:\Users\Admin\Source\Repos\Hotel_Management\obj\Debug\View\ChiTietPhieuThue.g.cs
 C:\Users\Admin\Source\Repos\Hotel_Management\obj\Debug\View\ChiTietPhong.g.cs
 C:\Users\Admin\Source\Repos\Hotel_Management\obj\Debug\View\CTP_ThemDV.g.cs
@@ -157,5 +158,3 @@ C:\Users\Admin\Source\Repos\Hotel_Management\obj\Debug\App.g.cs
 C:\Users\Admin\Source\Repos\Hotel_Management\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\Admin\Source\Repos\Hotel_Management\obj\Debug\GUI_MarkupCompile.cache
 C:\Users\Admin\Source\Repos\Hotel_Management\obj\Debug\GUI_MarkupCompile.lref
-C:\Users\Admin\Source\Repos\Hotel_Management\obj\Debug\GUI.exe
-C:\Users\Admin\Source\Repos\Hotel_Management\obj\Debug\GUI.pdb
