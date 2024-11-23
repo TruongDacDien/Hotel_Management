@@ -1,128 +1,294 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.DTO;
-using System.Data.Entity.SqlServer;
 
 namespace DAL.Data
 {
     public class PhongDAL
     {
-        private static PhongDAL Instance;
+		private static PhongDAL Instance;
 
-        private PhongDAL()
-        {
+		private PhongDAL() { }
 
-        }
+		public static PhongDAL GetInstance()
+		{
+			if (Instance == null)
+			{
+				Instance = new PhongDAL();
+			}
+			return Instance;
+		}
 
-        public static PhongDAL GetInstance()
-        {
-            if (Instance == null)
-            {
-                Instance = new PhongDAL();
-            }
-            return Instance;
-        }
+		// Lấy dữ liệu phòng theo ngày
+		public List<Phong_Custom> getDataPhongTheoNgay(DateTime? ngayChon)
+		{
+			List<Phong_Custom> ls = new List<Phong_Custom>();
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
-      
-        public List<Phong_Custom> getDataPhongTheoNgay(DateTime? ngayChon)
-        {
-            
-            List<Phong_Custom> ls = new List<Phong_Custom>();
+			try
+			{
+				using (SqlConnection conn = new SqlConnection(connectionString))
+				{
+					string query = @"
+                        SELECT p.SoPhong, p.TinhTrang, p.LoaiPhong.TenLoaiPhong, 
+                               ct.MaCTPT, ct.NgayBD, ct.NgayKT, ct.TinhTrangThue, 
+                               ct.PhieuThue.KhachHang.TenKH, ct.SoNguoiO
+                        FROM Phong p
+                        LEFT JOIN CT_PhieuThue ct ON p.SoPhong = ct.SoPhong
+                        WHERE ct.NgayBD <= @NgayChon AND ct.NgayKT >= @NgayChon
+                            AND ct.TinhTrangThue != 'Đã thanh toán'";
 
-            using (QLKhachSanEntities db = new QLKhachSanEntities())
-            {
-                //lấy ra những phòng đang thuê hoặc đã được đặt
-                var lsCTPT = db.CT_PhieuThue.Where(p => p.NgayBD <= ngayChon && p.NgayKT >= ngayChon && p.TinhTrangThue.CompareTo("Đã thanh toán") != 0 ).AsEnumerable();
-                // join với bảng phòng để lấy ra danh sách phòng nếu phòng nào mà CTPT == null thì phòng đó có nghĩa là trống và ngược lại thì là đã được thuê hoặc đang thuê kết quả ta được 1 list Phòng Custom để hiển thị lên UC_Phong
-                ls = (from p in db.Phongs
-                      join ct in lsCTPT on p.SoPhong equals ct.SoPhong into t
-                      from ct in t.DefaultIfEmpty()
-                      select new Phong_Custom()
-                      {
-                          MaCTPT = ct.MaCTPT,
-                          TenKH = (ct.PhieuThue.KhachHang.TenKH == null) ? "" : ct.PhieuThue.KhachHang.TenKH,
-                          MaPhong = p.SoPhong,
-                          DonDep = p.TinhTrang,
-                          TinhTrang = (ct.TinhTrangThue == null) ? "Phòng trống" : ct.TinhTrangThue,
-                          LoaiPhong = p.LoaiPhong.TenLoaiPhong,
-                          NgayDen = ct.NgayBD,
-                          SoNgayO = (ct.NgayBD == null) ? 0 : (int)SqlFunctions.DateDiff("day", ct.NgayBD, ct.NgayKT) + 1,
-                          SoGio = (ct.NgayBD == null) ? 0 : (int)SqlFunctions.DateDiff("hour", ct.NgayBD, ct.NgayKT)  ,
-                          NgayDi = ct.NgayKT,
-                          SoNguoi = (ct.SoNguoiO == null) ? 0 : ct.SoNguoiO
-                      }).ToList();
+					SqlCommand cmd = new SqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@NgayChon", ngayChon);
 
-            }
-            return ls;
-        }
+					conn.Open();
+					using (SqlDataReader reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+						{
+							ls.Add(new Phong_Custom
+							{
+								MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+								TenKH = reader.IsDBNull(reader.GetOrdinal("TenKH")) ? "" : reader.GetString(reader.GetOrdinal("TenKH")),
+								MaPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
+								DonDep = reader.GetString(reader.GetOrdinal("TinhTrang")),
+								TinhTrang = reader.IsDBNull(reader.GetOrdinal("TinhTrangThue")) ? "Phòng trống" : reader.GetString(reader.GetOrdinal("TinhTrangThue")),
+								LoaiPhong = reader.GetString(reader.GetOrdinal("TenLoaiPhong")),
+								NgayDen = reader.GetDateTime(reader.GetOrdinal("NgayBD")),
+								SoNgayO = reader.IsDBNull(reader.GetOrdinal("NgayBD")) ? 0 : (int)SqlFunctions.DateDiff("day", reader.GetDateTime(reader.GetOrdinal("NgayBD")), reader.GetDateTime(reader.GetOrdinal("NgayKT"))) + 1,
+								SoGio = reader.IsDBNull(reader.GetOrdinal("NgayBD")) ? 0 : (int)SqlFunctions.DateDiff("hour", reader.GetDateTime(reader.GetOrdinal("NgayBD")), reader.GetDateTime(reader.GetOrdinal("NgayKT"))),
+								NgayDi = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
+								SoNguoi = reader.IsDBNull(reader.GetOrdinal("SoNguoiO")) ? 0 : reader.GetInt32(reader.GetOrdinal("SoNguoiO"))
+							});
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+			}
 
-        public bool suaTinhTrangPhong(string maPhong, string text, out string error)
-        {
-            error = string.Empty;
-            try
-            {
-                using (QLKhachSanEntities db = new QLKhachSanEntities())
-                {
-                    Phong ph = db.Phongs.FirstOrDefault(p => p.SoPhong.Equals(maPhong));
-                    if(ph == null)
-                    {
-                        error = "Không tồn tại phòng có số phòng: " + maPhong;
-                        return false;
-                    }
-                    else
-                    {
-                        ph.TinhTrang = text;
-                        db.SaveChanges();
-                        return true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                error = ex.Message;
-                return false;
-            }
-        }
+			return ls;
+		}
 
-        //lấy ra giá tiền
-        public decimal layGiaTienTheoMaPhong(Phong_Custom phong)
-        {
-            using (QLKhachSanEntities db = new QLKhachSanEntities())
-            {
-                if(phong.IsDay == true)
-                    return db.Phongs.FirstOrDefault(p => p.SoPhong.Equals(phong.MaPhong)).LoaiPhong.GiaNgay;
-                else
-                    return db.Phongs.FirstOrDefault(p => p.SoPhong.Equals(phong.MaPhong)).LoaiPhong.GiaGio;
-            }
-        }
+		// Cập nhật tình trạng phòng
+		public bool suaTinhTrangPhong(string maPhong, string text, out string error)
+		{
+			error = string.Empty;
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
-        public List<PhongTrong> getPhongTrong(DateTime? ngayBD , DateTime? ngayKT)
-        {
-            List<PhongTrong> lsPTrong = new List<PhongTrong>();
-            using (QLKhachSanEntities db = new QLKhachSanEntities())
-            {
-                //lấy ra phòng đã được thuê trong khoảng thời gian chọn được truyền vào
-                var lsCTPT = db.CT_PhieuThue.Where(p => (   (p.NgayBD <= ngayBD && p.NgayKT >= ngayKT) || //Trường hợp 1: Ngày được chọn nằm giữ khoảng ngày bắt đầu và ngày kết thúc của phòng đó.
-                                                            (p.NgayBD >= ngayBD && p.NgayBD <= ngayKT) || //Trường hợp 2: Ngày được chọn dính vào phần đầu của ngày của phòng.
-                                                            (p.NgayKT >= ngayBD && p.NgayKT <= ngayKT) || //Trường hợp 3: Ngày được chọn dính vào phần sau của ngày của phòng.
-                                                            (p.NgayBD >= ngayBD && p.NgayKT <= ngayKT) ) && //Trườn hợp 4: Ngày được chọn bao phủ ngày của phòng .
-                                                             p.TinhTrangThue.CompareTo("Đã thanh toán") != 0
-                                                            ).AsEnumerable();
-                //sau khi đã lấy được những phòng đang thuê thì ta ngoại trừ những phòng đó ra ta được những phòng được phép thuê 
-                lsPTrong = (from p in db.Phongs
-                            where !( from ct in lsCTPT
-                                     select ct.SoPhong).Contains(p.SoPhong )
-                            select new PhongTrong()
-                            { SoPhong = p.SoPhong,
-                              TenLoaiPhong= p.LoaiPhong.TenLoaiPhong
-                            }).ToList();
-            }
-            return lsPTrong;
-        }
+			try
+			{
+				using (SqlConnection conn = new SqlConnection(connectionString))
+				{
+					string query = "UPDATE Phong SET TinhTrang = @TinhTrang WHERE SoPhong = @MaPhong";
+					SqlCommand cmd = new SqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@TinhTrang", text);
+					cmd.Parameters.AddWithValue("@MaPhong", maPhong);
 
+					conn.Open();
+					int rowsAffected = cmd.ExecuteNonQuery();
 
-    }
+					if (rowsAffected == 0)
+					{
+						error = "Không tồn tại phòng có số phòng: " + maPhong;
+						return false;
+					}
+				}
+				return true;
+			}
+			catch (Exception ex)
+			{
+				error = ex.Message;
+				return false;
+			}
+		}
+
+		// Lấy giá tiền của phòng theo mã phòng
+		public decimal layGiaTienTheoMaPhong(Phong_Custom phong)
+		{
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			using (SqlConnection conn = new SqlConnection(connectionString))
+			{
+				string query = "SELECT LoaiPhong.GiaNgay, LoaiPhong.GiaGio FROM Phong p " +
+							   "INNER JOIN LoaiPhong ON p.MaLoaiPhong = LoaiPhong.MaLoaiPhong " +
+							   "WHERE p.SoPhong = @MaPhong";
+				SqlCommand cmd = new SqlCommand(query, conn);
+				cmd.Parameters.AddWithValue("@MaPhong", phong.MaPhong);
+
+				conn.Open();
+				using (SqlDataReader reader = cmd.ExecuteReader())
+				{
+					if (reader.Read())
+					{
+						if (phong.IsDay)
+							return reader.GetDecimal(reader.GetOrdinal("GiaNgay"));
+						else
+							return reader.GetDecimal(reader.GetOrdinal("GiaGio"));
+					}
+				}
+			}
+
+			return 0; // Default giá tiền
+		}
+
+		// Lấy danh sách phòng trống
+		public List<PhongTrong> getPhongTrong(DateTime? ngayBD, DateTime? ngayKT)
+		{
+			List<PhongTrong> lsPTrong = new List<PhongTrong>();
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			try
+			{
+				using (SqlConnection conn = new SqlConnection(connectionString))
+				{
+					string query = @"
+                        SELECT p.SoPhong, p.LoaiPhong.TenLoaiPhong
+                        FROM Phong p
+                        WHERE p.SoPhong NOT IN (
+                            SELECT ct.SoPhong
+                            FROM CT_PhieuThue ct
+                            WHERE (ct.NgayBD <= @NgayBD AND ct.NgayKT >= @NgayKT) 
+                                OR (ct.NgayBD >= @NgayBD AND ct.NgayBD <= @NgayKT) 
+                                OR (ct.NgayKT >= @NgayBD AND ct.NgayKT <= @NgayKT) 
+                                OR (ct.NgayBD >= @NgayBD AND ct.NgayKT <= @NgayKT)
+                                AND ct.TinhTrangThue != 'Đã thanh toán'
+                        )";
+
+					SqlCommand cmd = new SqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@NgayBD", ngayBD);
+					cmd.Parameters.AddWithValue("@NgayKT", ngayKT);
+
+					conn.Open();
+					using (SqlDataReader reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+						{
+							lsPTrong.Add(new PhongTrong
+							{
+								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
+								TenLoaiPhong = reader.GetString(reader.GetOrdinal("TenLoaiPhong"))
+							});
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+			}
+
+			return lsPTrong;
+		}
+
+		public bool addDataPhong(Phong phong)
+		{
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			try
+			{
+				using (SqlConnection conn = new SqlConnection(connectionString))
+				{
+					string query = "INSERT INTO Phong (SoPhong, MaLoaiPhong, TinhTrang) VALUES (@SoPhong, @MaLoaiPhong, @TinhTrang)";
+					SqlCommand cmd = new SqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
+					cmd.Parameters.AddWithValue("@MaLoaiPhong", phong.MaLoaiPhong);
+					cmd.Parameters.AddWithValue("@TinhTrang", phong.TinhTrang);
+					conn.Open();
+					cmd.ExecuteNonQuery();
+				}
+				return true;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log error if needed
+				return false;
+			}
+		}
+
+		public bool capNhatPhong(Phong phong)
+		{
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			try
+			{
+				using (SqlConnection conn = new SqlConnection(connectionString))
+				{
+					string query = "UPDATE Phong SET MaLoaiPhong = @MaLoaiPhong, TinhTrang = @TinhTrang WHERE SoPhong = @SoPhong";
+					SqlCommand cmd = new SqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaLoaiPhong", phong.MaLoaiPhong);
+					cmd.Parameters.AddWithValue("@TinhTrang", phong.TinhTrang);
+					cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
+					conn.Open();
+					cmd.ExecuteNonQuery();
+				}
+				return true;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log error if needed
+				return false;
+			}
+		}
+
+		public bool xoaThongTinPhong(Phong phong)
+		{
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			try
+			{
+				using (SqlConnection conn = new SqlConnection(connectionString))
+				{
+					string query = "DELETE FROM Phong WHERE SoPhong = @SoPhong";
+					SqlCommand cmd = new SqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
+					conn.Open();
+					cmd.ExecuteNonQuery();
+				}
+				return true;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log error if needed
+				return false;
+			}
+		}
+
+		public List<Phong> getPhong()
+		{
+			List<Phong> lstPhong = new List<Phong>();
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			try
+			{
+				using (SqlConnection conn = new SqlConnection(connectionString))
+				{
+					string query = "SELECT SoPhong, MaLoaiPhong, TinhTrang FROM Phong";
+					SqlCommand cmd = new SqlCommand(query, conn);
+					conn.Open();
+					using (SqlDataReader reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+						{
+							lstPhong.Add(new Phong
+							{
+								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
+								MaLoaiPhong = reader.GetInt32(reader.GetOrdinal("MaLoaiPhong")),
+								TinhTrang = reader.GetString(reader.GetOrdinal("TinhTrang"))
+							});
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log error if needed
+			}
+			return lstPhong;
+		}
+
+	}
 }

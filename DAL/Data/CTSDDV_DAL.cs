@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,80 +11,126 @@ namespace DAL.Data
 {
     public class CTSDDV_DAL
     {
-        private static CTSDDV_DAL Instance;
+		private static CTSDDV_DAL Instance;
 
-        private CTSDDV_DAL()
-        {
+		private CTSDDV_DAL() { }
 
-        }
+		public static CTSDDV_DAL GetInstance()
+		{
+			if (Instance == null)
+			{
+				Instance = new CTSDDV_DAL();
+			}
+			return Instance;
+		}
 
-        public static CTSDDV_DAL GetInstance()
-        {
-            if (Instance == null)
-            {
-                Instance = new CTSDDV_DAL();
-            }
-            return Instance;
-        }
-        //Thêm mới chi tiết sử dụng dịch vụ
-        public bool addDataCTSDDC(CT_SDDichVu ctsddv , out string error)
-        {
-            error = string.Empty;
-            try
-            {
-                using (QLKhachSanEntities db = new QLKhachSanEntities())
-                {
-                    db.CT_SDDichVu.Add(ctsddv);
-                    db.SaveChanges();
-                }
-                return true;
-            }
-            catch (Exception e)
-            {
-                error = e.Message;
-                return false;
-            }
+		// Thêm mới chi tiết sử dụng dịch vụ
+		public bool addDataCTSDDC(CT_SDDichVu ctsddv, out string error)
+		{
+			error = string.Empty;
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
-        }
+			try
+			{
+				using (SqlConnection conn = new SqlConnection(connectionString))
+				{
+					string query = @"INSERT INTO CT_SDDichVu (MaCTPT, MaDV, SL, ThanhTien) 
+                                     VALUES (@MaCTPT, @MaDV, @SL, @ThanhTien)";
+					SqlCommand cmd = new SqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaCTPT", ctsddv.MaCTPT);
+					cmd.Parameters.AddWithValue("@MaDV", ctsddv.MaDV);
+					cmd.Parameters.AddWithValue("@SL", ctsddv.SL);
+					cmd.Parameters.AddWithValue("@ThanhTien", ctsddv.ThanhTien);
 
-        public List<decimal> tongTienChiTietSuDungDichVu(int? maCTPT)
-        {
-            using (QLKhachSanEntities db = new QLKhachSanEntities())
-            {
-                return (from ct in db.CT_SDDichVu
-                        where ct.MaCTPT == maCTPT
-                        select ct.ThanhTien).ToList();
-            }
-        }
+					conn.Open();
+					cmd.ExecuteNonQuery();
+				}
+				return true;
+			}
+			catch (Exception ex)
+			{
+				error = ex.Message;
+				return false;
+			}
+		}
 
-        //Lấy danh sách sử dụng dịch vụ của 1 phòng nào đó dựa vào mã CTPT
-        public List<DichVu_DaChon> getCTSDDVtheoMaCTPT(int? maCTPT)
-        {
-            List<DichVu_DaChon> ls = new List<DichVu_DaChon>();
-            try
-            {
-                using (QLKhachSanEntities db = new QLKhachSanEntities())
-                {
-                    ls = (from ct in db.CT_SDDichVu
-                          where ct.MaCTPT == maCTPT
-                          select new DichVu_DaChon()
-                          {
-                              ThanhTien = ct.ThanhTien,
-                              MaDV = ct.MaDV,
-                              TenDV = ct.DichVu.TenDV,
-                              SoLuong = ct.SL,
-                              Gia = ct.DichVu.Gia
+		// Tính tổng tiền chi tiết sử dụng dịch vụ theo mã CTPT
+		public List<decimal> tongTienChiTietSuDungDichVu(int? maCTPT)
+		{
+			List<decimal> results = new List<decimal>();
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
-                          }).ToList();
-                }
-                return ls;
-            }
-            catch (Exception )
-            {
-                return ls;
-            }
-        }
+			try
+			{
+				using (SqlConnection conn = new SqlConnection(connectionString))
+				{
+					string query = @"SELECT ThanhTien FROM CT_SDDichVu WHERE MaCTPT = @MaCTPT";
+					SqlCommand cmd = new SqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
 
+					conn.Open();
+					using (SqlDataReader reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+						{
+							results.Add(reader.GetDecimal(reader.GetOrdinal("ThanhTien")));
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+			}
+			return results;
+		}
 
-    }
+		// Lấy danh sách sử dụng dịch vụ của 1 phòng dựa vào mã CTPT
+		public List<DichVu_DaChon> getCTSDDVtheoMaCTPT(int? maCTPT)
+		{
+			List<DichVu_DaChon> ls = new List<DichVu_DaChon>();
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			try
+			{
+				using (SqlConnection conn = new SqlConnection(connectionString))
+				{
+					string query = @"
+                        SELECT 
+                            ct.ThanhTien, 
+                            ct.MaDV, 
+                            dv.TenDV, 
+                            ct.SL, 
+                            dv.Gia
+                        FROM CT_SDDichVu ct
+                        INNER JOIN DichVu dv ON ct.MaDV = dv.MaDV
+                        WHERE ct.MaCTPT = @MaCTPT";
+
+					SqlCommand cmd = new SqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
+
+					conn.Open();
+					using (SqlDataReader reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+						{
+							ls.Add(new DichVu_DaChon
+							{
+								ThanhTien = reader.GetDecimal(reader.GetOrdinal("ThanhTien")),
+								MaDV = reader.GetInt32(reader.GetOrdinal("MaDV")),
+								TenDV = reader.GetString(reader.GetOrdinal("TenDV")),
+								SoLuong = reader.GetInt32(reader.GetOrdinal("SL")),
+								Gia = reader.GetDecimal(reader.GetOrdinal("Gia"))
+							});
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+			}
+			return ls;
+		}
+	}
 }

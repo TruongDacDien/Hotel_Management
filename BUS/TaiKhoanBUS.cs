@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using DAL;
+using DAL.DTO;
 using DAL.Data;
 
 namespace BUS
