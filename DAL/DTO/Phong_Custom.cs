@@ -32,12 +32,14 @@ namespace DAL.DTO
         public int? MaCTPT { get => maCTPT; set => maCTPT = value; }
         public DateTime? NgayDi { get => ngayDi; set => ngayDi = value; }
         public int? SoGio { get => soGio; set => soGio = value; }
-        public bool? IsDay {
-            get 
-            {
-                return this.SoGio >= 24;
-            }
-            set => isDay = value; 
-        }
-    }
+		public bool IsDay
+		{
+			get
+			{
+				// Trả về false nếu SoGio là null hoặc nhỏ hơn 24
+				return this.SoGio.HasValue && this.SoGio.Value >= 24;
+			}
+			set => isDay = value;
+		}
+	}
 }

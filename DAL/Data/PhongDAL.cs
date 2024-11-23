@@ -9,8 +9,8 @@ using DAL.DTO;
 
 namespace DAL.Data
 {
-    public class PhongDAL
-    {
+	public class PhongDAL
+	{
 		private static PhongDAL Instance;
 
 		private PhongDAL() { }
@@ -60,8 +60,8 @@ namespace DAL.Data
 								TinhTrang = reader.IsDBNull(reader.GetOrdinal("TinhTrangThue")) ? "Phòng trống" : reader.GetString(reader.GetOrdinal("TinhTrangThue")),
 								LoaiPhong = reader.GetString(reader.GetOrdinal("TenLoaiPhong")),
 								NgayDen = reader.GetDateTime(reader.GetOrdinal("NgayBD")),
-								SoNgayO = reader.IsDBNull(reader.GetOrdinal("NgayBD")) ? 0 : (int)SqlFunctions.DateDiff("day", reader.GetDateTime(reader.GetOrdinal("NgayBD")), reader.GetDateTime(reader.GetOrdinal("NgayKT"))) + 1,
-								SoGio = reader.IsDBNull(reader.GetOrdinal("NgayBD")) ? 0 : (int)SqlFunctions.DateDiff("hour", reader.GetDateTime(reader.GetOrdinal("NgayBD")), reader.GetDateTime(reader.GetOrdinal("NgayKT"))),
+								SoNgayO = reader.IsDBNull(reader.GetOrdinal("NgayBD")) ? 0 : (int)(reader.GetDateTime(reader.GetOrdinal("NgayBD")).Subtract(reader.GetDateTime(reader.GetOrdinal("NgayKT"))).TotalDays) + 1,
+								SoGio = reader.IsDBNull(reader.GetOrdinal("NgayBD")) ? 0 : (int)(reader.GetDateTime(reader.GetOrdinal("NgayBD")).Subtract(reader.GetDateTime(reader.GetOrdinal("NgayKT"))).TotalHours),
 								NgayDi = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
 								SoNguoi = reader.IsDBNull(reader.GetOrdinal("SoNguoiO")) ? 0 : reader.GetInt32(reader.GetOrdinal("SoNguoiO"))
 							});
@@ -108,6 +108,35 @@ namespace DAL.Data
 				error = ex.Message;
 				return false;
 			}
+		}
+
+		// Lấy giá tiền của phòng theo mã phòng
+		public decimal layGiaTienTheoMaPhong(string maphong, bool isday)
+		{
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			using (SqlConnection conn = new SqlConnection(connectionString))
+			{
+				string query = "SELECT LoaiPhong.GiaNgay, LoaiPhong.GiaGio FROM Phong p " +
+							   "INNER JOIN LoaiPhong ON p.MaLoaiPhong = LoaiPhong.MaLoaiPhong " +
+							   "WHERE p.SoPhong = @MaPhong";
+				SqlCommand cmd = new SqlCommand(query, conn);
+				cmd.Parameters.AddWithValue("@MaPhong", maphong);
+
+				conn.Open();
+				using (SqlDataReader reader = cmd.ExecuteReader())
+				{
+					if (reader.Read())
+					{
+						if (isday)
+							return reader.GetDecimal(reader.GetOrdinal("GiaNgay"));
+						else
+							return reader.GetDecimal(reader.GetOrdinal("GiaGio"));
+					}
+				}
+			}
+
+			return 0; // Default giá tiền
 		}
 
 		// Lấy giá tiền của phòng theo mã phòng

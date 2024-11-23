@@ -144,7 +144,7 @@ namespace DAL.Data
 		}
 
 		// Xóa nhân viên
-		public bool deleteDataNhanVien(int maNV)
+		public bool deleteDataNhanVien(NhanVien nv)
 		{
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
@@ -155,8 +155,7 @@ namespace DAL.Data
 					string query = "DELETE FROM NhanVien WHERE MaNV = @MaNV";
 
 					SqlCommand cmd = new SqlCommand(query, conn);
-					cmd.Parameters.AddWithValue("@MaNV", maNV);
-
+					cmd.Parameters.AddWithValue("@MaNV", nv.MaNV);
 					conn.Open();
 					cmd.ExecuteNonQuery();
 				}

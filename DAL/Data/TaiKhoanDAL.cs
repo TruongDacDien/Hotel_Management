@@ -5,7 +5,6 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
 using System.Drawing;
-using System.Windows.Controls;
 
 namespace DAL.Data
 {
@@ -25,11 +24,16 @@ namespace DAL.Data
 		}
 
 		// Chuyển đổi hình ảnh thành mảng byte
-		public byte[] ConvertImageToByteArray(string imagePath)
+		public byte[] ConvertImageToByteArray(Image image)
 		{
-			return File.ReadAllBytes(imagePath); // Đọc tệp hình ảnh và trả về mảng byte
+			using (MemoryStream ms = new MemoryStream())
+			{
+				image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg); // Hoặc bất kỳ định dạng hình ảnh nào bạn cần
+				return ms.ToArray(); // Trả về mảng byte từ MemoryStream
+			}
 		}
 
+		/*
 		// Chuyển đổi mảng byte thành hình ảnh
 		public Image ConvertByteArrayToImage(byte[] byteArray)
 		{
@@ -38,8 +42,8 @@ namespace DAL.Data
 				return Image.FromStream(ms); // Chuyển mảng byte thành Image
 			}
 		}
+		*/
 
-		// Lấy tài khoản từ cơ sở dữ liệu theo username và password (đã mã hóa)
 		public TaiKhoan layTaiKhoanTuDataBase(string username, string pass)
 		{
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
@@ -56,13 +60,8 @@ namespace DAL.Data
 				{
 					if (reader.Read())
 					{
-						byte[] avatarBytes = reader["avatar"] as byte[]; // Lấy dữ liệu avatar dưới dạng byte array
-						Image avatarImage = null;
-
-						if (avatarBytes != null)
-						{
-							avatarImage = ConvertByteArrayToImage(avatarBytes); // Chuyển byte array thành Image
-						}
+						// Lấy avatar dưới dạng mảng byte
+						byte[] avatarBytes = reader["avatar"] as byte[];
 
 						return new TaiKhoan
 						{
@@ -71,7 +70,7 @@ namespace DAL.Data
 							Password = reader.GetString(reader.GetOrdinal("password")),
 							Email = reader.GetString(reader.GetOrdinal("email")),
 							MaPQ = reader.GetInt32(reader.GetOrdinal("maPQ")),
-							Avatar = avatarImage // Lưu đối tượng Image vào Avatar
+							Avatar = avatarBytes // Lưu mảng byte của avatar
 						};
 					}
 				}
@@ -81,10 +80,10 @@ namespace DAL.Data
 		}
 
 		// Cập nhật avatar của tài khoản
-		public bool capNhatAvatar(string username, string avatarPath, out string error)
+		public bool capNhatAvatar(string username, Image avatarImage, out string error)
 		{
 			error = string.Empty;
-			byte[] avatarBytes = ConvertImageToByteArray(avatarPath); // Chuyển đổi ảnh thành mảng byte
+			byte[] avatarBytes = ConvertImageToByteArray(avatarImage); // Chuyển đổi ảnh thành mảng byte
 
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
