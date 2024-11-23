@@ -26,7 +26,7 @@ namespace GUI.UserControls
     /// </summary>
     public partial class uc_HoaDon : UserControl
     {
-        ObservableCollection<HoaDonDTO> list;
+        ObservableCollection<HoaDon> list;
         public uc_HoaDon()
         {
             InitializeComponent();
@@ -39,7 +39,7 @@ namespace GUI.UserControls
         }
         private void TaiDanhSach()
         {
-            list = new ObservableCollection<HoaDonDTO>(HoaDonBUS.GetInstance().GetHoaDons());
+            list = new ObservableCollection<HoaDon>(HoaDonBUS.GetInstance().GetHoaDons());
             lsvHoaDon.ItemsSource = list;
         }
 
@@ -56,14 +56,14 @@ namespace GUI.UserControls
                 return true;
             }
             else
-                return (obj as HoaDonDTO).MaHoaDon == int.Parse(txtFilter.Text);
+                return (obj as HoaDon).MaHoaDon == int.Parse(txtFilter.Text);
         }
         private bool HoaDonFilterTheoNgay(object obj)
         {
             if (String.IsNullOrEmpty(dtpChonNgay.Text))
                 return true;
             else
-                return (obj as HoaDonDTO).NgayLap.ToShortDateString().Equals(dtpChonNgay.Text) ;
+                return (obj as HoaDon).NgayLap.ToShortDateString().Equals(dtpChonNgay.Text) ;
         }
 
         private void dtpChonNgay_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
@@ -75,7 +75,7 @@ namespace GUI.UserControls
 
         private void chiTiet_Click(object sender, RoutedEventArgs e)
         {
-            HoaDonDTO hd = (sender as Button).DataContext as HoaDonDTO;
+            HoaDon hd = (sender as Button).DataContext as HoaDon;
             new XuatHoaDon(hd.MaHoaDon).ShowDialog();
         }
     }

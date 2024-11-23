@@ -22,8 +22,8 @@ namespace GUI.View
     /// </summary>
     public partial class Them_SuaChiTietTienNghi : Window
     {
-        public delegate void truyenData(CT_TienNghiDTO CTTienNghi);
-        public delegate void suaData(CT_TienNghiDTO CTTienNghi);
+        public delegate void truyenData(CT_TienNghi CTTienNghi);
+        public delegate void suaData(CT_TienNghi CTTienNghi);
 
 
         public truyenData truyenCT;
@@ -36,7 +36,7 @@ namespace GUI.View
             TaiDanhSach();
         }
 
-        public Them_SuaChiTietTienNghi(CT_TienNghiDTO ct) : this()
+        public Them_SuaChiTietTienNghi(CT_TienNghi ct) : this()
         {
             cmbSoPhong.DisplayMemberPath = "SoPhong";
             cmbSoPhong.SelectedValuePath = "SoPhong";
@@ -76,7 +76,7 @@ namespace GUI.View
             }
             else
             {
-                CT_TienNghiDTO CTTienNghi = new CT_TienNghiDTO()
+                CT_TienNghi CTTienNghi = new CT_TienNghi()
                 {
                     SoPhong = cmbSoPhong.SelectedValue.ToString(),
                     SoLuong = int.Parse(txtSoLuong.Text),
@@ -100,7 +100,7 @@ namespace GUI.View
             }
             else
             {
-                CT_TienNghiDTO ctTienNghi = new CT_TienNghiDTO()
+                CT_TienNghi ctTienNghi = new CT_TienNghi()
                 {
                     MaCT = int.Parse(maCT),
                     SoPhong = cmbSoPhong.SelectedValue.ToString(),

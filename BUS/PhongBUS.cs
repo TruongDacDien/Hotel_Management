@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.DTO;
-using DAL;
 using DAL.Data;
 
 namespace BUS
@@ -60,22 +59,22 @@ namespace BUS
             return PhongDAL.GetInstance().suaTinhTrangPhong(maPhong, text, out error);
         }
 
-        public List<PhongDTO> getDataPhong()
+        public List<Phong> getDataPhong()
         {
             return PhongDAL.GetInstance().getPhong();
         }
 
-        public bool addDataPhong(PhongDTO phong)
+        public bool addDataPhong(Phong phong)
         {
             return PhongDAL.GetInstance().addDataPhong(phong);
         }
 
-        public bool capNhatDataPhong(PhongDTO phong)
+        public bool capNhatDataPhong(Phong phong)
         {
             return PhongDAL.GetInstance().capNhatPhong(phong);
         }
 
-        public void xoaDataPhong(PhongDTO phong)
+        public void xoaDataPhong(Phong phong)
         {
             PhongDAL.GetInstance().xoaThongTinPhong(phong);
         }
