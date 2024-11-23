@@ -120,7 +120,7 @@ namespace DAL.Data
 							};
 							ls.Add(ctpt);
 						}
-					}9
+					}
 				}
 			}
 			catch (Exception ex)
