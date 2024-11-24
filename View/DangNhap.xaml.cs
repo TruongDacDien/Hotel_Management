@@ -14,48 +14,49 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using BUS;
 using DAL;
+using DAL.DTO;
 
 namespace GUI.View
 {
-    /// <summary>
-    /// Interaction logic for DangNhap.xaml
-    /// </summary>
-    public partial class DangNhap : Window
-    {
-        public DangNhap()
-        {
-            InitializeComponent();
-            this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
-        }
+	/// <summary>
+	/// Interaction logic for DangNhap.xaml
+	/// </summary>
+	public partial class DangNhap : Window
+	{
+		public DangNhap()
+		{
+			InitializeComponent();
+			this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
+		}
 
-        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
-            e.Handled = false;
-        }
+		private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+		{
+			Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+			e.Handled = false;
+		}
 
 
-        private void btn_Close_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
+		private void btn_Close_Click(object sender, RoutedEventArgs e)
+		{
+			this.Close();
+		}
 
-        private void click_DangNhap(object sender, RoutedEventArgs e)
-        {
-            string username = txbTenDangNhap.Text;
-            string pass = txbMatKhau.Password;
-            TaiKhoan taiKhoan = TaiKhoanBUS.GetInstance().kiemTraTKTonTaiKhong(username, pass);
-            if (taiKhoan != null)
-            {
-                MainWindow main = new MainWindow(taiKhoan);
-                main.Show();
-                this.Close();
-            }
-            else
-            {
-                new DialogCustoms("Không tồn tại tài khoản mật khẩu  !", "Thông báo" , DialogCustoms.OK).ShowDialog();
-            }
-            
-        }
-    }
+		private void click_DangNhap(object sender, RoutedEventArgs e)
+		{
+			string username = txbTenDangNhap.Text;
+			string pass = txbMatKhau.Password;
+			TaiKhoan taiKhoan = TaiKhoanBUS.GetInstance().kiemTraTKTonTaiKhong(username, pass);
+			if (taiKhoan != null)
+			{
+				MainWindow main = new MainWindow(taiKhoan);
+				main.Show();
+				this.Close();
+			}
+			else
+			{
+				new DialogCustoms("Không tồn tại tài khoản mật khẩu  !", "Thông báo", DialogCustoms.OK).ShowDialog();
+			}
+
+		}
+	}
 }

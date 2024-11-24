@@ -5,7 +5,6 @@ using GUI.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Objects;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,7 +55,7 @@ namespace GUI.UserControls
                 return true;
             }
             else
-                return (obj as HoaDon).MaHoaDon == int.Parse(txtFilter.Text);
+                return (obj as HoaDon).MaHD == int.Parse(txtFilter.Text);
         }
         private bool HoaDonFilterTheoNgay(object obj)
         {
@@ -76,7 +75,7 @@ namespace GUI.UserControls
         private void chiTiet_Click(object sender, RoutedEventArgs e)
         {
             HoaDon hd = (sender as Button).DataContext as HoaDon;
-            new XuatHoaDon(hd.MaHoaDon).ShowDialog();
+            new XuatHoaDon(hd.MaHD).ShowDialog();
         }
     }
 }

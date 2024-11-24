@@ -1,5 +1,4 @@
 ﻿using BUS;
-using DAL;
 using DAL.DTO;
 using System;
 using System.Collections.Generic;
@@ -22,8 +21,8 @@ namespace GUI.View
     /// </summary>
     public partial class Them_SuaDichVu : Window
     {
-        public delegate void TryenDuLieu(DichVu dv);
-        public delegate void SuaDuLieu(DichVu dv);
+        public delegate void TryenDuLieu(DichVuDTO dv);
+        public delegate void SuaDuLieu(DichVuDTO dv);
 
         public TryenDuLieu truyen;
         public SuaDuLieu sua;
@@ -37,7 +36,7 @@ namespace GUI.View
             cmbMaLoai.DisplayMemberPath = "TenLoaiDV";
             cmbMaLoai.SelectedValuePath = "MaLoaiDV";
         }
-        public Them_SuaDichVu(DichVu dv) : this()
+        public Them_SuaDichVu(DichVuDTO dv) : this()
         {
             txtTenDichVu.IsReadOnly = true;
             cmbMaLoai.DisplayMemberPath = "TenLoaiDV";
@@ -63,7 +62,7 @@ namespace GUI.View
             }
             else
             {
-                DichVu dichVu = new DichVu()
+                DichVuDTO dichVu = new DichVuDTO()
                 {
                     MaDichVu = int.Parse(maDV.ToString()),
                     TenDichVu = txtTenDichVu.Text,
@@ -88,7 +87,7 @@ namespace GUI.View
             }
             else
             {
-                DichVu dichVu = new DichVu()
+                DichVuDTO dichVu = new DichVuDTO()
                 {
                     TenDichVu = txtTenDichVu.Text,
                     Gia = int.Parse(txtGia.Text),

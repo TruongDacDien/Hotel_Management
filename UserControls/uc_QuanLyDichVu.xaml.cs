@@ -48,10 +48,10 @@ namespace GUI.UserControls
             if (String.IsNullOrEmpty(txtFilter.Text))
                 return true;
             else
-                return (obj as DichVu).TenDichVu.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
+                return (obj as DichVu).TenDV.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        void nhanData(DichVu dv)
+        void nhanData(DichVuDTO dv)
         {
             if (DichVuBUS.GetInstance().KiemTraTrungTen(dv))
             {
@@ -67,7 +67,7 @@ namespace GUI.UserControls
             }
         }
 
-        void capNhatData(DichVu dv)
+        void capNhatData(DichVuDTO dv)
         {
             if (DichVuBUS.GetInstance().capNhatDichVu(dv))
             {
@@ -84,7 +84,7 @@ namespace GUI.UserControls
 
         private void btnXoa_Click(object sender, RoutedEventArgs e)
         {
-            DichVu dv = (sender as Button).DataContext as DichVu;
+            DichVuDTO dv = (sender as Button).DataContext as DichVuDTO;
 
             var thongbao = new DialogCustoms("Bạn có thật sự muốn xóa " + dv.TenDichVu, "Thông báo", DialogCustoms.YesNo);
             
@@ -105,7 +105,7 @@ namespace GUI.UserControls
 
         private void btnCapNhat_Click(object sender, RoutedEventArgs e)
         {
-            DichVu dv = (sender as Button).DataContext as DichVu;
+            DichVuDTO dv = (sender as Button).DataContext as DichVuDTO;
             Them_SuaDichVu CapNhatDichVu = new Them_SuaDichVu(dv);
             CapNhatDichVu.sua = new Them_SuaDichVu.SuaDuLieu(capNhatData);
             CapNhatDichVu.ShowDialog();

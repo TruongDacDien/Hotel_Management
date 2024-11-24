@@ -1,5 +1,5 @@
 ﻿using BUS;
-using DAL;
+using DAL.DTO;
 using GUI.View;
 using System;
 using System.Collections.Generic;

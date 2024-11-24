@@ -27,7 +27,7 @@ namespace BUS
             return Instance;
         }
 
-        public List<HoaDon> GetHoaDons()
+        public List<HoaDonDTO> GetHoaDons()
         {
             return HoaDonDAL.GetInstance().LayDuLieuHoaDon();
         }

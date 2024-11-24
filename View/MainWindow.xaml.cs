@@ -13,7 +13,8 @@ using MaterialDesignThemes.Wpf;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using System.IO;
-using DAL;
+using DAL.DTO;
+using DAL.Data;
 using BUS;
 
 namespace GUI.View
@@ -132,45 +133,50 @@ namespace GUI.View
             lisviewMenu.SelectedValuePath = "name";
             Title_Main = "Trang Chủ";
         }
-        #endregion
+		#endregion
 
-        #region event
+		#region event
 
-        private void load_Windows(object sender, RoutedEventArgs e)
-        {
-            this.DataContext = this;
-            Home = new uc_Home();
-            contenDisplayMain.Content = Home;
-            txbHoTenNV.Text = taiKhoan.NhanVien.HoTen;
-            if (string.IsNullOrEmpty(taiKhoan.avatar))
-            {
-                Uri uri = new Uri("pack://application:,,,/Res/mountains.jpg");
-                ImageBrush imageBrush = new ImageBrush(new BitmapImage(uri));
-                imgAvatar.Fill = imageBrush;
-            }
-            else
-            {
-                string staupPath = Environment.CurrentDirectory + "\\Res";
-                string filePath = Path.Combine(staupPath, taiKhoan.avatar);
-                if (File.Exists(filePath))
-                {
-                    ImageBrush imageBrush = new ImageBrush(new BitmapImage(new Uri(filePath)));
-                    imgAvatar.Fill = imageBrush;
+		private void load_Windows(object sender, RoutedEventArgs e)
+		{
+			this.DataContext = this;
+			Home = new uc_Home();
+			contenDisplayMain.Content = Home;
+			txbHoTenNV.Text = taiKhoan.NhanVien.HoTen;
 
-                }
-                else
-                {
-                    new DialogCustoms("Không tồn tại file ảnh của nhân viên " + taiKhoan.NhanVien.HoTen, "Thông báo", DialogCustoms.OK).ShowDialog();
-                }
-            }
-            initListViewMenu();
+			if (taiKhoan.Avatar == null || taiKhoan.Avatar.Length == 0)
+			{
+				// Nếu avatar trống, hiển thị hình ảnh mặc định
+				Uri uri = new Uri("pack://application:,,,/Res/mountains.jpg");
+				ImageBrush imageBrush = new ImageBrush(new BitmapImage(uri));
+				imgAvatar.Fill = imageBrush;
+			}
+			else
+			{
+				// Nếu avatar có, chuyển đổi mảng byte thành hình ảnh và hiển thị
+				try
+				{
+					using (MemoryStream ms = new MemoryStream(taiKhoan.Avatar))
+					{
+						BitmapImage bitmapImage = new BitmapImage();
+						bitmapImage.BeginInit();
+						bitmapImage.StreamSource = ms;
+						bitmapImage.EndInit();
+						ImageBrush imageBrush = new ImageBrush(bitmapImage);
+						imgAvatar.Fill = imageBrush;
+					}
+				}
+				catch (Exception ex)
+				{
+					new DialogCustoms("Không thể tải ảnh của nhân viên " + taiKhoan.NhanVien.HoTen + ": " + ex.Message, "Thông báo", DialogCustoms.OK).ShowDialog();
+				}
+			}
+
+			initListViewMenu();
+		}
 
 
-
-
-        }
-
-        private void lisviewMenu_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		private void lisviewMenu_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (lisviewMenu.SelectedValue != null)
             {
@@ -274,60 +280,51 @@ namespace GUI.View
                 btnCloseLVMenu.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             }
         }
-        #endregion
+		#endregion
 
-        private void click_ThayDoiAnh(object sender, RoutedEventArgs e)
-        {
-            //string[] filePathTonTai;
-            OpenFileDialog openFile = new OpenFileDialog();
-            openFile.Filter = "Pictures files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)|*.jpg; *.jpeg; *.jpe; *.jfif; *.png";
-            openFile.FilterIndex = 1;
-            openFile.RestoreDirectory = true;
-            if (openFile.ShowDialog()  == true)
-            {
-                //xử lý đổi tên file truyền vào
-                string [] arr = openFile.FileName.Split('\\');
-                string[] arrFileName = arr[arr.Length - 1].Split('.');
-                string newNameFile = "NV" + maNV  +"-"+ DateTime.Now.Ticks.ToString() + "." + arrFileName[arrFileName.Length - 1];
+		private void click_ThayDoiAnh(object sender, RoutedEventArgs e)
+		{
+			OpenFileDialog openFile = new OpenFileDialog();
+			openFile.Filter = "Pictures files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)|*.jpg; *.jpeg; *.jpe; *.jfif; *.png";
+			openFile.FilterIndex = 1;
+			openFile.RestoreDirectory = true;
 
-                try
-                {
-                    string sourceFile = openFile.FileName;
-                    string targetPath = Environment.CurrentDirectory+"\\Res";
-                    //Combine file và đường dẫn
-                    string destFile = Path.Combine(targetPath, newNameFile);
+			if (openFile.ShowDialog() == true)
+			{
+				try
+				{
+					// Đọc hình ảnh từ file đã chọn
+					string sourceFile = openFile.FileName;
+					System.Drawing.Image image = System.Drawing.Image.FromFile(sourceFile);  // Chuyển file hình ảnh thành đối tượng Image
 
-                    //Copy file từ file nguồn đến file đích
-                    File.Copy(sourceFile, destFile, true);
+					// Chuyển đổi ảnh thành mảng byte
+					byte[] avatarBytes = TaiKhoanDAL.GetInstance().ConvertImageToByteArray(image);
 
-                    //gán ngược lại giao diện
-                    Uri uri = new Uri(destFile);
-                    ImageBrush imageBrush = new ImageBrush(new BitmapImage(uri));
-                    imgAvatar.Fill = imageBrush;
-                    //Thêm đường dẫn vào DB
-                    string error;
-                    if(!TaiKhoanBUS.GetInstance().capNhatAvatar(taiKhoan.username,newNameFile,out error))
-                    {
-                        new DialogCustoms("Thay đổi ảnh đại diện thất bại !\n Lỗi: "+error, "Thông báo", DialogCustoms.OK).ShowDialog();
-                    }
-                    else
-                    {
-                        
-                        new DialogCustoms("Thay đổi ảnh đại diện thành công !", "Thông báo", DialogCustoms.OK).ShowDialog();
-                    }
- 
-                }
-                catch (Exception ex)
-                {
-                    new DialogCustoms("Lỗi: "+ ex.Message, "Thông báo", DialogCustoms.OK).ShowDialog();
-                }
+					// Gán ảnh vào giao diện
+					Uri uri = new Uri(sourceFile); // Lấy đường dẫn của ảnh
+					ImageBrush imageBrush = new ImageBrush(new BitmapImage(uri));
+					imgAvatar.Fill = imageBrush;
 
-            }
-            
+					// Cập nhật mảng byte của avatar vào cơ sở dữ liệu
+					string error;
+					if (!TaiKhoanBUS.GetInstance().capNhatAvatar(taiKhoan.Username, avatarBytes, out error))
+					{
+						new DialogCustoms("Thay đổi ảnh đại diện thất bại !\n Lỗi: " + error, "Thông báo", DialogCustoms.OK).ShowDialog();
+					}
+					else
+					{
+						new DialogCustoms("Thay đổi ảnh đại diện thành công !", "Thông báo", DialogCustoms.OK).ShowDialog();
+					}
+				}
+				catch (Exception ex)
+				{
+					new DialogCustoms("Lỗi: " + ex.Message, "Thông báo", DialogCustoms.OK).ShowDialog();
+				}
+			}
+		}
 
-        }
 
-        private void btnDangXuat_Click(object sender, RoutedEventArgs e)
+		private void btnDangXuat_Click(object sender, RoutedEventArgs e)
         {
             DialogCustoms dialog = new DialogCustoms("Bạn có muốn đăng xuất ?", "Thông báo", DialogCustoms.YesNo);
             if(dialog.ShowDialog() == true)
