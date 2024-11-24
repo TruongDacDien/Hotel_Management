@@ -96,9 +96,9 @@ namespace DAL.Data
 		}
 
 		// Lấy danh sách tất cả dịch vụ
-		public List<DichVu> getDataDichVu()
+		public List<DichVuDTO> getDataDichVu()
 		{
-			List<DichVu> lsDichVu = new List<DichVu>();
+			List<DichVuDTO> lsDichVu = new List<DichVuDTO>();
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
@@ -113,7 +113,7 @@ namespace DAL.Data
 					{
 						while (reader.Read())
 						{
-							lsDichVu.Add(new DichVu
+							lsDichVu.Add(new DichVuDTO
 							{
 								MaDV = reader.GetInt32(reader.GetOrdinal("MaDV")),
 								TenDV = reader.GetString(reader.GetOrdinal("TenDV")),

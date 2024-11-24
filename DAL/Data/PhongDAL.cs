@@ -287,26 +287,36 @@ namespace DAL.Data
 			}
 		}
 
-		public List<Phong> getPhong()
+		public List<PhongDTO> getPhong()
 		{
-			List<Phong> lstPhong = new List<Phong>();
+			List<PhongDTO> lstPhong = new List<PhongDTO>();
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
 			try
 			{
 				using (SqlConnection conn = new SqlConnection(connectionString))
 				{
-					string query = "SELECT SoPhong, MaLoaiPhong, TinhTrang FROM Phong";
+					// Truy vấn kết hợp bảng Phong và LoaiPhong để lấy thông tin cần thiết
+					string query = @"
+									SELECT 
+										p.SoPhong, 
+										p.MaLoaiPhong, 
+										p.TinhTrang, 
+										lp.TenLoaiPhong AS LoaiPhong 
+									FROM Phong p
+									INNER JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong";
 					SqlCommand cmd = new SqlCommand(query, conn);
 					conn.Open();
 					using (SqlDataReader reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
-							lstPhong.Add(new Phong
+							lstPhong.Add(new PhongDTO
 							{
 								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
 								MaLoaiPhong = reader.GetInt32(reader.GetOrdinal("MaLoaiPhong")),
-								TinhTrang = reader.GetString(reader.GetOrdinal("TinhTrang"))
+								TinhTrang = reader.GetString(reader.GetOrdinal("TinhTrang")),
+								LoaiPhong = reader.GetString(reader.GetOrdinal("LoaiPhong")) // Lấy tên loại phòng
 							});
 						}
 					}
@@ -314,10 +324,10 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log error if needed
+				Console.WriteLine("Lỗi khi lấy danh sách phòng: " + ex.Message); // Log lỗi nếu cần
 			}
+
 			return lstPhong;
 		}
-
 	}
 }

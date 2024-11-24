@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL.DTO;
 using DAL.Data;
-using System.Drawing;
 
 namespace BUS
 {
@@ -33,7 +32,7 @@ namespace BUS
 
             return TaiKhoanDAL.GetInstance().layTaiKhoanTuDataBase(username, matKhau);
         }
-        public bool capNhatAvatar(string username,Image avatar, out string error)
+        public bool capNhatAvatar(string username,byte[] avatar, out string error)
         {
             return TaiKhoanDAL.GetInstance().capNhatAvatar( username , avatar, out error);
         }

@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 using GUI.View;
 using System.Collections.ObjectModel;
 using BUS;
-using DAL;
+using DAL.DTO;
 using System.Text.RegularExpressions;
 
 namespace GUI.UserControls

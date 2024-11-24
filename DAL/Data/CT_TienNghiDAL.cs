@@ -25,9 +25,9 @@ namespace DAL.Data
 		}
 
 		// Lấy danh sách các chi tiết tiện nghi
-		public List<CT_TienNghi> getData()
+		public List<CT_TienNghiDTO> getData()
 		{
-			List<CT_TienNghi> listCTTienNghi = new List<CT_TienNghi>();
+			List<CT_TienNghiDTO> listCTTienNghi = new List<CT_TienNghiDTO>();
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
@@ -42,11 +42,11 @@ namespace DAL.Data
 					{
 						while (reader.Read())
 						{
-							CT_TienNghi ctTienNghi = new CT_TienNghi
+							CT_TienNghiDTO ctTienNghi = new CT_TienNghiDTO
 							{
 								MaCTTN = reader.GetInt32(reader.GetOrdinal("MaCTTN")),
 								MaTN = reader.GetInt32(reader.GetOrdinal("MaTN")),
-								SoPhong = reader.GetInt32(reader.GetOrdinal("SoPhong")),
+								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
 								SL = reader.GetInt32(reader.GetOrdinal("SL"))
 							};
 							listCTTienNghi.Add(ctTienNghi);

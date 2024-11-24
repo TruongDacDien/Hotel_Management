@@ -9,18 +9,18 @@ namespace DAL.DTO
 {
 	public class TaiKhoan
 	{
-		private int maTK;
 		private string username;
 		private string password;
-		private string email;
-		private int maPQ;
+		private int maNV;
+		private int capDoQuyen;
 		private byte[] avatar;
+		private NhanVien nhanVien;
 
-		public int MaTK { get => maTK; set => maTK = value; }
 		public string Username { get => username; set => username = value; }
 		public string Password { get => password; set => password = value; }
-		public string Email { get => email; set => email = value; }
-		public int MaPQ { get => maPQ; set => maPQ = value; }
+		public int MaNV { get => maNV; set => maNV = value; }
+		public int CapDoQuyen { get => capDoQuyen; set => capDoQuyen = value; }
 		public byte[] Avatar { get => avatar; set => avatar = value; }
+		public NhanVien NhanVien { get => nhanVien; set => nhanVien = value; }
 	}
 }

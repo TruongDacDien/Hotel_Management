@@ -53,8 +53,7 @@ namespace DAL.Data
 								CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
 								NTNS = reader.GetDateTime(reader.GetOrdinal("NTNS")),
 								GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
-								Luong = reader.GetDecimal(reader.GetOrdinal("Luong")),
-								MaTK = reader.GetInt32(reader.GetOrdinal("MaTK"))
+								Luong = reader.GetDecimal(reader.GetOrdinal("Luong"))
 							});
 						}
 					}
@@ -78,8 +77,8 @@ namespace DAL.Data
 				using (SqlConnection conn = new SqlConnection(connectionString))
 				{
 					string query = @"
-                        INSERT INTO NhanVien (HoTen, ChucVu, SDT, DiaChi, CCCD, NTNS, GioiTinh, Luong, MaTK)
-                        VALUES (@HoTen, @ChucVu, @SDT, @DiaChi, @CCCD, @NTNS, @GioiTinh, @Luong, @MaTK)";
+                        INSERT INTO NhanVien (HoTen, ChucVu, SDT, DiaChi, CCCD, NTNS, GioiTinh, Luong)
+                        VALUES (@HoTen, @ChucVu, @SDT, @DiaChi, @CCCD, @NTNS, @GioiTinh, @Luong)";
 
 					SqlCommand cmd = new SqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@HoTen", nv.HoTen);
@@ -90,7 +89,6 @@ namespace DAL.Data
 					cmd.Parameters.AddWithValue("@NTNS", nv.NTNS);
 					cmd.Parameters.AddWithValue("@GioiTinh", nv.GioiTinh);
 					cmd.Parameters.AddWithValue("@Luong", nv.Luong);
-					cmd.Parameters.AddWithValue("@MaTK", nv.MaTK);
 
 					conn.Open();
 					cmd.ExecuteNonQuery();
@@ -116,7 +114,7 @@ namespace DAL.Data
 					string query = @"
                         UPDATE NhanVien
                         SET HoTen = @HoTen, ChucVu = @ChucVu, SDT = @SDT, DiaChi = @DiaChi, 
-                            CCCD = @CCCD, NTNS = @NTNS, GioiTinh = @GioiTinh, Luong = @Luong, MaTK = @MaTK
+                            CCCD = @CCCD, NTNS = @NTNS, GioiTinh = @GioiTinh, Luong = @Luong
                         WHERE MaNV = @MaNV";
 
 					SqlCommand cmd = new SqlCommand(query, conn);
@@ -129,7 +127,6 @@ namespace DAL.Data
 					cmd.Parameters.AddWithValue("@NTNS", nv.NTNS);
 					cmd.Parameters.AddWithValue("@GioiTinh", nv.GioiTinh);
 					cmd.Parameters.AddWithValue("@Luong", nv.Luong);
-					cmd.Parameters.AddWithValue("@MaTK", nv.MaTK);
 
 					conn.Open();
 					cmd.ExecuteNonQuery();
@@ -197,8 +194,7 @@ namespace DAL.Data
 								CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
 								NTNS = reader.GetDateTime(reader.GetOrdinal("NTNS")),
 								GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
-								Luong = reader.GetDecimal(reader.GetOrdinal("Luong")),
-								MaTK = reader.GetInt32(reader.GetOrdinal("MaTK"))
+								Luong = reader.GetDecimal(reader.GetOrdinal("Luong"))
 							};
 						}
 					}

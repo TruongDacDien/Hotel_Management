@@ -42,3 +42,12 @@ C:\Users\Admin\Source\Repos\Hotel_Management\BUS\obj\Debug\BUS_MarkupCompile.cac
 C:\Users\Admin\Source\Repos\Hotel_Management\BUS\obj\Debug\BUS.Properties.Resources.resources
 C:\Users\Admin\Source\Repos\Hotel_Management\BUS\obj\Debug\BUS.csproj.GenerateResource.cache
 C:\Users\Admin\Source\Repos\Hotel_Management\BUS\obj\Debug\BUS.csproj.CoreCompileInputs.cache
+C:\Users\Admin\Source\Repos\Hotel_Management\BUS\bin\Debug\BUS.exe.config
+C:\Users\Admin\Source\Repos\Hotel_Management\BUS\bin\Debug\BUS.exe
+C:\Users\Admin\Source\Repos\Hotel_Management\BUS\bin\Debug\BUS.pdb
+C:\Users\Admin\Source\Repos\Hotel_Management\BUS\bin\Debug\DAL.exe
+C:\Users\Admin\Source\Repos\Hotel_Management\BUS\bin\Debug\DAL.pdb
+C:\Users\Admin\Source\Repos\Hotel_Management\BUS\bin\Debug\DAL.exe.config
+C:\Users\Admin\Source\Repos\Hotel_Management\BUS\obj\Debug\BUS.csproj.Up2Date
+C:\Users\Admin\Source\Repos\Hotel_Management\BUS\obj\Debug\BUS.exe
+C:\Users\Admin\Source\Repos\Hotel_Management\BUS\obj\Debug\BUS.pdb
