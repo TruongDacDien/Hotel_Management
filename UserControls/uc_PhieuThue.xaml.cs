@@ -101,7 +101,7 @@ namespace GUI.UserControls
             DialogCustoms dlg = new DialogCustoms("Bạn có muốn xóa phiếu thuê " + phieuThue.MaPhieuThue, "Thông báo", DialogCustoms.YesNo);
             if(dlg.ShowDialog()== true)
             {
-                if (PhieuThueBUS.GetInstance().xoaPhieuThueTheoMaPhieuThue(phieuThue.MaPhieuThue, error))
+                if (PhieuThueBUS.GetInstance().xoaPhieuThueTheoMaPhieuThue(phieuThue.MaPhieuThue,out error))
                 {
                     new DialogCustoms("Xóa phiếu thuê thành công !", "Thông báo", DialogCustoms.OK).ShowDialog();
                     lsPhieuThueCusToms.Remove(phieuThue);

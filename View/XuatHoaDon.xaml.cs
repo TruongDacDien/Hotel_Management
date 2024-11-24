@@ -14,8 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using DAL.DTO;
 using BUS;
-using DAL;
-using System.Data.Objects.SqlClient;
+using DAL.Data;
 
 namespace GUI.View
 {
@@ -116,8 +115,8 @@ namespace GUI.View
                 }
                 txbNhanVien.Text = hd.NhanVien.HoTen;
                 txbSoPhong.Text = hd.CT_PhieuThue.SoPhong;
-                DateTime ngayBD = hd.CT_PhieuThue.NgayBD.Value;
-                DateTime ngayKT = hd.CT_PhieuThue.NgayKT.Value;
+                DateTime ngayBD = hd.CT_PhieuThue.NgayBD;
+                DateTime ngayKT = hd.CT_PhieuThue.NgayKT;
                 TimeSpan Time = ngayKT - ngayBD;
                 int sogio = (int)Time.TotalHours;
                 int songay = (int)Time.TotalDays + 1;

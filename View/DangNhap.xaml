@@ -68,7 +68,7 @@
                 <TextBlock Foreground="#0056FC"
                            HorizontalAlignment="Left" VerticalAlignment="Top"
                            Margin="119 200 0 0">
-                   <Hyperlink NavigateUri="https://www.facebook.com/duydidom05" RequestNavigate="Hyperlink_RequestNavigate"  >
+                   <Hyperlink NavigateUri="https://www.facebook.com/profile.php?id=61556372040526" RequestNavigate="Hyperlink_RequestNavigate"  >
                         Quên mật khẩu?
                     </Hyperlink>
                 </TextBlock>

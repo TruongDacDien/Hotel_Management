@@ -48,43 +48,70 @@ namespace DAL.Data
 		{
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
-			using (SqlConnection conn = new SqlConnection(connectionString))
+			try
 			{
-				string query = "SELECT * FROM TaiKhoan WHERE username = @Username AND password = @Password";
-				SqlCommand cmd = new SqlCommand(query, conn);
-				cmd.Parameters.AddWithValue("@Username", username);
-				cmd.Parameters.AddWithValue("@Password", pass);
-
-				conn.Open();
-				using (SqlDataReader reader = cmd.ExecuteReader())
+				using (SqlConnection conn = new SqlConnection(connectionString))
 				{
-					if (reader.Read())
-					{
-						// Lấy avatar dưới dạng mảng byte
-						byte[] avatarBytes = reader["avatar"] as byte[];
+					// Truy vấn kết hợp để lấy thông tin tài khoản và nhân viên
+					string query = @"
+                SELECT 
+                    tk.username, tk.password, tk.maNV, tk.capDoQuyen, tk.avatar,
+                    nv.hoTen, nv.chucVu, nv.sDT, nv.diaChi, nv.cCCD, nv.nTNS, nv.gioiTinh, nv.luong, nv.maTK
+                FROM TaiKhoan tk
+                LEFT JOIN NhanVien nv ON tk.maNV = nv.maNV
+                WHERE tk.username = @Username AND tk.password = @Password";
 
-						return new TaiKhoan
+					SqlCommand cmd = new SqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@Username", username);
+					cmd.Parameters.AddWithValue("@Password", pass);
+
+					conn.Open();
+					using (SqlDataReader reader = cmd.ExecuteReader())
+					{
+						if (reader.Read())
 						{
-							MaTK = reader.GetInt32(reader.GetOrdinal("MaTK")),
-							Username = reader.GetString(reader.GetOrdinal("username")),
-							Password = reader.GetString(reader.GetOrdinal("password")),
-							Email = reader.GetString(reader.GetOrdinal("email")),
-							MaPQ = reader.GetInt32(reader.GetOrdinal("maPQ")),
-							Avatar = avatarBytes // Lưu mảng byte của avatar
-						};
+							// Lấy avatar dưới dạng mảng byte (nếu có)
+							byte[] avatarBytes = reader["avatar"] as byte[];
+
+							// Trả về đối tượng TaiKhoan với thông tin NhanVien
+							return new TaiKhoan
+							{
+								Username = reader.GetString(reader.GetOrdinal("username")),
+								Password = reader.GetString(reader.GetOrdinal("password")),
+								MaNV = reader.GetInt32(reader.GetOrdinal("maNV")),
+								CapDoQuyen = reader.GetInt32(reader.GetOrdinal("capDoQuyen")),
+								Avatar = avatarBytes,
+								// Khởi tạo thông tin NhanVien
+								NhanVien = new NhanVien
+								{
+									MaNV = reader.GetInt32(reader.GetOrdinal("maNV")),
+									HoTen = reader.GetString(reader.GetOrdinal("hoTen")),
+									ChucVu = reader.GetString(reader.GetOrdinal("chucVu")),
+									SDT = reader.GetString(reader.GetOrdinal("sDT")),
+									DiaChi = reader.GetString(reader.GetOrdinal("diaChi")),
+									CCCD = reader.GetString(reader.GetOrdinal("cCCD")),
+									NTNS = reader.GetDateTime(reader.GetOrdinal("nTNS")),
+									GioiTinh = reader.GetString(reader.GetOrdinal("gioiTinh")),
+									Luong = reader.GetDecimal(reader.GetOrdinal("luong")),
+								}
+							};
+						}
 					}
 				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Lỗi: " + ex.Message); // Log lỗi nếu cần
 			}
 
 			return null; // Nếu không tìm thấy tài khoản
 		}
 
+
 		// Cập nhật avatar của tài khoản
-		public bool capNhatAvatar(string username, Image avatarImage, out string error)
+		public bool capNhatAvatar(string username, byte[] avatarBytes, out string error)
 		{
 			error = string.Empty;
-			byte[] avatarBytes = ConvertImageToByteArray(avatarImage); // Chuyển đổi ảnh thành mảng byte
-
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try

@@ -25,16 +25,27 @@ namespace DAL.Data
 		}
 
 		// Lấy tất cả các hóa đơn
-		public List<HoaDon> LayDuLieuHoaDon()
+		public List<HoaDonDTO> LayDuLieuHoaDon()
 		{
-			List<HoaDon> lstHoaDon = new List<HoaDon>();
+			List<HoaDonDTO> lstHoaDon = new List<HoaDonDTO>();
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
 				using (SqlConnection conn = new SqlConnection(connectionString))
 				{
-					string query = "SELECT MaHD, MaNV, MaCTPT, NgayLap, TongTien FROM HoaDon";
+					// Truy vấn kết hợp lấy đầy đủ các trường từ các bảng liên quan
+					string query = @"
+                SELECT 
+                    hd.MaHD, hd.MaNV, hd.MaCTPT, hd.NgayLap, hd.TongTien,
+                    nv.MaNV AS NV_MaNV, nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, 
+                    nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong, nv.MaTK,
+                    ctpt.MaCTPT, ctpt.MaPhieuThue, ctpt.SoPhong, ctpt.NgayBD, 
+                    ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong, ctpt.NgayTraThucTe
+                FROM HoaDon hd
+                LEFT JOIN NhanVien nv ON hd.MaNV = nv.MaNV
+                LEFT JOIN CT_PhieuThue ctpt ON hd.MaCTPT = ctpt.MaCTPT";
+
 					SqlCommand cmd = new SqlCommand(query, conn);
 					conn.Open();
 
@@ -42,22 +53,54 @@ namespace DAL.Data
 					{
 						while (reader.Read())
 						{
-							lstHoaDon.Add(new HoaDon
+							HoaDonDTO hoaDon = new HoaDonDTO
 							{
+								// Gán thông tin từ bảng HoaDon
 								MaHD = reader.GetInt32(reader.GetOrdinal("MaHD")),
 								MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
-								MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("MaCTPT")),
 								NgayLap = reader.GetDateTime(reader.GetOrdinal("NgayLap")),
-								TongTien = reader.GetDecimal(reader.GetOrdinal("TongTien"))
-							});
+								TongTien = reader.GetDecimal(reader.GetOrdinal("TongTien")),
+
+								// Gán thông tin từ bảng NhanVien
+								NhanVien = new NhanVien
+								{
+									MaNV = reader.GetInt32(reader.GetOrdinal("NV_MaNV")),
+									HoTen = reader.GetString(reader.GetOrdinal("HoTen")),
+									ChucVu = reader.GetString(reader.GetOrdinal("ChucVu")),
+									SDT = reader.GetString(reader.GetOrdinal("SDT")),
+									DiaChi = reader.GetString(reader.GetOrdinal("DiaChi")),
+									CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
+									NTNS = reader.GetDateTime(reader.GetOrdinal("NTNS")),
+									GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
+									Luong = reader.GetDecimal(reader.GetOrdinal("Luong")),
+								},
+
+								// Gán thông tin từ bảng CT_PhieuThue (nếu có)
+								CT_PhieuThue = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? null : new CT_PhieuThue
+								{
+									MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+									MaPhieuThue = reader.GetInt32(reader.GetOrdinal("MaPhieuThue")),
+									SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
+									NgayBD = reader.GetDateTime(reader.GetOrdinal("NgayBD")),
+									NgayKT = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
+									SoNguoiO = reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
+									TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue")),
+									TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong")),
+									NgayTraThucTe = reader.GetDateTime(reader.GetOrdinal("NgayTraThucTe"))
+								}
+							};
+
+							lstHoaDon.Add(hoaDon);
 						}
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				Console.WriteLine("Lỗi: " + ex.Message); // Log lỗi nếu cần
 			}
+
 			return lstHoaDon;
 		}
 
@@ -71,7 +114,17 @@ namespace DAL.Data
 			{
 				using (SqlConnection conn = new SqlConnection(connectionString))
 				{
-					string query = "SELECT MaHD, MaNV, MaCTPT, NgayLap, TongTien FROM HoaDon WHERE MaHD = @MaHD";
+					// Truy vấn kết hợp để lấy thông tin từ bảng HoaDon, NhanVien và CT_PhieuThue
+					string query = @"
+                SELECT 
+                    hd.MaHD, hd.MaNV, hd.MaCTPT, hd.NgayLap, hd.TongTien,
+                    nv.HoTen AS TenNhanVien, nv.ChucVu, nv.SDT, nv.DiaChi, nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong, nv.MaTK,
+                    ctpt.MaPhieuThue, ctpt.SoPhong, ctpt.NgayBD, ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong, ctpt.NgayTraThucTe
+                FROM HoaDon hd
+                LEFT JOIN NhanVien nv ON hd.MaNV = nv.MaNV
+                LEFT JOIN CT_PhieuThue ctpt ON hd.MaCTPT = ctpt.MaCTPT
+                WHERE hd.MaHD = @MaHD";
+
 					SqlCommand cmd = new SqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaHD", mahd);
 					conn.Open();
@@ -80,13 +133,40 @@ namespace DAL.Data
 					{
 						if (reader.Read())
 						{
+							// Khởi tạo HoaDon
 							hoaDon = new HoaDon
 							{
 								MaHD = reader.GetInt32(reader.GetOrdinal("MaHD")),
 								MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
 								MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
 								NgayLap = reader.GetDateTime(reader.GetOrdinal("NgayLap")),
-								TongTien = reader.GetDecimal(reader.GetOrdinal("TongTien"))
+								TongTien = reader.GetDecimal(reader.GetOrdinal("TongTien")),
+								// Lấy thông tin NhanVien
+								NhanVien = new NhanVien
+								{
+									MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
+									HoTen = reader.GetString(reader.GetOrdinal("TenNhanVien")),
+									ChucVu = reader.GetString(reader.GetOrdinal("ChucVu")),
+									SDT = reader.GetString(reader.GetOrdinal("SDT")),
+									DiaChi = reader.GetString(reader.GetOrdinal("DiaChi")),
+									CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
+									NTNS = reader.GetDateTime(reader.GetOrdinal("NTNS")),
+									GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
+									Luong = reader.GetDecimal(reader.GetOrdinal("Luong")),
+								},
+								// Lấy thông tin CT_PhieuThue (nếu có)
+								CT_PhieuThue = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? null : new CT_PhieuThue
+								{
+									MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+									MaPhieuThue = reader.GetInt32(reader.GetOrdinal("MaPhieuThue")),
+									SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
+									NgayBD = reader.GetDateTime(reader.GetOrdinal("NgayBD")),
+									NgayKT = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
+									SoNguoiO = reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
+									TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue")),
+									TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong")),
+									NgayTraThucTe = reader.GetDateTime(reader.GetOrdinal("NgayTraThucTe"))
+								}
 							};
 						}
 					}
@@ -94,8 +174,9 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				Console.WriteLine("Lỗi: " + ex.Message); // Log lỗi nếu cần
 			}
+
 			return hoaDon;
 		}
 

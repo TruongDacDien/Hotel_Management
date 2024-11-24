@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DAL;
 using DAL.Data;
 using DAL.DTO;
 
@@ -36,9 +35,9 @@ namespace BUS
             return PhieuThueDAL.GetInstance().getDataFromDB();
         }
 
-        public  bool xoaPhieuThueTheoMaPhieuThue(int maPhieuThue, string error)
+        public  bool xoaPhieuThueTheoMaPhieuThue(int maPhieuThue, out string error)
         {
-            return PhieuThueDAL.GetInstance().xoaPhieuThueTheoMaPhieuThue(maPhieuThue, error);
+            return PhieuThueDAL.GetInstance().xoaPhieuThueTheoMaPhieuThue(maPhieuThue, out error);
         }
     }
 }
