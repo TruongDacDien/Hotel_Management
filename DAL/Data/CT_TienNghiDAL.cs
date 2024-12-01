@@ -2,10 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace DAL.Data
 {
@@ -32,13 +29,13 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "SELECT * FROM CT_TienNghi";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
@@ -56,8 +53,7 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				// Xử lý lỗi nếu có
-				Console.WriteLine(ex.Message);
+				Console.WriteLine(ex.Message); // Xử lý lỗi nếu cần
 			}
 
 			return listCTTienNghi;
@@ -69,10 +65,10 @@ namespace DAL.Data
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "INSERT INTO CT_TienNghi (MaTN, SoPhong, SL) VALUES (@MaTN, @SoPhong, @SL)";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
 					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
 					cmd.Parameters.AddWithValue("@SL", chiTietTN.SL);
@@ -85,8 +81,7 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				// Xử lý lỗi nếu có
-				Console.WriteLine(ex.Message);
+				Console.WriteLine(ex.Message); // Xử lý lỗi nếu cần
 				return false;
 			}
 		}
@@ -97,10 +92,10 @@ namespace DAL.Data
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "DELETE FROM CT_TienNghi WHERE MaCTTN = @MaCTTN";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaCTTN", chiTietTN.MaCTTN);
 
 					conn.Open();
@@ -111,8 +106,7 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				// Xử lý lỗi nếu có
-				Console.WriteLine(ex.Message);
+				Console.WriteLine(ex.Message); // Xử lý lỗi nếu cần
 				return false;
 			}
 		}
@@ -123,10 +117,10 @@ namespace DAL.Data
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "UPDATE CT_TienNghi SET MaTN = @MaTN, SoPhong = @SoPhong, SL = @SL WHERE MaCTTN = @MaCTTN";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaCTTN", chiTietTN.MaCTTN);
 					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
 					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
@@ -140,8 +134,7 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				// Xử lý lỗi nếu có
-				Console.WriteLine(ex.Message);
+				Console.WriteLine(ex.Message); // Xử lý lỗi nếu cần
 				return false;
 			}
 		}
@@ -152,23 +145,22 @@ namespace DAL.Data
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "SELECT COUNT(1) FROM CT_TienNghi WHERE MaTN = @MaTN AND SoPhong = @SoPhong";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
 					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
 
 					conn.Open();
-					int count = (int)cmd.ExecuteScalar();
+					int count = Convert.ToInt32(cmd.ExecuteScalar());
 
 					return count > 0;
 				}
 			}
 			catch (Exception ex)
 			{
-				// Xử lý lỗi nếu có
-				Console.WriteLine(ex.Message);
+				Console.WriteLine(ex.Message); // Xử lý lỗi nếu cần
 				return false;
 			}
 		}

@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 using DAL.DTO;
 
 namespace DAL.Data
 {
-    public class PhieuThueDAL
-    {
+	public class PhieuThueDAL
+	{
 		private static PhieuThueDAL Instance;
 
 		private PhieuThueDAL() { }
@@ -32,13 +29,13 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
                         INSERT INTO PhieuThue (MaPhieuThue, NgayLapPhieu, MaKH, MaNV)
                         VALUES (@MaPhieuThue, @NgayLapPhieu, @MaKH, @MaNV)";
 
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaPhieuThue", pt.MaPhieuThue);
 					cmd.Parameters.AddWithValue("@NgayLapPhieu", pt.NgayLapPhieu);
 					cmd.Parameters.AddWithValue("@MaKH", pt.MaKH);
@@ -64,10 +61,10 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "DELETE FROM PhieuThue WHERE MaPhieuThue = @MaPhieuThue";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaPhieuThue", maPhieuThue);
 
 					conn.Open();
@@ -96,7 +93,7 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
                         SELECT pt.MaPhieuThue, pt.NgayLapPhieu, kh.TenKH, nv.HoTen
@@ -104,9 +101,9 @@ namespace DAL.Data
                         JOIN KhachHang kh ON pt.MaKH = kh.MaKH
                         JOIN NhanVien nv ON pt.MaNV = nv.MaNV";
 
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{

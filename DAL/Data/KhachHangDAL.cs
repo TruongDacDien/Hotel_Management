@@ -2,15 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace DAL.Data
 {
-    public class KhachHangDAL
-    {
+	public class KhachHangDAL
+	{
 		private static KhachHangDAL Instance;
 
 		private KhachHangDAL() { }
@@ -32,13 +29,13 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
                         INSERT INTO KhachHang (MaKH, TenKH, CCCD, DiaChi, SDT)
                         VALUES (@MaKH, @TenKH, @CCCD, @DiaChi, @SDT)";
 
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaKH", kh.MaKH);
 					cmd.Parameters.AddWithValue("@TenKH", kh.TenKH);
 					cmd.Parameters.AddWithValue("@CCCD", kh.CCCD);
@@ -65,14 +62,14 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "SELECT * FROM KhachHang WHERE CCCD = @CCCD";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@CCCD", CCCD);
 
 					conn.Open();
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						if (reader.Read())
 						{
@@ -103,13 +100,13 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "SELECT * FROM KhachHang";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
@@ -141,14 +138,14 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
                         UPDATE KhachHang 
                         SET TenKH = @TenKH, CCCD = @CCCD, DiaChi = @DiaChi, SDT = @SDT, QuocTich = @QuocTich
                         WHERE MaKH = @MaKH";
 
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenKH", khachHang.TenKH);
 					cmd.Parameters.AddWithValue("@CCCD", khachHang.CCCD);
 					cmd.Parameters.AddWithValue("@DiaChi", khachHang.DiaChi);
@@ -175,10 +172,10 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "DELETE FROM KhachHang WHERE MaKH = @MaKH";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaKH", khachHang.MaKH);
 
 					conn.Open();
@@ -201,14 +198,14 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "SELECT TenKH FROM KhachHang WHERE MaKH = (SELECT MaKH FROM PhieuThue WHERE MaPhieuThue = @MaPhieuThue)";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaPhieuThue", maPhieuThue);
 
 					conn.Open();
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						if (reader.Read())
 						{

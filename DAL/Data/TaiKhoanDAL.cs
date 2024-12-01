@@ -1,11 +1,9 @@
 ﻿using DAL.DTO;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.IO;
-using System.Drawing;
 using MySql.Data.MySqlClient;
+using System.Drawing;
 
 namespace DAL.Data
 {
@@ -29,22 +27,12 @@ namespace DAL.Data
 		{
 			using (MemoryStream ms = new MemoryStream())
 			{
-				image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg); // Hoặc bất kỳ định dạng hình ảnh nào bạn cần
-				return ms.ToArray(); // Trả về mảng byte từ MemoryStream
+				image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg); // Hoặc định dạng khác
+				return ms.ToArray();
 			}
 		}
 
-		/*
-		// Chuyển đổi mảng byte thành hình ảnh
-		public Image ConvertByteArrayToImage(byte[] byteArray)
-		{
-			using (MemoryStream ms = new MemoryStream(byteArray))
-			{
-				return Image.FromStream(ms); // Chuyển mảng byte thành Image
-			}
-		}
-		*/
-
+		// Lấy tài khoản theo username
 		public TaiKhoan layTaiKhoanTheoUsername(string username)
 		{
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
@@ -53,14 +41,13 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					// Truy vấn lấy tài khoản theo username
 					string query = @"
-                SELECT 
-                    tk.username, tk.password, tk.maNV, tk.capDoQuyen, tk.avatar,
-                    nv.hoTen, nv.chucVu, nv.sDT, nv.diaChi, nv.cCCD, nv.nTNS, nv.gioiTinh, nv.luong
-                FROM TaiKhoan tk
-                LEFT JOIN NhanVien nv ON tk.maNV = nv.maNV
-                WHERE tk.username = @Username";
+                    SELECT 
+                        tk.username, tk.password, tk.maNV, tk.capDoQuyen, tk.avatar,
+                        nv.hoTen, nv.chucVu, nv.sDT, nv.diaChi, nv.cCCD, nv.nTNS, nv.gioiTinh, nv.luong
+                    FROM TaiKhoan tk
+                    LEFT JOIN NhanVien nv ON tk.maNV = nv.maNV
+                    WHERE tk.username = @Username";
 
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@Username", username);
@@ -70,29 +57,24 @@ namespace DAL.Data
 					{
 						if (reader.Read())
 						{
-							// Lấy avatar dưới dạng mảng byte (nếu có)
-							byte[] avatarBytes = reader["avatar"] as byte[];
-
-							// Trả về đối tượng TaiKhoan với thông tin NhanVien
 							return new TaiKhoan
 							{
-								Username = reader.GetString(reader.GetOrdinal("username")),
-								Password = reader.GetString(reader.GetOrdinal("password")), // Hash mật khẩu
-								MaNV = reader.GetInt32(reader.GetOrdinal("maNV")),
-								CapDoQuyen = reader.GetInt32(reader.GetOrdinal("capDoQuyen")),
-								Avatar = avatarBytes,
-								// Khởi tạo thông tin NhanVien
+								Username = reader["username"].ToString(),
+								Password = reader["password"].ToString(),
+								MaNV = reader.IsDBNull(reader.GetOrdinal("maNV")) ? 0 : reader.GetInt32(reader.GetOrdinal("maNV")),
+								CapDoQuyen = reader.IsDBNull(reader.GetOrdinal("capDoQuyen")) ? 0 : reader.GetInt32(reader.GetOrdinal("capDoQuyen")),
+								Avatar = reader["avatar"] as byte[],
 								NhanVien = new NhanVien
 								{
-									MaNV = reader.GetInt32(reader.GetOrdinal("maNV")),
-									HoTen = reader.GetString(reader.GetOrdinal("hoTen")),
-									ChucVu = reader.GetString(reader.GetOrdinal("chucVu")),
-									SDT = reader.GetString(reader.GetOrdinal("sDT")),
-									DiaChi = reader.GetString(reader.GetOrdinal("diaChi")),
-									CCCD = reader.GetString(reader.GetOrdinal("cCCD")),
-									NTNS = reader.GetDateTime(reader.GetOrdinal("nTNS")),
-									GioiTinh = reader.GetString(reader.GetOrdinal("gioiTinh")),
-									Luong = reader.GetDecimal(reader.GetOrdinal("luong")),
+									MaNV = reader.IsDBNull(reader.GetOrdinal("maNV")) ? 0 : reader.GetInt32(reader.GetOrdinal("maNV")),
+									HoTen = reader["hoTen"]?.ToString(),
+									ChucVu = reader["chucVu"]?.ToString(),
+									SDT = reader["sDT"]?.ToString(),
+									DiaChi = reader["diaChi"]?.ToString(),
+									CCCD = reader["cCCD"]?.ToString(),
+									NTNS = reader.IsDBNull(reader.GetOrdinal("nTNS")) ? DateTime.MinValue : reader.GetDateTime(reader.GetOrdinal("nTNS")),
+									GioiTinh = reader["gioiTinh"]?.ToString(),
+									Luong = reader.IsDBNull(reader.GetOrdinal("luong")) ? 0 : reader.GetDecimal(reader.GetOrdinal("luong"))
 								}
 							};
 						}
@@ -101,12 +83,11 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("Lỗi: " + ex.Message); // Log lỗi nếu cần
+				Console.WriteLine("Lỗi: " + ex.Message);
 			}
 
-			return null; // Nếu không tìm thấy tài khoản
+			return null; // Trả về null nếu không tìm thấy
 		}
-
 
 		// Cập nhật avatar của tài khoản
 		public bool capNhatAvatar(string username, byte[] avatarBytes, out string error)
@@ -116,11 +97,11 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "UPDATE TaiKhoan SET avatar = @Avatar WHERE username = @Username";
-					SqlCommand cmd = new SqlCommand(query, conn);
-					cmd.Parameters.AddWithValue("@Avatar", avatarBytes); // Truyền mảng byte của avatar vào câu lệnh
+					MySqlCommand cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@Avatar", avatarBytes);
 					cmd.Parameters.AddWithValue("@Username", username);
 
 					conn.Open();
@@ -128,7 +109,7 @@ namespace DAL.Data
 
 					if (rowsAffected == 0)
 					{
-						error = "Không tồn tại tài khoản " + username;
+						error = $"Không tìm thấy tài khoản {username}.";
 						return false;
 					}
 				}

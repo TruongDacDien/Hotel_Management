@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL;
+using MySql.Data.MySqlClient;
 using DAL.DTO;
+
 namespace DAL.Data
 {
-    public class CTSDDV_DAL
-    {
+	public class CTSDDV_DAL
+	{
 		private static CTSDDV_DAL Instance;
 
 		private CTSDDV_DAL() { }
@@ -32,11 +29,11 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"INSERT INTO CT_SDDichVu (MaCTPT, MaDV, SL, ThanhTien) 
                                      VALUES (@MaCTPT, @MaDV, @SL, @ThanhTien)";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaCTPT", ctsddv.MaCTPT);
 					cmd.Parameters.AddWithValue("@MaDV", ctsddv.MaDV);
 					cmd.Parameters.AddWithValue("@SL", ctsddv.SL);
@@ -62,14 +59,14 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"SELECT ThanhTien FROM CT_SDDichVu WHERE MaCTPT = @MaCTPT";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
 
 					conn.Open();
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
@@ -93,7 +90,7 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
                         SELECT 
@@ -106,11 +103,11 @@ namespace DAL.Data
                         INNER JOIN DichVu dv ON ct.MaDV = dv.MaDV
                         WHERE ct.MaCTPT = @MaCTPT";
 
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
 
 					conn.Open();
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{

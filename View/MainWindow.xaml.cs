@@ -92,47 +92,47 @@ namespace GUI.View
             this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
             this.MaxWidth = SystemParameters.MaximizedPrimaryScreenWidth;
         }
-        #region method
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string newName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(newName));
-            }
-        }
-        private void initListViewMenu()
-        {
-            listMenu = new List<ItemMenuMainWindow>();
-            //Khoi tao Menu
-            if (CapDoQuyen == 1)
-            {
-                listMenu.Add(new ItemMenuMainWindow() { name = "Trang Chủ", foreColor = "Gray", kind_Icon = "Home" });
-                listMenu.Add(new ItemMenuMainWindow() { name = "Phòng", foreColor = "#FFF08033", kind_Icon = "HomeCity" });
-                listMenu.Add(new ItemMenuMainWindow() { name = "Đặt Phòng", foreColor = "Green", kind_Icon = "BookAccount" });
-                listMenu.Add(new ItemMenuMainWindow() { name = "Hóa đơn", foreColor = "#FFD41515", kind_Icon = "Receipt" });
-                listMenu.Add(new ItemMenuMainWindow() { name = "QL nhân Viên", foreColor = "#FFD41515", kind_Icon = "Account" });
-                listMenu.Add(new ItemMenuMainWindow() { name = "QL khách hàng", foreColor = "#FFD41515", kind_Icon = "Account" });
-                listMenu.Add(new ItemMenuMainWindow() { name = "QL phòng", foreColor = "#FFE6A701", kind_Icon = "StarCircle" });
-                listMenu.Add(new ItemMenuMainWindow() { name = "QL loại phòng", foreColor = "#FFE6A701", kind_Icon = "StarCircle" });
-                listMenu.Add(new ItemMenuMainWindow() { name = "QL dịch vụ", foreColor = "Blue", kind_Icon = "FaceAgent" });
-                listMenu.Add(new ItemMenuMainWindow() { name = "QL loại dịch vụ", foreColor = "Blue", kind_Icon = "FaceAgent" });
-                listMenu.Add(new ItemMenuMainWindow() { name = "QL tiện nghi", foreColor = "#FFF08033", kind_Icon = "Fridge" });
-                listMenu.Add(new ItemMenuMainWindow() { name = "QL chi tiết tiện nghi", foreColor = "#FFF08033", kind_Icon = "Fridge" });
-                listMenu.Add(new ItemMenuMainWindow() { name = "Thống kê", foreColor = "#FF0069C1", kind_Icon = "ChartAreaspline" });
-            }
-            else if(CapDoQuyen == 2)
-            {
-                listMenu.Add(new ItemMenuMainWindow() { name = "Trang Chủ", foreColor = "Gray", kind_Icon = "Home" });
-                listMenu.Add(new ItemMenuMainWindow() { name = "Phòng", foreColor = "#FFF08033", kind_Icon = "HomeCity" });
-                listMenu.Add(new ItemMenuMainWindow() { name = "Đặt Phòng", foreColor = "Green", kind_Icon = "BookAccount" });
-                listMenu.Add(new ItemMenuMainWindow() { name = "Hóa đơn", foreColor = "#FFD41515", kind_Icon = "Receipt" });
-            }
+		#region method
+		public event PropertyChangedEventHandler PropertyChanged;
+		protected virtual void OnPropertyChanged(string newName)
+		{
+			if (PropertyChanged != null)
+			{
+				PropertyChanged(this, new PropertyChangedEventArgs(newName));
+			}
+		}
+		private void initListViewMenu()
+		{
+			listMenu = new List<ItemMenuMainWindow>();
+			//Khoi tao Menu
+			if (CapDoQuyen == 1)
+			{
+				listMenu.Add(new ItemMenuMainWindow() { name = "Trang Chủ", foreColor = "Gray", kind_Icon = "Home" });
+				listMenu.Add(new ItemMenuMainWindow() { name = "Phòng", foreColor = "#FFF08033", kind_Icon = "HomeCity" });
+				listMenu.Add(new ItemMenuMainWindow() { name = "Đặt Phòng", foreColor = "Green", kind_Icon = "BookAccount" });
+				listMenu.Add(new ItemMenuMainWindow() { name = "Hóa đơn", foreColor = "#FFD41515", kind_Icon = "Receipt" });
+				listMenu.Add(new ItemMenuMainWindow() { name = "QL nhân Viên", foreColor = "#FFD41515", kind_Icon = "Account" });
+				listMenu.Add(new ItemMenuMainWindow() { name = "QL khách hàng", foreColor = "#FFD41515", kind_Icon = "Account" });
+				listMenu.Add(new ItemMenuMainWindow() { name = "QL phòng", foreColor = "#FFE6A701", kind_Icon = "StarCircle" });
+				listMenu.Add(new ItemMenuMainWindow() { name = "QL loại phòng", foreColor = "#FFE6A701", kind_Icon = "StarCircle" });
+				listMenu.Add(new ItemMenuMainWindow() { name = "QL dịch vụ", foreColor = "Blue", kind_Icon = "FaceAgent" });
+				listMenu.Add(new ItemMenuMainWindow() { name = "QL loại dịch vụ", foreColor = "Blue", kind_Icon = "FaceAgent" });
+				listMenu.Add(new ItemMenuMainWindow() { name = "QL tiện nghi", foreColor = "#FFF08033", kind_Icon = "Fridge" });
+				listMenu.Add(new ItemMenuMainWindow() { name = "QL chi tiết tiện nghi", foreColor = "#FFF08033", kind_Icon = "Fridge" });
+				listMenu.Add(new ItemMenuMainWindow() { name = "Thống kê", foreColor = "#FF0069C1", kind_Icon = "ChartAreaspline" });
+			}
+			else if (CapDoQuyen == 2)
+			{
+				listMenu.Add(new ItemMenuMainWindow() { name = "Trang Chủ", foreColor = "Gray", kind_Icon = "Home" });
+				listMenu.Add(new ItemMenuMainWindow() { name = "Phòng", foreColor = "#FFF08033", kind_Icon = "HomeCity" });
+				listMenu.Add(new ItemMenuMainWindow() { name = "Đặt Phòng", foreColor = "Green", kind_Icon = "BookAccount" });
+				listMenu.Add(new ItemMenuMainWindow() { name = "Hóa đơn", foreColor = "#FFD41515", kind_Icon = "Receipt" });
+			}
 
-            lisviewMenu.ItemsSource = listMenu;
-            lisviewMenu.SelectedValuePath = "name";
-            Title_Main = "Trang Chủ";
-        }
+			lisviewMenu.ItemsSource = listMenu;
+			lisviewMenu.SelectedValuePath = "name";
+			Title_Main = "Trang Chủ";
+		}
 		#endregion
 
 		#region event
@@ -146,22 +146,31 @@ namespace GUI.View
 
 			if (taiKhoan.Avatar == null || taiKhoan.Avatar.Length == 0)
 			{
-				// Nếu avatar trống, hiển thị hình ảnh mặc định
-				Uri uri = new Uri("pack://application:,,,/Res/mountains.jpg");
-				ImageBrush imageBrush = new ImageBrush(new BitmapImage(uri));
-				imgAvatar.Fill = imageBrush;
+				try
+				{
+					// Sử dụng đúng đường dẫn cho ảnh mặc định
+					Uri uri = new Uri("pack://application:,,,/GUI;component/Res/mountains.jpg", UriKind.Absolute);
+					ImageBrush imageBrush = new ImageBrush(new BitmapImage(uri));
+					imgAvatar.Fill = imageBrush;
+				}
+				catch (Exception ex)
+				{
+					new DialogCustoms("Không thể tải ảnh mặc định: " + ex.Message, "Thông báo", DialogCustoms.OK).ShowDialog();
+				}
 			}
 			else
 			{
-				// Nếu avatar có, chuyển đổi mảng byte thành hình ảnh và hiển thị
+				// Hiển thị ảnh từ mảng byte
 				try
 				{
 					using (MemoryStream ms = new MemoryStream(taiKhoan.Avatar))
 					{
 						BitmapImage bitmapImage = new BitmapImage();
 						bitmapImage.BeginInit();
+						bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
 						bitmapImage.StreamSource = ms;
 						bitmapImage.EndInit();
+						bitmapImage.Freeze();
 						ImageBrush imageBrush = new ImageBrush(bitmapImage);
 						imgAvatar.Fill = imageBrush;
 					}
@@ -177,148 +186,162 @@ namespace GUI.View
 
 
 		private void lisviewMenu_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (lisviewMenu.SelectedValue != null)
-            {
-                switch (lisviewMenu.SelectedIndex)
-                {
-                    case 0:
-                        //Đang là Home rồi thì không set nữa
-                        if (Title_Main.Equals(lisviewMenu.SelectedValue.ToString()))
-                        {
-                            break;
-                        }
-                        contenDisplayMain.Content = Home;
-                        break;
-                    case 1:
-                        if (Phong_UC == null)
-                        {
-                            Phong_UC = new uc_Phong(MaNV);
-                        }
-                        contenDisplayMain.Content = Phong_UC;
-                        break;
-                    case 2:
-                        if (ThuePhong_UC == null)
-                        {
-                            ThuePhong_UC = new uc_PhieuThue(MaNV);
-                        }
-                        contenDisplayMain.Content = ThuePhong_UC;
-                        break;
-                    case 3:
-                        if (HoaDon_UC == null)
-                        {
-                            HoaDon_UC = new uc_HoaDon();
-                        }
-                        contenDisplayMain.Content = HoaDon_UC;
-                        break;
-                    case 4:
-                        if (NhanVien_UC == null)
-                        {
-                            NhanVien_UC = new uc_NhanVien();
-                        }
-                        contenDisplayMain.Content = NhanVien_UC;
-                        break;
-                    case 5:
-                        if (QuanLyKhachHang_UC == null)
-                        {
-                            QuanLyKhachHang_UC = new uc_QuanLyKhachHang();
-                        }
-                        contenDisplayMain.Content = QuanLyKhachHang_UC;
-                        break;
-                    case 6:
-                        if(QuanLyPhong_UC == null)
-                        {
-                            QuanLyPhong_UC = new uc_QuanLyPhong();
-                        }
-                        contenDisplayMain.Content = QuanLyPhong_UC;
-                        break;
-                    case 7:
-                        if(QuanLyLoaiPhong_UC == null)
-                        {
-                            QuanLyLoaiPhong_UC = new uc_QuanLyLoaiPhong();
-                        }
-                        contenDisplayMain.Content = QuanLyLoaiPhong_UC;
-                        break;
-                    case 8:
-                        if (QuanLyDichVu_UC == null)
-                        {
-                            QuanLyDichVu_UC = new uc_QuanLyDichVu();
-                        }
-                        contenDisplayMain.Content = QuanLyDichVu_UC;
-                        break;
-                    case 9:
-                        if (QuanLyLoaiDichVu_UC == null)
-                        {
-                            QuanLyLoaiDichVu_UC = new uc_QuanLyLoaiDichVu();
-                        }
-                        contenDisplayMain.Content = QuanLyLoaiDichVu_UC;
-                        break;
-                    case 10:
-                        if (QuanLyTienNghi_UC == null)
-                        {
-                            QuanLyTienNghi_UC = new uc_QuanLyTienNghi();
-                        }
-                        contenDisplayMain.Content = QuanLyTienNghi_UC;
-                        break;
-                    case 11:
-                        if (QuanLyChiTietTienNghi_UC == null)
-                        {
-                            QuanLyChiTietTienNghi_UC = new uc_QuanLyChiTietTienNghi();
-                        }
-                        contenDisplayMain.Content = QuanLyChiTietTienNghi_UC;
-                        break;
-                    case 12:
-                        if (ThongKe_UC == null)
-                        {
-                            ThongKe_UC = new uc_ThongKe();
-                        }
-                        contenDisplayMain.Content = ThongKe_UC;
-                        break;
-                }
-                Title_Main = lisviewMenu.SelectedValue.ToString();
-                //Tự động hóa việc click Button toggleBtnMenu_Close
-                btnCloseLVMenu.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            }
-        }
+		{
+			if (lisviewMenu.SelectedValue != null)
+			{
+				switch (lisviewMenu.SelectedIndex)
+				{
+					case 0:
+						//Đang là Home rồi thì không set nữa
+						if (Title_Main.Equals(lisviewMenu.SelectedValue.ToString()))
+						{
+							break;
+						}
+						contenDisplayMain.Content = Home;
+						break;
+					case 1:
+						if (Phong_UC == null)
+						{
+							Phong_UC = new uc_Phong(MaNV);
+						}
+						contenDisplayMain.Content = Phong_UC;
+						break;
+					case 2:
+						if (ThuePhong_UC == null)
+						{
+							ThuePhong_UC = new uc_PhieuThue(MaNV);
+						}
+						contenDisplayMain.Content = ThuePhong_UC;
+						break;
+					case 3:
+						if (HoaDon_UC == null)
+						{
+							HoaDon_UC = new uc_HoaDon();
+						}
+						contenDisplayMain.Content = HoaDon_UC;
+						break;
+					case 4:
+						if (NhanVien_UC == null)
+						{
+							NhanVien_UC = new uc_NhanVien();
+						}
+						contenDisplayMain.Content = NhanVien_UC;
+						break;
+					case 5:
+						if (QuanLyKhachHang_UC == null)
+						{
+							QuanLyKhachHang_UC = new uc_QuanLyKhachHang();
+						}
+						contenDisplayMain.Content = QuanLyKhachHang_UC;
+						break;
+					case 6:
+						if (QuanLyPhong_UC == null)
+						{
+							QuanLyPhong_UC = new uc_QuanLyPhong();
+						}
+						contenDisplayMain.Content = QuanLyPhong_UC;
+						break;
+					case 7:
+						if (QuanLyLoaiPhong_UC == null)
+						{
+							QuanLyLoaiPhong_UC = new uc_QuanLyLoaiPhong();
+						}
+						contenDisplayMain.Content = QuanLyLoaiPhong_UC;
+						break;
+					case 8:
+						if (QuanLyDichVu_UC == null)
+						{
+							QuanLyDichVu_UC = new uc_QuanLyDichVu();
+						}
+						contenDisplayMain.Content = QuanLyDichVu_UC;
+						break;
+					case 9:
+						if (QuanLyLoaiDichVu_UC == null)
+						{
+							QuanLyLoaiDichVu_UC = new uc_QuanLyLoaiDichVu();
+						}
+						contenDisplayMain.Content = QuanLyLoaiDichVu_UC;
+						break;
+					case 10:
+						if (QuanLyTienNghi_UC == null)
+						{
+							QuanLyTienNghi_UC = new uc_QuanLyTienNghi();
+						}
+						contenDisplayMain.Content = QuanLyTienNghi_UC;
+						break;
+					case 11:
+						if (QuanLyChiTietTienNghi_UC == null)
+						{
+							QuanLyChiTietTienNghi_UC = new uc_QuanLyChiTietTienNghi();
+						}
+						contenDisplayMain.Content = QuanLyChiTietTienNghi_UC;
+						break;
+					case 12:
+						if (ThongKe_UC == null)
+						{
+							ThongKe_UC = new uc_ThongKe();
+						}
+						contenDisplayMain.Content = ThongKe_UC;
+						break;
+				}
+				Title_Main = lisviewMenu.SelectedValue.ToString();
+				//Tự động hóa việc click Button toggleBtnMenu_Close
+				btnCloseLVMenu.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+			}
+		}
 		#endregion
 
 		private void click_ThayDoiAnh(object sender, RoutedEventArgs e)
 		{
-			OpenFileDialog openFile = new OpenFileDialog();
-			openFile.Filter = "Pictures files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)|*.jpg; *.jpeg; *.jpe; *.jfif; *.png";
-			openFile.FilterIndex = 1;
-			openFile.RestoreDirectory = true;
+			OpenFileDialog openFile = new OpenFileDialog
+			{
+				Filter = "Pictures files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)|*.jpg; *.jpeg; *.jpe; *.jfif; *.png",
+				FilterIndex = 1,
+				RestoreDirectory = true
+			};
 
 			if (openFile.ShowDialog() == true)
 			{
 				try
 				{
-					// Đọc hình ảnh từ file đã chọn
+					// Đọc file ảnh đã chọn
 					string sourceFile = openFile.FileName;
-					System.Drawing.Image image = System.Drawing.Image.FromFile(sourceFile);  // Chuyển file hình ảnh thành đối tượng Image
 
 					// Chuyển đổi ảnh thành mảng byte
-					byte[] avatarBytes = TaiKhoanDAL.GetInstance().ConvertImageToByteArray(image);
+					byte[] avatarBytes;
+					using (FileStream fs = new FileStream(sourceFile, FileMode.Open, FileAccess.Read))
+					{
+						using (MemoryStream ms = new MemoryStream())
+						{
+							fs.CopyTo(ms);
+							avatarBytes = ms.ToArray();
+						}
+					}
 
-					// Gán ảnh vào giao diện
-					Uri uri = new Uri(sourceFile); // Lấy đường dẫn của ảnh
-					ImageBrush imageBrush = new ImageBrush(new BitmapImage(uri));
+					// Hiển thị ảnh lên giao diện
+					BitmapImage bitmap = new BitmapImage();
+					bitmap.BeginInit();
+					bitmap.UriSource = new Uri(sourceFile, UriKind.Absolute);
+					bitmap.CacheOption = BitmapCacheOption.OnLoad;
+					bitmap.EndInit();
+
+					ImageBrush imageBrush = new ImageBrush(bitmap);
 					imgAvatar.Fill = imageBrush;
 
-					// Cập nhật mảng byte của avatar vào cơ sở dữ liệu
+					// Cập nhật avatar vào cơ sở dữ liệu
 					string error;
 					if (!TaiKhoanBUS.GetInstance().capNhatAvatar(taiKhoan.Username, avatarBytes, out error))
 					{
-						new DialogCustoms("Thay đổi ảnh đại diện thất bại !\n Lỗi: " + error, "Thông báo", DialogCustoms.OK).ShowDialog();
+						new DialogCustoms($"Thay đổi ảnh đại diện thất bại!\nLỗi: {error}", "Thông báo", DialogCustoms.OK).ShowDialog();
 					}
 					else
 					{
-						new DialogCustoms("Thay đổi ảnh đại diện thành công !", "Thông báo", DialogCustoms.OK).ShowDialog();
+						new DialogCustoms("Thay đổi ảnh đại diện thành công!", "Thông báo", DialogCustoms.OK).ShowDialog();
 					}
 				}
 				catch (Exception ex)
 				{
-					new DialogCustoms("Lỗi: " + ex.Message, "Thông báo", DialogCustoms.OK).ShowDialog();
+					new DialogCustoms($"Lỗi: {ex.Message}", "Thông báo", DialogCustoms.OK).ShowDialog();
 				}
 			}
 		}

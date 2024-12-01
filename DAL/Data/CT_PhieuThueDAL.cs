@@ -2,31 +2,26 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace DAL.Data
 {
-    public class CT_PhieuThueDAL
-    {
-        private static CT_PhieuThueDAL Instance;
+	public class CT_PhieuThueDAL
+	{
+		private static CT_PhieuThueDAL Instance;
 
-        private CT_PhieuThueDAL()
-        {
+		private CT_PhieuThueDAL() { }
 
-        }
+		public static CT_PhieuThueDAL GetInstance()
+		{
+			if (Instance == null)
+			{
+				Instance = new CT_PhieuThueDAL();
+			}
+			return Instance;
+		}
 
-        public static CT_PhieuThueDAL GetInstance()
-        {
-            if (Instance == null)
-            {
-                Instance = new CT_PhieuThueDAL();
-            }
-            return Instance;
-        }
-
+		// Thêm chi tiết phiếu thuê
 		public bool addCTPhieuThue(CT_PhieuThue ctpt, out string error)
 		{
 			error = string.Empty;
@@ -34,11 +29,11 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "INSERT INTO CT_PhieuThue (MaCTPT, MaPhieuThue, TinhTrangThue) " +
 								   "VALUES (@MaCTPT, @MaPhieuThue, @TinhTrangThue)";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaCTPT", ctpt.MaCTPT);
 					cmd.Parameters.AddWithValue("@MaPhieuThue", ctpt.MaPhieuThue);
 					cmd.Parameters.AddWithValue("@TinhTrangThue", ctpt.TinhTrangThue);
@@ -55,7 +50,7 @@ namespace DAL.Data
 			}
 		}
 
-
+		// Sửa trạng thái thuê phòng
 		public bool suaTinhTrangThuePhong(int? maCTPT, string tinhtrangthuephong, out string error)
 		{
 			error = string.Empty;
@@ -69,10 +64,10 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "UPDATE CT_PhieuThue SET TinhTrangThue = @TinhTrangThue WHERE MaCTPT = @MaCTPT";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TinhTrangThue", tinhtrangthuephong);
 					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
 
@@ -93,7 +88,7 @@ namespace DAL.Data
 			}
 		}
 
-
+		// Lấy danh sách phiếu thuê theo mã phiếu thuê
 		public List<CT_PhieuThue> getPhieuThueTheoMaPT(int maPT)
 		{
 			List<CT_PhieuThue> ls = new List<CT_PhieuThue>();
@@ -101,14 +96,14 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "SELECT * FROM CT_PhieuThue WHERE MaPhieuThue = @MaPhieuThue";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaPhieuThue", maPT);
 
 					conn.Open();
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
@@ -125,27 +120,26 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				// Ghi log hoặc xử lý lỗi nếu cần
 				Console.WriteLine(ex.Message);
 			}
 			return ls;
 		}
 
-		// Cập nhật số tiền phòng và ngày trả thực tế
+		// Cập nhật tiền phòng và ngày trả thực tế
 		public bool capNhatTienVaNgayTraThucTe(int? maCTPT, decimal? tienPhong, DateTime now, out string errorCapNhatCTPT)
 		{
 			errorCapNhatCTPT = string.Empty;
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					// Câu truy vấn cập nhật tiền phòng và ngày trả thực tế
 					string query = "UPDATE CT_PhieuThue " +
 								   "SET TienPhong = @TienPhong, NgayTraThucTe = @NgayTraThucTe " +
 								   "WHERE MaCTPT = @MaCTPT";
 
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
 					cmd.Parameters.AddWithValue("@TienPhong", tienPhong);
 					cmd.Parameters.AddWithValue("@NgayTraThucTe", now);
@@ -163,7 +157,6 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				// Xử lý lỗi và ghi thông báo lỗi
 				errorCapNhatCTPT = ex.Message;
 				return false;
 			}
