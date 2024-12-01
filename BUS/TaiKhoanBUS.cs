@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL.DTO;
 using DAL.Data;
+using System.Windows;
 
 namespace BUS
 {
@@ -26,13 +27,25 @@ namespace BUS
             }
             return Instance;
         }
-        public TaiKhoan kiemTraTKTonTaiKhong(string username, string pass)
-        {
-            string matKhau = MD5_HashBUS.GetInstance().HashMatKhauThanhMD5(pass);
+		public TaiKhoan kiemTraTKTonTaiKhong(string username, string pass)
+		{
+			MessageBox.Show("Dữ liệu đã được tải thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+			// Lấy tài khoản từ cơ sở dữ liệu theo username
+			TaiKhoan taiKhoan = TaiKhoanDAL.GetInstance().layTaiKhoanTheoUsername(username);
+			MessageBox.Show("Tài Khoản: " +taiKhoan.Username.ToString(), "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+			if (taiKhoan == null)
+			{
+				// Không tồn tại tài khoản
+				return null;
+			}
 
-            return TaiKhoanDAL.GetInstance().layTaiKhoanTuDataBase(username, matKhau);
-        }
-        public bool capNhatAvatar(string username,byte[] avatar, out string error)
+			// Kiểm tra mật khẩu nhập vào có khớp với hash trong cơ sở dữ liệu
+			bool isPasswordMatch = Bcrypt_HashBUS.GetInstance().VerifyMatKhau(pass, taiKhoan.Password);
+
+			return isPasswordMatch ? taiKhoan : null;
+		}
+
+		public bool capNhatAvatar(string username,byte[] avatar, out string error)
         {
             return TaiKhoanDAL.GetInstance().capNhatAvatar( username , avatar, out error);
         }
