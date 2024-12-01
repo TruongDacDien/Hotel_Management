@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
 using System.Drawing;
+using MySql.Data.MySqlClient;
 
 namespace DAL.Data
 {
@@ -44,29 +45,28 @@ namespace DAL.Data
 		}
 		*/
 
-		public TaiKhoan layTaiKhoanTuDataBase(string username, string pass)
+		public TaiKhoan layTaiKhoanTheoUsername(string username)
 		{
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					// Truy vấn kết hợp để lấy thông tin tài khoản và nhân viên
+					// Truy vấn lấy tài khoản theo username
 					string query = @"
                 SELECT 
                     tk.username, tk.password, tk.maNV, tk.capDoQuyen, tk.avatar,
-                    nv.hoTen, nv.chucVu, nv.sDT, nv.diaChi, nv.cCCD, nv.nTNS, nv.gioiTinh, nv.luong, nv.maTK
+                    nv.hoTen, nv.chucVu, nv.sDT, nv.diaChi, nv.cCCD, nv.nTNS, nv.gioiTinh, nv.luong
                 FROM TaiKhoan tk
                 LEFT JOIN NhanVien nv ON tk.maNV = nv.maNV
-                WHERE tk.username = @Username AND tk.password = @Password";
+                WHERE tk.username = @Username";
 
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@Username", username);
-					cmd.Parameters.AddWithValue("@Password", pass);
 
 					conn.Open();
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						if (reader.Read())
 						{
@@ -77,7 +77,7 @@ namespace DAL.Data
 							return new TaiKhoan
 							{
 								Username = reader.GetString(reader.GetOrdinal("username")),
-								Password = reader.GetString(reader.GetOrdinal("password")),
+								Password = reader.GetString(reader.GetOrdinal("password")), // Hash mật khẩu
 								MaNV = reader.GetInt32(reader.GetOrdinal("maNV")),
 								CapDoQuyen = reader.GetInt32(reader.GetOrdinal("capDoQuyen")),
 								Avatar = avatarBytes,
