@@ -2,10 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace DAL.Data
 {
@@ -32,13 +29,13 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "SELECT * FROM LoaiDichVu";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
@@ -64,13 +61,13 @@ namespace DAL.Data
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
                         INSERT INTO LoaiDichVu (TenLoaiDV)
                         VALUES (@TenLoaiDV)";
 
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenLoaiDV", loaiDV.TenLoaiDV);
 
 					conn.Open();
@@ -92,10 +89,10 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "DELETE FROM LoaiDichVu WHERE MaLoaiDV = @MaLoaiDV";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaLoaiDV", loaiDV.MaLoaiDV);
 
 					conn.Open();
@@ -116,14 +113,14 @@ namespace DAL.Data
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
                         UPDATE LoaiDichVu 
                         SET TenLoaiDV = @TenLoaiDV
                         WHERE MaLoaiDV = @MaLoaiDV";
 
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenLoaiDV", loaiDV.TenLoaiDV);
 					cmd.Parameters.AddWithValue("@MaLoaiDV", loaiDV.MaLoaiDV);
 
@@ -147,14 +144,14 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "SELECT COUNT(*) FROM LoaiDichVu WHERE TenLoaiDV = @TenLoaiDV";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenLoaiDV", loaiDV.TenLoaiDV);
 
 					conn.Open();
-					int count = (int)cmd.ExecuteScalar();
+					int count = Convert.ToInt32(cmd.ExecuteScalar());
 					if (count > 0)
 					{
 						isExist = true;

@@ -1,16 +1,13 @@
 ﻿using DAL.DTO;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Data
 {
-    public class HoaDonDAL
-    {
+	public class HoaDonDAL
+	{
 		private static HoaDonDAL Instance;
 
 		private HoaDonDAL() { }
@@ -32,37 +29,33 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					// Truy vấn kết hợp lấy đầy đủ các trường từ các bảng liên quan
 					string query = @"
-                SELECT 
-                    hd.MaHD, hd.MaNV, hd.MaCTPT, hd.NgayLap, hd.TongTien,
-                    nv.MaNV AS NV_MaNV, nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, 
-                    nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong, nv.MaTK,
-                    ctpt.MaCTPT, ctpt.MaPhieuThue, ctpt.SoPhong, ctpt.NgayBD, 
-                    ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong, ctpt.NgayTraThucTe
-                FROM HoaDon hd
-                LEFT JOIN NhanVien nv ON hd.MaNV = nv.MaNV
-                LEFT JOIN CT_PhieuThue ctpt ON hd.MaCTPT = ctpt.MaCTPT";
+                        SELECT 
+                            hd.MaHD, hd.MaNV, hd.MaCTPT, hd.NgayLap, hd.TongTien,
+                            nv.MaNV AS NV_MaNV, nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, 
+                            nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong, nv.MaTK,
+                            ctpt.MaCTPT, ctpt.MaPhieuThue, ctpt.SoPhong, ctpt.NgayBD, 
+                            ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong, ctpt.NgayTraThucTe
+                        FROM HoaDon hd
+                        LEFT JOIN NhanVien nv ON hd.MaNV = nv.MaNV
+                        LEFT JOIN CT_PhieuThue ctpt ON hd.MaCTPT = ctpt.MaCTPT";
 
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
 							HoaDonDTO hoaDon = new HoaDonDTO
 							{
-								// Gán thông tin từ bảng HoaDon
 								MaHD = reader.GetInt32(reader.GetOrdinal("MaHD")),
 								MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
 								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("MaCTPT")),
 								NgayLap = reader.GetDateTime(reader.GetOrdinal("NgayLap")),
 								TongTien = reader.GetDecimal(reader.GetOrdinal("TongTien")),
-
-								// Gán thông tin từ bảng NhanVien
 								NhanVien = new NhanVien
 								{
 									MaNV = reader.GetInt32(reader.GetOrdinal("NV_MaNV")),
@@ -75,8 +68,6 @@ namespace DAL.Data
 									GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
 									Luong = reader.GetDecimal(reader.GetOrdinal("Luong")),
 								},
-
-								// Gán thông tin từ bảng CT_PhieuThue (nếu có)
 								CT_PhieuThue = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? null : new CT_PhieuThue
 								{
 									MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
@@ -98,7 +89,7 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("Lỗi: " + ex.Message); // Log lỗi nếu cần
+				Console.WriteLine("Lỗi: " + ex.Message);
 			}
 
 			return lstHoaDon;
@@ -112,28 +103,26 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					// Truy vấn kết hợp để lấy thông tin từ bảng HoaDon, NhanVien và CT_PhieuThue
 					string query = @"
-                SELECT 
-                    hd.MaHD, hd.MaNV, hd.MaCTPT, hd.NgayLap, hd.TongTien,
-                    nv.HoTen AS TenNhanVien, nv.ChucVu, nv.SDT, nv.DiaChi, nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong, nv.MaTK,
-                    ctpt.MaPhieuThue, ctpt.SoPhong, ctpt.NgayBD, ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong, ctpt.NgayTraThucTe
-                FROM HoaDon hd
-                LEFT JOIN NhanVien nv ON hd.MaNV = nv.MaNV
-                LEFT JOIN CT_PhieuThue ctpt ON hd.MaCTPT = ctpt.MaCTPT
-                WHERE hd.MaHD = @MaHD";
+                        SELECT 
+                            hd.MaHD, hd.MaNV, hd.MaCTPT, hd.NgayLap, hd.TongTien,
+                            nv.HoTen AS TenNhanVien, nv.ChucVu, nv.SDT, nv.DiaChi, nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong, nv.MaTK,
+                            ctpt.MaPhieuThue, ctpt.SoPhong, ctpt.NgayBD, ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong, ctpt.NgayTraThucTe
+                        FROM HoaDon hd
+                        LEFT JOIN NhanVien nv ON hd.MaNV = nv.MaNV
+                        LEFT JOIN CT_PhieuThue ctpt ON hd.MaCTPT = ctpt.MaCTPT
+                        WHERE hd.MaHD = @MaHD";
 
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaHD", mahd);
 					conn.Open();
 
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						if (reader.Read())
 						{
-							// Khởi tạo HoaDon
 							hoaDon = new HoaDon
 							{
 								MaHD = reader.GetInt32(reader.GetOrdinal("MaHD")),
@@ -141,7 +130,6 @@ namespace DAL.Data
 								MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
 								NgayLap = reader.GetDateTime(reader.GetOrdinal("NgayLap")),
 								TongTien = reader.GetDecimal(reader.GetOrdinal("TongTien")),
-								// Lấy thông tin NhanVien
 								NhanVien = new NhanVien
 								{
 									MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
@@ -154,7 +142,6 @@ namespace DAL.Data
 									GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
 									Luong = reader.GetDecimal(reader.GetOrdinal("Luong")),
 								},
-								// Lấy thông tin CT_PhieuThue (nếu có)
 								CT_PhieuThue = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? null : new CT_PhieuThue
 								{
 									MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
@@ -174,7 +161,7 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("Lỗi: " + ex.Message); // Log lỗi nếu cần
+				Console.WriteLine("Lỗi: " + ex.Message);
 			}
 
 			return hoaDon;
@@ -188,12 +175,12 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
                         INSERT INTO HoaDon (MaHD, MaPhieuThue, NgayLap, TongTien)
                         VALUES (@MaHD, @MaPhieuThue, @NgayLap, @TongTien)";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 
 					cmd.Parameters.AddWithValue("@MaHD", hd.MaHD);
 					cmd.Parameters.AddWithValue("@MaPhieuThue", hd.MaCTPT);

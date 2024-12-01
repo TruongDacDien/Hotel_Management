@@ -2,10 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace DAL.Data
 {
@@ -30,13 +27,13 @@ namespace DAL.Data
 			List<TienNghi> tienNghiList = new List<TienNghi>();
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
-			using (SqlConnection conn = new SqlConnection(connectionString))
+			using (MySqlConnection conn = new MySqlConnection(connectionString))
 			{
 				string query = "SELECT * FROM TienNghi";
-				SqlCommand cmd = new SqlCommand(query, conn);
+				MySqlCommand cmd = new MySqlCommand(query, conn);
 				conn.Open();
 
-				using (SqlDataReader reader = cmd.ExecuteReader())
+				using (MySqlDataReader reader = cmd.ExecuteReader())
 				{
 					while (reader.Read())
 					{
@@ -58,10 +55,10 @@ namespace DAL.Data
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "INSERT INTO TienNghi (TenTN) VALUES (@TenTN)";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenTN", tn.TenTN);
 
 					conn.Open();
@@ -81,10 +78,10 @@ namespace DAL.Data
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "DELETE FROM TienNghi WHERE MaTN = @MaTN";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaTN", tn.MaTN);
 
 					conn.Open();
@@ -104,10 +101,10 @@ namespace DAL.Data
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "UPDATE TienNghi SET TenTN = @TenTN WHERE MaTN = @MaTN";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenTN", tn.TenTN);
 					cmd.Parameters.AddWithValue("@MaTN", tn.MaTN);
 
@@ -128,14 +125,14 @@ namespace DAL.Data
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "SELECT COUNT(*) FROM TienNghi WHERE TenTN = @TenTN";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenTN", tn.TenTN);
 
 					conn.Open();
-					int count = (int)cmd.ExecuteScalar();
+					int count = Convert.ToInt32(cmd.ExecuteScalar());
 					return count > 0;
 				}
 			}

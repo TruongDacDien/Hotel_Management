@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 using DAL.DTO;
-
 
 namespace DAL.Data
 {
@@ -33,13 +29,13 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "SELECT * FROM NhanVien";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 
 					conn.Open();
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
@@ -74,13 +70,13 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
                         INSERT INTO NhanVien (HoTen, ChucVu, SDT, DiaChi, CCCD, NTNS, GioiTinh, Luong)
                         VALUES (@HoTen, @ChucVu, @SDT, @DiaChi, @CCCD, @NTNS, @GioiTinh, @Luong)";
 
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@HoTen", nv.HoTen);
 					cmd.Parameters.AddWithValue("@ChucVu", nv.ChucVu);
 					cmd.Parameters.AddWithValue("@SDT", nv.SDT);
@@ -109,7 +105,7 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
                         UPDATE NhanVien
@@ -117,7 +113,7 @@ namespace DAL.Data
                             CCCD = @CCCD, NTNS = @NTNS, GioiTinh = @GioiTinh, Luong = @Luong
                         WHERE MaNV = @MaNV";
 
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaNV", nv.MaNV);
 					cmd.Parameters.AddWithValue("@HoTen", nv.HoTen);
 					cmd.Parameters.AddWithValue("@ChucVu", nv.ChucVu);
@@ -147,11 +143,11 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "DELETE FROM NhanVien WHERE MaNV = @MaNV";
 
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaNV", nv.MaNV);
 					conn.Open();
 					cmd.ExecuteNonQuery();
@@ -173,14 +169,14 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "SELECT * FROM NhanVien WHERE MaNV = @MaNV";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaNV", maNV);
 
 					conn.Open();
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						if (reader.Read())
 						{

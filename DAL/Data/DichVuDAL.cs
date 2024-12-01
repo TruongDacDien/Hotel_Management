@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 using DAL.DTO;
 
 namespace DAL.Data
@@ -32,7 +29,7 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
                         SELECT 
@@ -40,10 +37,10 @@ namespace DAL.Data
                         FROM DichVu dv
                         INNER JOIN LoaiDV ldv ON dv.MaLoaiDV = ldv.MaLoaiDV";
 
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
@@ -73,13 +70,13 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "SELECT TenLoaiDV FROM LoaiDV";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
@@ -103,13 +100,13 @@ namespace DAL.Data
 
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "SELECT MaDV, TenDV, MaLoaiDV, Gia FROM DichVu";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
-					using (SqlDataReader reader = cmd.ExecuteReader())
+					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
@@ -131,17 +128,16 @@ namespace DAL.Data
 			return lsDichVu;
 		}
 
-
 		// Thêm dịch vụ
 		public bool addDichVu(DichVu dv)
 		{
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "INSERT INTO DichVu (TenDV, MaLoaiDV, Gia) VALUES (@TenDV, @MaLoaiDV, @Gia)";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenDV", dv.TenDV);
 					cmd.Parameters.AddWithValue("@MaLoaiDV", dv.MaLoaiDV);
 					cmd.Parameters.AddWithValue("@Gia", dv.Gia);
@@ -164,10 +160,10 @@ namespace DAL.Data
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "UPDATE DichVu SET TenDV = @TenDV, MaLoaiDV = @MaLoaiDV, Gia = @Gia WHERE MaDV = @MaDV";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaDV", dv.MaDV);
 					cmd.Parameters.AddWithValue("@TenDV", dv.TenDV);
 					cmd.Parameters.AddWithValue("@MaLoaiDV", dv.MaLoaiDV);
@@ -191,10 +187,10 @@ namespace DAL.Data
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "DELETE FROM DichVu WHERE MaDV = @MaDV";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaDV", dv.MaDV);
 
 					conn.Open();
@@ -215,14 +211,14 @@ namespace DAL.Data
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (SqlConnection conn = new SqlConnection(connectionString))
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = "SELECT COUNT(*) FROM DichVu WHERE TenDV = @TenDV";
-					SqlCommand cmd = new SqlCommand(query, conn);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenDV", dv.TenDV);
 
 					conn.Open();
-					int count = (int)cmd.ExecuteScalar();
+					int count = Convert.ToInt32(cmd.ExecuteScalar());
 					return count > 0; // Trả về true nếu tên dịch vụ đã tồn tại
 				}
 			}
