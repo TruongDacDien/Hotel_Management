@@ -29,10 +29,8 @@ namespace BUS
         }
 		public TaiKhoan kiemTraTKTonTaiKhong(string username, string pass)
 		{
-			MessageBox.Show("Dữ liệu đã được tải thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
 			// Lấy tài khoản từ cơ sở dữ liệu theo username
 			TaiKhoan taiKhoan = TaiKhoanDAL.GetInstance().layTaiKhoanTheoUsername(username);
-			MessageBox.Show("Tài Khoản: " +taiKhoan.Username.ToString(), "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
 			if (taiKhoan == null)
 			{
 				// Không tồn tại tài khoản
