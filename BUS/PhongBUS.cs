@@ -39,7 +39,7 @@ namespace BUS
         public decimal? tinhTienPhong(Phong_Custom phong)
         {
             decimal? tienPhong;
-            tienPhong = PhongDAL.GetInstance().layGiaTienTheoMaPhong(phong);
+            tienPhong = PhongDAL.GetInstance().layGiaTienTheoMaPhong(phong.MaPhong, phong.IsDay);
             if(phong.IsDay== true)
             {
                 return phong.SoNgayO * tienPhong;
@@ -51,7 +51,7 @@ namespace BUS
         }
         public decimal layTienPhongTheoSoPhong(Phong_Custom phong)
         {
-            return PhongDAL.GetInstance().layGiaTienTheoMaPhong(phong);
+            return PhongDAL.GetInstance().layGiaTienTheoMaPhong(phong.MaPhong, phong.IsDay);
         }
 
         public bool suaTinhTrangDonDep(string maPhong, string text, out string error)
