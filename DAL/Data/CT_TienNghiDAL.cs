@@ -33,26 +33,22 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = @"SELECT CT.MaCTTN, CT.SoPhong, CT.SL, TN.TenTN 
+					string query = @"SELECT CT.MaCTTN, CT.SoPhong, CT.SL, TN.TenTN, CT.MaTN
 									FROM CT_TienNghi CT
 									JOIN TienNghi TN ON CT.MaTN = TN.MaTN";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
-                    Console.WriteLine($"Query: {query}");
                     conn.Open();
 
 					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
-						if (!reader.HasRows)
-						{
-							Console.WriteLine("Không có dòng nào được trả về từ truy vấn.");
-						}
 					
                         while (reader.Read())
 						{
-                            Console.WriteLine($"Dòng dữ liệu: MaCTTN={reader["MaCTTN"]}, SoPhong={reader["SoPhong"]}, SL={reader["SL"]}, TenTN={reader["TenTN"]}");
+                          
                             CT_TienNghiDTO ctTienNghi = new CT_TienNghiDTO
 							{
 								MaCTTN = reader.GetInt32(reader.GetOrdinal("MaCTTN")),
+								MaTN = reader.GetInt32(reader.GetOrdinal("MaTN")),
 								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
 								SL = reader.GetInt32(reader.GetOrdinal("SL")),
 								TenTN = reader.GetString(reader.GetOrdinal("TenTN"))
@@ -66,7 +62,6 @@ namespace DAL.Data
 			{
 				Console.WriteLine(ex.Message); // Xử lý lỗi nếu cần
 			}
-            MessageBox.Show($"Dữ liệu lấy được: {listCTTienNghi.Count}");
             return listCTTienNghi;
 		}
 
@@ -136,8 +131,8 @@ namespace DAL.Data
 					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
 					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
 					cmd.Parameters.AddWithValue("@SL", chiTietTN.SL);
-
-					conn.Open();
+                    Console.WriteLine($"MaCTTN: {chiTietTN.MaCTTN}, MaTN: {chiTietTN.MaTN}, SoPhong: {chiTietTN.SoPhong}, SL: {chiTietTN.SL}");
+                    conn.Open();
 					int rowsAffected = cmd.ExecuteNonQuery();
 
 					return rowsAffected > 0;
@@ -162,10 +157,10 @@ namespace DAL.Data
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
 					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
-
-					conn.Open();
+                    Console.WriteLine($"MaTN: {chiTietTN.MaTN}, SoPhong: {chiTietTN.SoPhong}");
+                    conn.Open();
 					int count = Convert.ToInt32(cmd.ExecuteScalar());
-
+					Console.WriteLine(count.ToString());
 					return count > 0;
 				}
 			}
