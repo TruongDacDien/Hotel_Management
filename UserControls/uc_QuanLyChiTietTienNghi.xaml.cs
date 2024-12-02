@@ -38,6 +38,7 @@ namespace GUI.UserControls
         {
             list = new ObservableCollection<CT_TienNghi>(CT_TienNghiBUS.Instance.getData());
             lsvCTTienNghi.ItemsSource = list;
+            
         }
 
 

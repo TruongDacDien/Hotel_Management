@@ -76,13 +76,13 @@
                                 </Style>
                             </GridView.ColumnHeaderContainerStyle>
 
-                            <GridViewColumn Width="190" Header="Mã chi tiết tiện nghi"  DisplayMemberBinding="{Binding MaCT}"  />
+                            <GridViewColumn Width="190" Header="Mã chi tiết tiện nghi"  DisplayMemberBinding="{Binding MaCTTN}"  />
 
                             <GridViewColumn Width="190" Header="Sô phòng" DisplayMemberBinding="{Binding SoPhong}" />
 
                             <GridViewColumn Width="180" Header="Tên tiện nghi" DisplayMemberBinding="{Binding TenTN}" />
 
-                            <GridViewColumn Width="130" Header="Số lượng" DisplayMemberBinding="{Binding SoLuong}" />
+                            <GridViewColumn Width="130" Header="Số lượng" DisplayMemberBinding="{Binding SL}" />
 
                             <GridViewColumn Width="100" Header="Sửa">
 
