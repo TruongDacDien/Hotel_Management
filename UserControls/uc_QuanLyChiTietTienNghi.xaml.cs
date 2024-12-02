@@ -52,7 +52,7 @@ namespace GUI.UserControls
 
         private void btnThemCTTienNghi_Click(object sender, RoutedEventArgs e)
         {
-            Them_SuaChiTietTienNghi ThemCTTienNghi = new Them_SuaChiTietTienNghi();
+            Them_SuaChiTietTienNghi ThemCTTienNghi = new Them_SuaChiTietTienNghi(false);
             ThemCTTienNghi.truyenCT = new Them_SuaChiTietTienNghi.truyenData(nhanData);
             ThemCTTienNghi.ShowDialog();
         }
@@ -60,7 +60,7 @@ namespace GUI.UserControls
         private void btnSuaCTTienNghi_Click(object sender, RoutedEventArgs e)
         {
             CT_TienNghiDTO ctTienNghi = (sender as Button).DataContext as CT_TienNghiDTO;
-            Them_SuaChiTietTienNghi CapNhatCTTienNghi = new Them_SuaChiTietTienNghi(ctTienNghi);
+            Them_SuaChiTietTienNghi CapNhatCTTienNghi = new Them_SuaChiTietTienNghi(true, ctTienNghi);
             CapNhatCTTienNghi.suaCT = new Them_SuaChiTietTienNghi.suaData(capNhatData);
             CapNhatCTTienNghi.ShowDialog();
         }
@@ -81,7 +81,7 @@ namespace GUI.UserControls
 
         void nhanData(CT_TienNghiDTO cT_TienNghi)
         {
-            if (CT_TienNghiBUS.Instance.KiemTraTonTai(cT_TienNghi))
+            if (!CT_TienNghiBUS.Instance.KiemTraTonTai(cT_TienNghi))
             {
                 if (CT_TienNghiBUS.Instance.addCTTienNghi(cT_TienNghi))
                 {

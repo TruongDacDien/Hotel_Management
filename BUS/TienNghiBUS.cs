@@ -44,5 +44,6 @@ namespace BUS
         {
             return TienNghiDAL.Instance.KiemTraTenTienNghi(tn);
         }
+
     }
 }
