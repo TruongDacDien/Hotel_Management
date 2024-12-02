@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using MySql.Data.MySqlClient;
+using System.Windows.Documents;
+using System.Windows;
 
 namespace DAL.Data
 {
@@ -31,20 +33,29 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "SELECT * FROM CT_TienNghi";
+					string query = @"SELECT CT.MaCTTN, CT.SoPhong, CT.SL, TN.TenTN 
+									FROM CT_TienNghi CT
+									JOIN TienNghi TN ON CT.MaTN = TN.MaTN";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
-					conn.Open();
+                    Console.WriteLine($"Query: {query}");
+                    conn.Open();
 
 					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
-						while (reader.Read())
+						if (!reader.HasRows)
 						{
-							CT_TienNghiDTO ctTienNghi = new CT_TienNghiDTO
+							Console.WriteLine("Không có dòng nào được trả về từ truy vấn.");
+						}
+					
+                        while (reader.Read())
+						{
+                            Console.WriteLine($"Dòng dữ liệu: MaCTTN={reader["MaCTTN"]}, SoPhong={reader["SoPhong"]}, SL={reader["SL"]}, TenTN={reader["TenTN"]}");
+                            CT_TienNghiDTO ctTienNghi = new CT_TienNghiDTO
 							{
 								MaCTTN = reader.GetInt32(reader.GetOrdinal("MaCTTN")),
-								MaTN = reader.GetInt32(reader.GetOrdinal("MaTN")),
 								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
-								SL = reader.GetInt32(reader.GetOrdinal("SL"))
+								SL = reader.GetInt32(reader.GetOrdinal("SL")),
+								TenTN = reader.GetString(reader.GetOrdinal("TenTN"))
 							};
 							listCTTienNghi.Add(ctTienNghi);
 						}
@@ -55,8 +66,8 @@ namespace DAL.Data
 			{
 				Console.WriteLine(ex.Message); // Xử lý lỗi nếu cần
 			}
-
-			return listCTTienNghi;
+            MessageBox.Show($"Dữ liệu lấy được: {listCTTienNghi.Count}");
+            return listCTTienNghi;
 		}
 
 		// Thêm một chi tiết tiện nghi mới
