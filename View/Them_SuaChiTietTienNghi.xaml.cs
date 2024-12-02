@@ -2,6 +2,7 @@
 using DAL.DTO;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,14 +30,18 @@ namespace GUI.View
         public suaData suaCT;
         List<TienNghi> TienNghis;
         private string maCT;
+        private bool isEditing;
         public Them_SuaChiTietTienNghi()
         {
             InitializeComponent();
+            
             TaiDanhSach();
         }
 
-        public Them_SuaChiTietTienNghi(CT_TienNghiDTO ct) : this()
+        public Them_SuaChiTietTienNghi(bool isEditing = false, CT_TienNghiDTO ct = null) : this()
         {
+            this.isEditing = isEditing;
+
             cmbSoPhong.DisplayMemberPath = "SoPhong";
             cmbSoPhong.SelectedValuePath = "SoPhong";
 
@@ -45,11 +50,20 @@ namespace GUI.View
             cmbTienNghi.IsReadOnly = true;
 
 
-            cmbTienNghi.Text = ct.TenTN;
-            cmbSoPhong.Text = ct.SoPhong;
-            txtSoLuong.Text = ct.SL.ToString();
-            txbTitle.Text = "Sửa thông tin " + ct.MaCTTN;
-            maCT = ct.MaCTTN.ToString();
+            if (isEditing && ct != null) // Nếu là sửa, gán dữ liệu hiện tại vào UI
+            {
+                cmbSoPhong.Text = ct.SoPhong;
+                cmbTienNghi.Text = ct.TenTN;
+                txtSoLuong.Text = ct.SL.ToString();
+                txbTitle.Text = "Sửa thông tin " + ct.MaCTTN;
+                maCT = ct.MaCTTN.ToString();
+            }
+            else
+            {
+                txbTitle.Text = "Thêm mới chi tiết tiện nghi"; // Nếu là thêm mới, tiêu đề khác đi
+            }
+
+
         }
         private void TaiDanhSach()
         {
@@ -79,7 +93,8 @@ namespace GUI.View
                 {
                     SoPhong = cmbSoPhong.SelectedValue.ToString(),
                     SL = int.Parse(txtSoLuong.Text),
-                    TenTN = cmbTienNghi.SelectedValue.ToString()
+                    TenTN = cmbTienNghi.SelectedValue.ToString(),
+                    MaTN = (int)cmbTienNghi.SelectedValue,
                 };
                 if (truyenCT != null)
                 {
@@ -99,18 +114,30 @@ namespace GUI.View
             }
             else
             {
-                CT_TienNghiDTO ctTienNghi = new CT_TienNghiDTO()
+                if (isEditing)
                 {
-                    MaCTTN = int.Parse(maCT),
-                    SoPhong = cmbSoPhong.SelectedValue.ToString(),
-                    SL = int.Parse(txtSoLuong.Text),
-                    TenTN = cmbTienNghi.SelectedValue.ToString()
-                };
-                if (suaCT != null)
+
+                    CT_TienNghiDTO ctTienNghi = new CT_TienNghiDTO()
+                    {
+
+                        MaCTTN = string.IsNullOrEmpty(maCT) ? (int?)null : int.Parse(maCT),
+                        SoPhong = cmbSoPhong.SelectedValue.ToString(),
+                        SL = int.Parse(txtSoLuong.Text),
+                        TenTN = cmbTienNghi.SelectedValue.ToString(),
+                        MaTN = (int)cmbTienNghi.SelectedValue,
+                    };
+
+                    if (suaCT != null)
+                    {
+                        suaCT(ctTienNghi);
+                    }
+                }
+                else
                 {
-                    suaCT(ctTienNghi);
+                    btnThem_Click(sender, e);
                 }
             }
+            
             Window wd = Window.GetWindow(sender as Button);
             wd.Close();
         }
