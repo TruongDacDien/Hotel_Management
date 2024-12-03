@@ -131,7 +131,7 @@ namespace DAL.Data
 					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
 					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
 					cmd.Parameters.AddWithValue("@SL", chiTietTN.SL);
-                    Console.WriteLine($"MaCTTN: {chiTietTN.MaCTTN}, MaTN: {chiTietTN.MaTN}, SoPhong: {chiTietTN.SoPhong}, SL: {chiTietTN.SL}");
+                   
                     conn.Open();
 					int rowsAffected = cmd.ExecuteNonQuery();
 
@@ -157,10 +157,10 @@ namespace DAL.Data
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
 					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
-                    Console.WriteLine($"MaTN: {chiTietTN.MaTN}, SoPhong: {chiTietTN.SoPhong}");
+                   
                     conn.Open();
 					int count = Convert.ToInt32(cmd.ExecuteScalar());
-					Console.WriteLine(count.ToString());
+
 					return count > 0;
 				}
 			}

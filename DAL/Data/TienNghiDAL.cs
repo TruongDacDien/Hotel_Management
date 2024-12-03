@@ -134,7 +134,8 @@ namespace DAL.Data
 
 					conn.Open();
 					int count = Convert.ToInt32(cmd.ExecuteScalar());
-					return count > 0;
+
+                    return count > 0;
 				}
 			}
 			catch (Exception)
@@ -143,42 +144,42 @@ namespace DAL.Data
 			}
 		}
 
-        public List<CT_TienNghiDTO> getDataBySoPhong(string maPhong)
-        {
-            List<CT_TienNghiDTO> ctTienNghis = new List<CT_TienNghiDTO>();
+   //     public List<CT_TienNghiDTO> getDataBySoPhong(string maPhong)
+   //     {
+   //         List<CT_TienNghiDTO> ctTienNghis = new List<CT_TienNghiDTO>();
 
-            string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
-            string query = "SELECT CT.SoPhong, CT.SL, CT.MaTN, TN.TenTN FROM CT_TienNghi CT JOIN TienNghi TN ON CT.MaTN = TN.MaTN WHERE CT.SoPhong = @SoPhong";
+   //         string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+   //         string query = "SELECT CT.SoPhong, CT.SL, CT.MaTN, TN.TenTN FROM CT_TienNghi CT JOIN TienNghi TN ON CT.MaTN = TN.MaTN WHERE CT.SoPhong = @SoPhong";
 
-            try
-            {
-                using (MySqlConnection conn = new MySqlConnection(connectionString))
-                {
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@SoPhong", maPhong);
-					Console.WriteLine(query);
-                    conn.Open();
-                    MySqlDataReader reader = cmd.ExecuteReader();
+   //         try
+   //         {
+   //             using (MySqlConnection conn = new MySqlConnection(connectionString))
+   //             {
+   //                 MySqlCommand cmd = new MySqlCommand(query, conn);
+   //                 cmd.Parameters.AddWithValue("@SoPhong", maPhong);
+			//		Console.WriteLine(query);
+   //                 conn.Open();
+   //                 MySqlDataReader reader = cmd.ExecuteReader();
 
-                    while (reader.Read())
-                    {
-                        CT_TienNghiDTO ctTienNghi = new CT_TienNghiDTO
-                        {
-                            SoPhong = reader.GetString("SoPhong"),
-                            SL = reader.GetInt32("SL"),
-                            MaTN = reader.GetInt32("MaTN"),
-                            TenTN = reader.GetString("TenTN")
-                        };
-                        ctTienNghis.Add(ctTienNghi);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-            }
-			MessageBox.Show(ctTienNghis.Count.ToString());
-            return ctTienNghis;
-        }
+   //                 while (reader.Read())
+   //                 {
+   //                     CT_TienNghiDTO ctTienNghi = new CT_TienNghiDTO
+   //                     {
+   //                         SoPhong = reader.GetString("SoPhong"),
+   //                         SL = reader.GetInt32("SL"),
+   //                         MaTN = reader.GetInt32("MaTN"),
+   //                         TenTN = reader.GetString("TenTN")
+   //                     };
+   //                     ctTienNghis.Add(ctTienNghi);
+   //                 }
+   //             }
+   //         }
+   //         catch (Exception ex)
+   //         {
+   //             Console.WriteLine("Error: " + ex.Message);
+   //         }
+			//MessageBox.Show(ctTienNghis.Count.ToString());
+   //         return ctTienNghis;
+   //     }
     }
 }
