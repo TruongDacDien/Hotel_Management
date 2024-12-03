@@ -83,7 +83,7 @@ namespace GUI.UserControls
 
         void nhanData(TienNghi tn)
         {
-            if (TienNghiBUS.Instance.KiemTraTenTienNghi(tn))
+            if (!TienNghiBUS.Instance.KiemTraTenTienNghi(tn))
             {
                 if (TienNghiBUS.Instance.addTienNghi(tn))
                 {
@@ -99,7 +99,7 @@ namespace GUI.UserControls
         }
         void capNhatData(TienNghi tn)
         {
-            if (TienNghiBUS.Instance.KiemTraTenTienNghi(tn))
+            if (!TienNghiBUS.Instance.KiemTraTenTienNghi(tn))
             {
                 if (TienNghiBUS.Instance.capNhatTienNghi(tn))
                 {
