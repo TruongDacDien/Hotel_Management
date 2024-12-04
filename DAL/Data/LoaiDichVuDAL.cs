@@ -31,7 +31,7 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "SELECT * FROM LoaiDichVu";
+					string query = "SELECT * FROM LoaiDV";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
@@ -64,7 +64,7 @@ namespace DAL.Data
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
-                        INSERT INTO LoaiDichVu (TenLoaiDV)
+                        INSERT INTO LoaiDV (TenLoaiDV)
                         VALUES (@TenLoaiDV)";
 
 					MySqlCommand cmd = new MySqlCommand(query, conn);
@@ -91,7 +91,7 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "DELETE FROM LoaiDichVu WHERE MaLoaiDV = @MaLoaiDV";
+					string query = "DELETE FROM LoaiDV WHERE MaLoaiDV = @MaLoaiDV";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaLoaiDV", loaiDV.MaLoaiDV);
 
@@ -116,7 +116,7 @@ namespace DAL.Data
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
-                        UPDATE LoaiDichVu 
+                        UPDATE LoaiDV 
                         SET TenLoaiDV = @TenLoaiDV
                         WHERE MaLoaiDV = @MaLoaiDV";
 
@@ -146,7 +146,7 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "SELECT COUNT(*) FROM LoaiDichVu WHERE TenLoaiDV = @TenLoaiDV";
+					string query = "SELECT COUNT(*) FROM LoaiDV WHERE TenLoaiDV = @TenLoaiDV";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenLoaiDV", loaiDV.TenLoaiDV);
 
