@@ -71,7 +71,7 @@ namespace GUI.UserControls
             if (String.IsNullOrEmpty(txtFilter.Text))
                 return true;
             else
-                return (obj as LoaiDV).TenLoaiDV.ToLower().Contains(txtFilter.Text.ToLower());
+                return (obj as LoaiDV).TenLoaiDV.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private void TaiDanhSach()
@@ -83,7 +83,7 @@ namespace GUI.UserControls
         void nhanData(LoaiDV loaiDV)
         {
 
-            if (LoaiDichVuBUS.Instance.KiemTraTenLoaiDV(loaiDV))
+            if (!LoaiDichVuBUS.Instance.KiemTraTenLoaiDV(loaiDV))
             {
                 if (LoaiDichVuBUS.Instance.addLoaiDV(loaiDV))
                 {
@@ -98,7 +98,7 @@ namespace GUI.UserControls
         }
         void capNhatData(LoaiDV loaiDV)
         {
-            if (LoaiDichVuBUS.Instance.KiemTraTenLoaiDV(loaiDV))
+            if (!LoaiDichVuBUS.Instance.KiemTraTenLoaiDV(loaiDV))
             {
                 if (LoaiDichVuBUS.Instance.capNhatDataLoaiDV(loaiDV))
                 {
