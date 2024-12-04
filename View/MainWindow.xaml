@@ -97,9 +97,9 @@
                             <!--Chưa có gì hết-->
                             <materialDesign:PopupBox Margin=" 0 0 40 0" HorizontalAlignment="Right">
                                 <ListBox>
-                                    <ListBoxItem Content="Hello World" />
-                                    <ListBoxItem Content="Nice Popup" />
-                                    <ListBoxItem Content="Information" />
+                                    <ListBoxItem Content="Thông tin cá nhân" />
+                                    <ListBoxItem Content="Thông tin tài khoản" />
+                                    <ListBoxItem Content="Đổi mật khẩu" />
                                 </ListBox>
                             </materialDesign:PopupBox>
                         </Grid>

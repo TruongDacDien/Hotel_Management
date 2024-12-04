@@ -22,8 +22,8 @@ namespace GUI.View
     /// </summary>
     public partial class Them_SuaChiTietTienNghi : Window
     {
-        public delegate void truyenData(CT_TienNghiDTO CTTienNghi);
-        public delegate void suaData(CT_TienNghiDTO CTTienNghi);
+        public delegate void truyenData(CT_TienNghi CTTienNghi);
+        public delegate void suaData(CT_TienNghi CTTienNghi);
 
 
         public truyenData truyenCT;
@@ -38,7 +38,7 @@ namespace GUI.View
             TaiDanhSach();
         }
 
-        public Them_SuaChiTietTienNghi(bool isEditing = false, CT_TienNghiDTO ct = null) : this()
+        public Them_SuaChiTietTienNghi(bool isEditing = false, CT_TienNghi ct = null) : this()
         {
             this.isEditing = isEditing;
 
@@ -89,7 +89,7 @@ namespace GUI.View
             }
             else
             {
-                CT_TienNghiDTO CTTienNghi = new CT_TienNghiDTO()
+                CT_TienNghi CTTienNghi = new CT_TienNghi()
                 {
                     SoPhong = cmbSoPhong.SelectedValue.ToString(),
                     SL = int.Parse(txtSoLuong.Text),
@@ -117,7 +117,7 @@ namespace GUI.View
                 if (isEditing)
                 {
 
-                    CT_TienNghiDTO ctTienNghi = new CT_TienNghiDTO()
+                    CT_TienNghi ctTienNghi = new CT_TienNghi()
                     {
 
                         MaCTTN = string.IsNullOrEmpty(maCT) ? (int?)null : int.Parse(maCT),

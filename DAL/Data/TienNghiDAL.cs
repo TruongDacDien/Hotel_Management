@@ -144,9 +144,9 @@ namespace DAL.Data
 			}
 		}
 
-   //     public List<CT_TienNghiDTO> getDataBySoPhong(string maPhong)
+   //     public List<CT_TienNghi> getDataBySoPhong(string maPhong)
    //     {
-   //         List<CT_TienNghiDTO> ctTienNghis = new List<CT_TienNghiDTO>();
+   //         List<CT_TienNghi> ctTienNghis = new List<CT_TienNghi>();
 
    //         string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
    //         string query = "SELECT CT.SoPhong, CT.SL, CT.MaTN, TN.TenTN FROM CT_TienNghi CT JOIN TienNghi TN ON CT.MaTN = TN.MaTN WHERE CT.SoPhong = @SoPhong";
@@ -163,7 +163,7 @@ namespace DAL.Data
 
    //                 while (reader.Read())
    //                 {
-   //                     CT_TienNghiDTO ctTienNghi = new CT_TienNghiDTO
+   //                     CT_TienNghi ctTienNghi = new CT_TienNghi
    //                     {
    //                         SoPhong = reader.GetString("SoPhong"),
    //                         SL = reader.GetInt32("SL"),

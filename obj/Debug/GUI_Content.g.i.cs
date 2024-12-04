@@ -8,8 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("res/fieldcornericon.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("res/incomeicon.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("res/increaseicon.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("property.ico")]
 
 
