@@ -39,7 +39,6 @@ namespace GUI.UserControls
         private void TaiDanhSach()
         {
             list = new ObservableCollection<DichVuDTO>(DichVuBUS.GetInstance().getDichVu_Custom());
-            Console.WriteLine("Số lượng phần tử trong danh sách: " + list.Count);
             lsvDichVu.ItemsSource = list;
 
         }
