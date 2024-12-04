@@ -58,5 +58,12 @@ namespace GUI.View
 			}
 
 		}
-	}
+        private void txbMatKhau_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter) // Kiểm tra nếu phím Enter được nhấn
+            {
+                click_DangNhap(sender, e); // Gọi hàm xử lý khi click nút đăng nhập
+            }
+        }
+    }
 }

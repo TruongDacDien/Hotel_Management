@@ -26,12 +26,12 @@ namespace BUS
             return Instance;
         }
 
-        public List<DichVu_Custom> getDichVu_Custom()
+        public List<DichVuDTO> getDichVu_Custom()
         {
             return DichVuDAL.GetInstance().getDataDichVu_Custom();
         }
 
-        public List<string> getLoaiDichVu()
+        public List<DichVuDTO> getLoaiDichVu()
         {
             return DichVuDAL.GetInstance().getDataLoaiDichVu();
         }
