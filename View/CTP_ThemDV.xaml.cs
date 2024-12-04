@@ -27,10 +27,10 @@ namespace GUI.View
 		public delegate void Delegate_CTPDV(ObservableCollection<DichVu_DaChon> obDVCT);
 		public Delegate_CTPDV truyenData;
 
-		ObservableCollection<DichVu_Custom> lsdichVu_Customs;
+		ObservableCollection<DichVu> lsdichVu_Customs;
 		ObservableCollection<DichVu_DaChon> lsDichVu_DaChon;
-		List<string> lsLoaiDV;
-		List<DichVu_Custom> lsCache;
+		List<DichVuDTO> lsLoaiDV;
+		List<DichVu> lsCache;
 
 		private int? maCTPhieuThue;
 		public CTP_ThemDV()
@@ -44,12 +44,12 @@ namespace GUI.View
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			lsdichVu_Customs = new ObservableCollection<DichVu_Custom>(DichVuBUS.GetInstance().getDichVu_Custom());
+			lsdichVu_Customs = new ObservableCollection<DichVu>(DichVuBUS.GetInstance().getDichVu_Custom());
 			lsDichVu_DaChon = new ObservableCollection<DichVu_DaChon>();
-			lsCache = new List<DichVu_Custom>();
-			lsLoaiDV = new List<string>();
+			lsCache = new List<DichVu>();
+			lsLoaiDV = new List<DichVuDTO>();
 			lsLoaiDV = DichVuBUS.GetInstance().getLoaiDichVu();
-			lsLoaiDV.Add("Tất cả");
+			//lsLoaiDV.Add("Tất cả");
 			lvDanhSachDV.ItemsSource = lsdichVu_Customs;
 			lvDichVuDaChon.ItemsSource = lsDichVu_DaChon;
 			cbTimKiemLoaiDV.ItemsSource = lsLoaiDV;
@@ -57,7 +57,7 @@ namespace GUI.View
 
 		private void click_Them(object sender, RoutedEventArgs e)
 		{
-			DichVu_Custom dvct = (sender as Button).DataContext as DichVu_Custom;
+            DichVu dvct = (sender as Button).DataContext as DichVu;
 			lsDichVu_DaChon.Add(new DichVu_DaChon() { ThanhTien = dvct.Gia, TenDV = dvct.TenDV, SoLuong = 1, MaDV = dvct.MaDV, Gia = dvct.Gia });
 			lsCache.Add(dvct);
 			lsdichVu_Customs.Remove(dvct);
@@ -67,7 +67,7 @@ namespace GUI.View
 		private void click_Xoa(object sender, RoutedEventArgs e)
 		{
 			DichVu_DaChon dvdachon = (sender as Button).DataContext as DichVu_DaChon;
-			DichVu_Custom dichVu_Custom = (lsCache.Where(p => p.MaDV.Equals(dvdachon.MaDV))).FirstOrDefault();
+            DichVu dichVu_Custom = (lsCache.Where(p => p.MaDV.Equals(dvdachon.MaDV))).FirstOrDefault();
 			lsdichVu_Customs.Add(dichVu_Custom);
 			lsDichVu_DaChon.Remove(dvdachon);
 
@@ -161,7 +161,7 @@ namespace GUI.View
 				return true;
 			else
 			{
-				string objTenDV = RemoveVietnameseTone((obj as DichVu_Custom).TenDV);
+				string objTenDV = RemoveVietnameseTone((obj as DichVu).TenDV);
 				string timkiem = RemoveVietnameseTone(txbTimKiem.Text);
 				return objTenDV.Contains(timkiem);
 			}
@@ -172,7 +172,7 @@ namespace GUI.View
 				return true;
 			else
 			{
-				string objTenDV = RemoveVietnameseTone((obj as DichVu_Custom).LoaiDV);
+				string objTenDV = RemoveVietnameseTone((obj as DichVu).LoaiDV);
 				string timkiem = RemoveVietnameseTone(cbTimKiemLoaiDV.SelectedItem.ToString());
 				return objTenDV.Contains(timkiem);
 			}

@@ -22,9 +22,9 @@ namespace DAL.Data
 		}
 
 		// Lấy danh sách dịch vụ (Custom)
-		public List<DichVu_Custom> getDataDichVu_Custom()
+		public List<DichVuDTO> getDataDichVu_Custom()
 		{
-			List<DichVu_Custom> lsNDVCT = new List<DichVu_Custom>();
+			List<DichVuDTO> lsNDVCT = new List<DichVuDTO>();
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
@@ -33,7 +33,7 @@ namespace DAL.Data
 				{
 					string query = @"
                         SELECT 
-                            dv.MaDV, dv.TenDV, dv.Gia, ldv.TenLoaiDV AS LoaiDV
+                            dv.MaDV,dv.MaLoaiDV, dv.TenDV, dv.Gia, ldv.TenLoaiDV AS LoaiDV
                         FROM DichVu dv
                         INNER JOIN LoaiDV ldv ON dv.MaLoaiDV = ldv.MaLoaiDV";
 
@@ -44,9 +44,10 @@ namespace DAL.Data
 					{
 						while (reader.Read())
 						{
-							lsNDVCT.Add(new DichVu_Custom
-							{
+							lsNDVCT.Add(new DichVuDTO
+                            {
 								MaDV = reader.GetInt32(reader.GetOrdinal("MaDV")),
+								MaLoaiDV = reader.GetInt32(reader.GetOrdinal("MaLoaiDV")),
 								TenDV = reader.GetString(reader.GetOrdinal("TenDV")),
 								Gia = reader.GetDecimal(reader.GetOrdinal("Gia")),
 								LoaiDV = reader.GetString(reader.GetOrdinal("LoaiDV"))
@@ -63,16 +64,16 @@ namespace DAL.Data
 		}
 
 		// Lấy danh sách loại dịch vụ
-		public List<string> getDataLoaiDichVu()
+		public List<DichVuDTO> getDataLoaiDichVu()
 		{
-			List<string> lsLoaiDV = new List<string>();
+			List<DichVuDTO> lsLoaiDV = new List<DichVuDTO>();
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "SELECT TenLoaiDV FROM LoaiDV";
+					string query = "SELECT * FROM LoaiDV";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
@@ -80,7 +81,12 @@ namespace DAL.Data
 					{
 						while (reader.Read())
 						{
-							lsLoaiDV.Add(reader.GetString(reader.GetOrdinal("TenLoaiDV")));
+                            DichVuDTO dv = new DichVuDTO
+                            {
+                                MaLoaiDV = reader.GetInt32(reader.GetOrdinal("MaLoaiDV")),
+                                LoaiDV = reader.GetString(reader.GetOrdinal("TenLoaiDV"))
+                            };
+                            lsLoaiDV.Add(dv);
 						}
 					}
 				}
@@ -114,7 +120,7 @@ namespace DAL.Data
 							{
 								MaDV = reader.GetInt32(reader.GetOrdinal("MaDV")),
 								TenDV = reader.GetString(reader.GetOrdinal("TenDV")),
-								MaLoaiDV = reader.GetInt32(reader.GetOrdinal("MaLoaiDV")),
+                                MaLoaiDV = reader.GetInt32(reader.GetOrdinal("MaLoaiDV")),
 								Gia = reader.GetDecimal(reader.GetOrdinal("Gia"))
 							});
 						}
@@ -155,10 +161,11 @@ namespace DAL.Data
 		}
 
 		// Cập nhật dịch vụ
-		public bool capNhatDichVu(DichVu dv)
+		public bool capNhatDichVu(DichVuDTO dv)
 		{
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
-			try
+            Console.WriteLine($"MaDV: {dv.MaDV}, TenDV: {dv.TenDV}, MaLoaiDV: {dv.MaLoaiDV}, Gia: {dv.Gia}");
+            try
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
@@ -167,7 +174,7 @@ namespace DAL.Data
 					cmd.Parameters.AddWithValue("@MaDV", dv.MaDV);
 					cmd.Parameters.AddWithValue("@TenDV", dv.TenDV);
 					cmd.Parameters.AddWithValue("@MaLoaiDV", dv.MaLoaiDV);
-					cmd.Parameters.AddWithValue("@Gia", dv.Gia);
+					cmd.Parameters.AddWithValue("@Gia", Convert.ToDecimal(dv.Gia));
 
 					conn.Open();
 					int rowsAffected = cmd.ExecuteNonQuery();

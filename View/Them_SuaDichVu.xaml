@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GUI.View"
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"        
-        TextElement.FontFamily="Roboto"
+        TextElement.FontFamily="Arial"
         AllowsTransparency="True" 
         WindowStartupLocation="CenterScreen" WindowStyle="None"
         Title="Them_SuaDichVu" Height="400" Width="440">
@@ -63,7 +63,8 @@
                         <Grid Grid.Column="1">
 
                             <TextBox    Name="txtTenDichVu"                    
-                                        materialDesign:HintAssist.Hint="Tên dịch vụ"                        
+                                        materialDesign:HintAssist.Hint="Tên dịch vụ"   
+                                        FontFamily="Segoe UI"
                                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"                        
                                         VerticalAlignment="Center" Width="200"  />
 
@@ -103,8 +104,10 @@
                         <Grid Grid.Column="1">
                             <TextBox    Name="txtGia"                    
                                         materialDesign:HintAssist.Hint="Giá dịch vụ"                        
-                                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"                        
-                                        VerticalAlignment="Center" Width="200"  />
+                                        Style="{StaticResource MaterialDesignFloatingHintTextBox  }"           
+                                        VerticalAlignment="Center" Width="200"  >
+                                
+                            </TextBox>
                         </Grid>
 
 

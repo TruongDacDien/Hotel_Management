@@ -26,27 +26,44 @@ namespace GUI.View
 
         public TryenDuLieu truyen;
         public SuaDuLieu sua;
-        private List<LoaiDV> loaiDV;
+        private List<DichVuDTO> loaiDV;
         private string maDV;
+        private bool isEditing;
         public Them_SuaDichVu()
         {
             InitializeComponent();
-            loaiDV = new List<LoaiDV>(LoaiDichVuBUS.Instance.getDataLoaiDV());
+            TaiDanhSach();
+        }
+
+        private void TaiDanhSach()
+        {
+            loaiDV = new List<DichVuDTO>(DichVuBUS.GetInstance().getLoaiDichVu());
+            Console.WriteLine($"Số lượng loại DV: {loaiDV.Count}");
+           
             cmbMaLoai.ItemsSource = loaiDV;
-            cmbMaLoai.DisplayMemberPath = "TenLoaiDV";
+            cmbMaLoai.DisplayMemberPath = "LoaiDV";
             cmbMaLoai.SelectedValuePath = "MaLoaiDV";
         }
-        public Them_SuaDichVu(DichVuDTO dv) : this()
+        public Them_SuaDichVu(bool isEditing = false, DichVuDTO dv = null) : this()
         {
-            txtTenDichVu.IsReadOnly = true;
-            cmbMaLoai.DisplayMemberPath = "TenLoaiDV";
+            this.isEditing = isEditing;
+            txtTenDichVu.IsReadOnly = false;
+            cmbMaLoai.DisplayMemberPath = "LoaiDV";
             cmbMaLoai.SelectedValuePath = "MaLoaiDV";
-            
-            txtTenDichVu.Text = dv.TenDichVu;
-            cmbMaLoai.Text = dv.LoaiDichVu;
-            txtGia.Text = dv.Gia.ToString();
-            txbTitle.Text = "Sửa thông tin dịch vụ " + dv.MaDichVu;
-            maDV = dv.MaDichVu.ToString();
+
+            if (isEditing && dv != null)
+            {
+                txtTenDichVu.Text = dv.TenDV;
+                cmbMaLoai.Text = dv.LoaiDV;
+                txtGia.Text = dv.Gia % 1 == 0 ? ((int)dv.Gia).ToString() : dv.Gia.ToString();
+                //txtGia.Text = dv.Gia.ToString();
+                txbTitle.Text = "Sửa thông tin dịch vụ " + dv.MaDV;
+                maDV = dv.MaDV.ToString();
+            }
+            else
+            {
+                txbTitle.Text = "Thêm mới dịch vụ ";
+            }
         }
 
         private void btnHuy_Click(object sender, RoutedEventArgs e)
@@ -62,17 +79,26 @@ namespace GUI.View
             }
             else
             {
-                DichVuDTO dichVu = new DichVuDTO()
+                if (isEditing)
                 {
-                    MaDichVu = int.Parse(maDV.ToString()),
-                    TenDichVu = txtTenDichVu.Text,
-                    Gia = int.Parse(txtGia.Text),
-                    LoaiDichVu = cmbMaLoai.SelectedValue.ToString()
-                };
-                if (sua != null)
-                {
-                    sua(dichVu);
+                   
+
+                    DichVuDTO dichVu = new DichVuDTO()
+                    {
+                        MaDV = int.Parse(maDV.ToString()),
+                        TenDV = txtTenDichVu.Text,
+                        Gia = int.Parse(txtGia.Text),
+                        MaLoaiDV = (int)cmbMaLoai.SelectedValue,
+                    };
+                    if (sua != null)
+                    {
+                        sua(dichVu);
+                    }
                 }
+                else
+                {
+                    btnThem_Click(sender, e);
+                }    
             }
             Window wd = Window.GetWindow(sender as Button);
             wd.Close();
@@ -89,9 +115,9 @@ namespace GUI.View
             {
                 DichVuDTO dichVu = new DichVuDTO()
                 {
-                    TenDichVu = txtTenDichVu.Text,
+                    TenDV = txtTenDichVu.Text,
                     Gia = int.Parse(txtGia.Text),
-                    LoaiDichVu = cmbMaLoai.SelectedValue.ToString()
+                    MaLoaiDV = (int)cmbMaLoai.SelectedValue,
                 };
                 if (truyen != null)
                 {

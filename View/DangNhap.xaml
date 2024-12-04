@@ -63,7 +63,8 @@
                 <PasswordBox  materialDesign:HintAssist.Hint="Mật khẩu"  x:Name="txbMatKhau"
                               HorizontalAlignment="Left" VerticalAlignment="Top"
                               Margin="55,154,0,0" Height="26" Width="130"
-                              materialDesign:TextFieldAssist.HasClearButton="True" />
+                              materialDesign:TextFieldAssist.HasClearButton="True"
+                              KeyDown="txbMatKhau_KeyDown"/>
 
                 <TextBlock Foreground="#0056FC"
                            HorizontalAlignment="Left" VerticalAlignment="Top"
