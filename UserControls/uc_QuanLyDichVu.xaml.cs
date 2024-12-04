@@ -24,7 +24,7 @@ namespace GUI.UserControls
     /// </summary>
     public partial class uc_QuanLyDichVu : UserControl
     {
-        ObservableCollection<DichVu> list;
+        ObservableCollection<DichVuDTO> list;
 
         public uc_QuanLyDichVu()
         {
@@ -38,22 +38,23 @@ namespace GUI.UserControls
 
         private void TaiDanhSach()
         {
-            list = new ObservableCollection<DichVu>(DichVuBUS.GetInstance().getDichVu());
+            list = new ObservableCollection<DichVuDTO>(DichVuBUS.GetInstance().getDichVu_Custom());
+            Console.WriteLine("Số lượng phần tử trong danh sách: " + list.Count);
             lsvDichVu.ItemsSource = list;
 
         }
 
-        private bool DichVuFilter(object obj)
+        private bool DichVuFilter(object obj)   
         {
             if (String.IsNullOrEmpty(txtFilter.Text))
                 return true;
             else
-                return (obj as DichVu).TenDV.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
+                return (obj as DichVuDTO).TenDV.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         void nhanData(DichVuDTO dv)
         {
-            if (DichVuBUS.GetInstance().KiemTraTrungTen(dv))
+            if (!DichVuBUS.GetInstance().KiemTraTrungTen(dv))
             {
                 if (DichVuBUS.GetInstance().ThemDichVu(dv))
                 {
@@ -86,7 +87,7 @@ namespace GUI.UserControls
         {
             DichVuDTO dv = (sender as Button).DataContext as DichVuDTO;
 
-            var thongbao = new DialogCustoms("Bạn có thật sự muốn xóa " + dv.TenDichVu, "Thông báo", DialogCustoms.YesNo);
+            var thongbao = new DialogCustoms("Bạn có thật sự muốn xóa " + dv.TenDV, "Thông báo", DialogCustoms.YesNo);
             
             if (thongbao.ShowDialog() == true)
             {
@@ -98,7 +99,7 @@ namespace GUI.UserControls
 
         private void btnThem_Click(object sender, RoutedEventArgs e)
         {
-            Them_SuaDichVu ThemDichVu = new Them_SuaDichVu();
+            Them_SuaDichVu ThemDichVu = new Them_SuaDichVu(false);
             ThemDichVu.truyen = new Them_SuaDichVu.TryenDuLieu(nhanData);
             ThemDichVu.ShowDialog();
         }
@@ -106,9 +107,10 @@ namespace GUI.UserControls
         private void btnCapNhat_Click(object sender, RoutedEventArgs e)
         {
             DichVuDTO dv = (sender as Button).DataContext as DichVuDTO;
-            Them_SuaDichVu CapNhatDichVu = new Them_SuaDichVu(dv);
+            Them_SuaDichVu CapNhatDichVu = new Them_SuaDichVu(true, dv);
             CapNhatDichVu.sua = new Them_SuaDichVu.SuaDuLieu(capNhatData);
             CapNhatDichVu.ShowDialog();
+
         }
     }
 }

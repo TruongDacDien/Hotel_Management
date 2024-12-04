@@ -10,6 +10,7 @@
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"     
              TextElement.FontWeight="Regular"     
              TextElement.FontSize="13"     
+             TextElement.FontFamily="Arial"
              TextOptions.TextFormattingMode="Ideal"     
              TextOptions.TextRenderingMode="Auto"    
              FontFamily="{DynamicResource MaterialDesignFont}"
@@ -63,7 +64,7 @@
                     </RectangleGeometry>
                 </Grid.Clip>
 
-                <Grid.Resources>
+                <!--<Grid.Resources>
                     <DataTemplate x:Key="dtpMaHoaDon">
                         <Grid>
                             <TextBlock HorizontalAlignment="Center"  Text="{Binding MaHD}"></TextBlock>
@@ -71,15 +72,15 @@
                     </DataTemplate>
 
                     <DataTemplate x:Key="dtpMaDV">
-                        <TextBlock Text="{Binding MaDichVu}"></TextBlock>
+                        <TextBlock Text="{Binding MaDV}"></TextBlock>
                     </DataTemplate>
 
                     <DataTemplate x:Key="dtpTenDV">
-                        <TextBlock Text="{Binding TenDichVu}"></TextBlock>
+                        <TextBlock Text="{Binding TenDV}"></TextBlock>
                     </DataTemplate>
 
                     <DataTemplate x:Key="dtpMaLoaiDV">
-                        <TextBlock Text="{Binding LoaiDichVu}"></TextBlock>
+                        <TextBlock Text="{Binding LoaiDV}"></TextBlock>
                     </DataTemplate>
 
                     <DataTemplate x:Key="dtpDonGia">
@@ -99,9 +100,10 @@
                             <Button.Background>
                                 <ImageBrush ImageSource="/GUI;component/Res/delete_vs2.png"/>
                             </Button.Background>
+                          
                         </Button>
                     </DataTemplate>
-                </Grid.Resources>
+                </Grid.Resources>-->
 
                 <ListView Name="lsvDichVu" ScrollViewer.HorizontalScrollBarVisibility="Disabled"  >
                     <!--căn giữa-->
@@ -120,13 +122,33 @@
                                     <Setter Property="FontWeight" Value="Bold" />
                                 </Style>
                             </GridView.ColumnHeaderContainerStyle>
-
-                            <GridViewColumn  Header="Mã dịch vụ"  Width="100" CellTemplate="{StaticResource dtpMaDV}" />
-                            <GridViewColumn Header="Tên dịch vụ" Width="200" CellTemplate="{StaticResource dtpTenDV}" />
-                            <GridViewColumn Header="Loại" Width="140" CellTemplate="{StaticResource dtpMaLoaiDV}" />
-                            <GridViewColumn Header="Đơn giá " Width="120" CellTemplate="{StaticResource dtpDonGia}" />
-                            <GridViewColumn Width="65" Header="Sửa" CellTemplate="{StaticResource dtpNutSua}" />
-                            <GridViewColumn Width="65" Header="Xóa" CellTemplate="{StaticResource dtpNutXoa}" />
+                            
+                            <GridViewColumn  Header="Mã dịch vụ"  Width="100" DisplayMemberBinding="{Binding MaDV}" />
+                            <GridViewColumn Header="Tên dịch vụ"  Width="200" DisplayMemberBinding="{Binding TenDV}" />
+                            <GridViewColumn Header="Loại" Width="140" DisplayMemberBinding="{Binding LoaiDV}" />
+                            <GridViewColumn Header="Đơn giá " Width="120" DisplayMemberBinding="{Binding Gia, StringFormat='{}{0:0.#}'}" />
+                            <GridViewColumn Width="65" Header="Sửa">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button x:Name="btnCapNhat" Click="btnCapNhat_Click"  BorderThickness="0">
+                                            <Button.Background>
+                                                <ImageBrush ImageSource="/GUI;component/Res/edit.png"/>
+                                            </Button.Background>
+                                        </Button>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Width="65" Header="Xóa" >
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button x:Name="btnXoa" Click="btnXoa_Click"  BorderThickness="0">
+                                            <Button.Background>
+                                                <ImageBrush ImageSource="/GUI;component/Res/delete_vs2.png"/>
+                                            </Button.Background>
+                                        </Button>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
 
 
                         </GridView>
