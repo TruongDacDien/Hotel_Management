@@ -24,20 +24,24 @@
             <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown">
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition ></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition Width="110"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock  Grid.Column="0"
-                            VerticalAlignment="Center"
-                            Margin="20 0 0 0"
-                            Text="{Binding Tag , ElementName = controlbar2}" />
+                <!-- Tiêu đề cửa sổ -->
+                <TextBlock Grid.Column="0"
+                           VerticalAlignment="Center"
+                           Margin="20 0 0 0"
+                           Text="{Binding Tag , ElementName = controlbar2}" />
 
+                <!-- Các nút điều khiển cửa sổ -->
                 <StackPanel Orientation="Horizontal" 
-                            Width="auto"
+                            Width="Auto"
                             Grid.Column="1"
-                            Background="Transparent" FlowDirection="RightToLeft"
-                            >
+                            Background="Transparent"
+                            FlowDirection="RightToLeft">
+
+                    <!-- Nút Close -->
                     <Button
                         Width="20"
                         Height="20"
@@ -46,7 +50,15 @@
                         Click="Button_Close"
                         Style="{StaticResource MaterialDesignFloatingActionButton}"
                         ToolTip="Close">
+                        <TextBlock Text="&#xE8BB;" 
+                                   FontFamily="Segoe MDL2 Assets" 
+                                   FontSize="12" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   Foreground="White" />
                     </Button>
+
+                    <!-- Nút Minimize -->
                     <Button
                         Margin="7 0 7 0"
                         Width="20"
@@ -55,8 +67,13 @@
                         Click="Button_Minimize"
                         Style="{StaticResource MaterialDesignFloatingActionButton}"
                         ToolTip="Minimize">
+                        <TextBlock Text="&#xE921;" 
+                                   FontFamily="Segoe MDL2 Assets" 
+                                   FontSize="12" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   Foreground="White" />
                     </Button>
-
                 </StackPanel>
             </Grid>
         </materialDesign:ColorZone>

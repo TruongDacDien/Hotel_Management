@@ -24,21 +24,22 @@
             <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown">
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition ></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition Width="110"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock  Grid.Column="0"
-                            VerticalAlignment="Center"
-                            Margin="20 0 0 0"
-                            Text="{Binding Tag , ElementName = controlbar}" />
+                <!-- Tiêu đề cửa sổ -->
+                <TextBlock Grid.Column="0"
+                           VerticalAlignment="Center"
+                           Margin="20 0 0 0"
+                           Text="{Binding Tag , ElementName = controlbar}" />
 
+                <!-- Các nút điều khiển cửa sổ -->
                 <StackPanel Orientation="Horizontal"
-                            Width="auto"
+                            Width="Auto"
                             Grid.Column="1"
-                            Background="Transparent"
-                            >
-
+                            Background="Transparent">
+                    <!-- Nút Minimize -->
                     <Button
                         Margin="7 0 7 0"
                         Width="20"
@@ -46,10 +47,16 @@
                         Background="#FF2BD655"
                         Click="Button_Minimize"
                         Style="{StaticResource MaterialDesignFloatingActionButton}"
-                        ToolTip="Minimize"
-                        IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                        ToolTip="Minimize">
+                        <TextBlock Text="&#xE921;" 
+                                   FontFamily="Segoe MDL2 Assets" 
+                                   FontSize="12" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   Foreground="White" />
                     </Button>
 
+                    <!-- Nút Maximize/Restore -->
                     <Button
                         x:Name="btn_maximize"
                         Width="20"
@@ -58,10 +65,16 @@
                         Background="#FFFFCA32"
                         Click="Button_Maximize"  
                         Style="{StaticResource MaterialDesignFloatingActionButton}"
-                        ToolTip="Maximize"
-                        IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                        ToolTip="Maximize">
+                        <TextBlock Text="&#xE922;" 
+                                   FontFamily="Segoe MDL2 Assets" 
+                                   FontSize="12" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   Foreground="White" />
                     </Button>
 
+                    <!-- Nút Close -->
                     <Button
                         Width="20"
                         Height="20"
@@ -69,10 +82,14 @@
                         Background="#FFE17365"
                         Click="Button_Close"
                         Style="{StaticResource MaterialDesignFloatingActionButton}"
-                        ToolTip="Close"
-                        IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
+                        ToolTip="Close">
+                        <TextBlock Text="&#xE8BB;" 
+                                   FontFamily="Segoe MDL2 Assets" 
+                                   FontSize="12" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   Foreground="White" />
                     </Button>
-
                 </StackPanel>
             </Grid>
         </materialDesign:ColorZone>
