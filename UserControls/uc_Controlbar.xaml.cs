@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GUI.View;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,9 +28,13 @@ namespace GUI.UserControls
         #region event
         private void Button_Close(object sender, RoutedEventArgs e)
         {
-            Button btn_close = sender as Button;
-            Window mainwindows = Window.GetWindow(btn_close);
-            mainwindows.Close();
+			DialogCustoms dialog = new DialogCustoms("Bạn có muốn thoát ứng dụng?", "Thông báo", DialogCustoms.YesNo);
+			if (dialog.ShowDialog() == true)
+			{
+				Button btn_close = sender as Button;
+				Window mainwindows = Window.GetWindow(btn_close);
+				mainwindows.Close();
+			}		
         }
 
         private void Button_Maximize(object sender, RoutedEventArgs e)

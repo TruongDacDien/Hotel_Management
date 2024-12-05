@@ -12,9 +12,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MySql.Data.MySqlClient;
 using BUS;
 using DAL.Data;
 using DAL.DTO;
+using System.Configuration;
 
 namespace GUI.View
 {
@@ -38,16 +40,45 @@ namespace GUI.View
 
 		private void btn_Close_Click(object sender, RoutedEventArgs e)
 		{
-			this.Close();
+			var thongbao = new DialogCustoms("Bạn có thật sự muốn thoát!", "Thông báo", DialogCustoms.YesNo);
+			if (thongbao.ShowDialog() == true)
+			{
+				this.Close();
+			}
+		}
+
+		private bool KiemTraKetNoiDatabase()
+		{
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			try
+			{
+				using (MySqlConnection connection = new MySqlConnection(connectionString))
+				{
+					connection.Open(); // Mở kết nối
+					connection.Close(); // Đóng kết nối nếu thành công
+					return true; // Kết nối thành công
+				}
+			}
+			catch
+			{
+				return false; // Không thể kết nối
+			}
 		}
 
 		private void click_DangNhap(object sender, RoutedEventArgs e)
 		{
+			if (!KiemTraKetNoiDatabase())
+			{
+				new DialogCustoms("Không thể kết nối tới cơ sở dữ liệu.\nVui lòng kiểm tra kết nối mạng hoặc cấu hình máy chủ!", "Thông báo", DialogCustoms.OK).ShowDialog();
+				return; // Dừng xử lý nếu không kết nối được
+			}
 			string username = txbTenDangNhap.Text;
 			string pass = txbMatKhau.Password;
 			TaiKhoan taiKhoan = TaiKhoanBUS.GetInstance().kiemTraTKTonTaiKhong(username, pass);
 			if (taiKhoan != null)
 			{
+				new DialogCustoms("Đăng nhập thành công!", "Thông báo", DialogCustoms.OK).ShowDialog();
 				MainWindow main = new MainWindow(taiKhoan);
 				main.Show();
 				this.Close();
@@ -56,7 +87,6 @@ namespace GUI.View
 			{
 				new DialogCustoms("Không tồn tại tài khoản mật khẩu  !", "Thông báo", DialogCustoms.OK).ShowDialog();
 			}
-
 		}
         private void txbMatKhau_KeyDown(object sender, KeyEventArgs e)
         {
