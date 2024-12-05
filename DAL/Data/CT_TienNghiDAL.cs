@@ -73,7 +73,10 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "INSERT INTO CT_TienNghi (MaTN, SoPhong, SL) VALUES (@MaTN, @SoPhong, @SL)";
+					string query = @"INSERT INTO CT_TienNghi (MaTN, SoPhong, SL, TenTN)
+									SELECT @MaTN, @SoPhong, @SL, tn.TenTN
+									FROM TienNghi tn
+									WHERE tn.MaTN = @MaTN";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
 					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
@@ -125,22 +128,36 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "UPDATE CT_TienNghi SET MaTN = @MaTN, SoPhong = @SoPhong, SL = @SL WHERE MaCTTN = @MaCTTN";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
-					cmd.Parameters.AddWithValue("@MaCTTN", chiTietTN.MaCTTN);
-					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
-					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
-					cmd.Parameters.AddWithValue("@SL", chiTietTN.SL);
-                   
-                    conn.Open();
-					int rowsAffected = cmd.ExecuteNonQuery();
+					string query = @"
+							UPDATE CT_TienNghi
+							SET 
+								MaTN = @MaTN,
+								SoPhong = @SoPhong,
+								SL = @SL,
+								TenTN = @TenTN
+							WHERE MaCTTN = @MaCTTN;";
+					using (MySqlCommand cmd = new MySqlCommand(query, conn))
+					{
+						cmd.Parameters.AddWithValue("@MaCTTN", chiTietTN.MaCTTN);
+						cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
+						cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
+						cmd.Parameters.AddWithValue("@SL", chiTietTN.SL);
+						cmd.Parameters.AddWithValue("@TenTN", chiTietTN.TenTN);
 
-					return rowsAffected > 0;
+						conn.Open();
+
+						int rowsAffected = cmd.ExecuteNonQuery();
+
+						Console.WriteLine($"Rows affected: {rowsAffected}");
+
+						return rowsAffected > 0;
+					}
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Xử lý lỗi nếu cần
+				Console.WriteLine($"Lỗi: {ex.Message}");
+				Console.WriteLine($"Stack Trace: {ex.StackTrace}");
 				return false;
 			}
 		}
