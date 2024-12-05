@@ -79,9 +79,7 @@ namespace GUI.View
         TaiKhoan taiKhoan;
         public MainWindow()
         {
-            InitializeComponent();
-
-            
+            InitializeComponent();       
         }
 
         public MainWindow(TaiKhoan tk):this()
