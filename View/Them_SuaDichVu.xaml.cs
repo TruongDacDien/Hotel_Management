@@ -62,7 +62,7 @@ namespace GUI.View
             }
             else
             {
-                txbTitle.Text = "Thêm mới dịch vụ ";
+                txbTitle.Text = "Nhập thông tin dịch vụ";
             }
         }
 

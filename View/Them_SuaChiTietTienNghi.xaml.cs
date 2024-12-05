@@ -60,8 +60,8 @@ namespace GUI.View
             }
             else
             {
-                txbTitle.Text = "Thêm mới chi tiết tiện nghi"; // Nếu là thêm mới, tiêu đề khác đi
-            }
+                txbTitle.Text = "Nhập thông tin chi tiết tiện nghi"; // Nếu là thêm mới, tiêu đề khác đi
+			}
 
 
         }

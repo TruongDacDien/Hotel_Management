@@ -106,7 +106,7 @@
                 <DataTemplate x:Key="dtpNutXoa">
                     <Button x:Name="btnXoa" Click="btnXoa_Click" BorderThickness="0">
                         <Button.Background>
-                            <ImageBrush ImageSource="/GUI;component/Res/delete_vs2.png"/>
+                            <ImageBrush ImageSource="/GUI;component/Res/delete.png"/>
                         </Button.Background>
                     </Button>
                 </DataTemplate>

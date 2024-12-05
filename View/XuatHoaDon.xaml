@@ -22,11 +22,11 @@
                 </ScrollViewer.Resources>
                 <StackPanel x:Name="print">
                     <Grid>
-                        <Image Source="../Res/logoKhachSan.png" Width="100" Height="100" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20 0 0 0"/>
-                        <TextBlock Text="Hóa Đơn" VerticalAlignment="Center" FontSize="40" FontWeight="Bold" Margin="60 10 0 0" Foreground="#FFFBE188" HorizontalAlignment="Center"/>
+                        <Image Source="../Res/logo.png" Width="130" Height="130" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0"/>
+                        <TextBlock Text="HÓA ĐƠN" VerticalAlignment="Center" FontSize="40" FontWeight="Bold" Margin="187,0,0,0" HorizontalAlignment="Left"/>
                         <Button x:Name="btnInHoaDon" Padding="0" Width="40" Height="40" Background="Transparent" BorderThickness="0" Margin="0 0 10 0"
                             ToolTip="In hóa đơn" Click="click_InHoaDon" HorizontalAlignment="Right" >
-                            <materialDesign:PackIcon Kind="Printer" Width="30" Height="30" Foreground="#FF797979"/>
+                            <materialDesign:PackIcon Kind="Printer" Width="25" Height="25" Foreground="#FF797979"/>
                         </Button>
                     </Grid>
                     <StackPanel HorizontalAlignment="Stretch" Margin="20 0 20 0" Width="480">
@@ -47,7 +47,7 @@
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Nhân viên:" FontSize="12" Margin="5"/>
-                                    <TextBlock Text="Nguyễn Văn Duy" x:Name="txbNhanVien" FontSize="12" Margin="5" FontWeight="DemiBold"/>
+                                    <TextBlock Text="Trương Đắc Điền" x:Name="txbNhanVien" FontSize="12" Margin="5" FontWeight="DemiBold"/>
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Grid.Column="1" Margin="10">
@@ -132,8 +132,8 @@
                                 <TextBlock Text="Cảm ơn quý khách!" VerticalAlignment="Center" FontSize="20" Margin="5" FontWeight="Light"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                                <TextBlock Text="dvlluxurious@email.com" VerticalAlignment="Center" FontSize="8" Margin="5" FontWeight="Light"/>
-                                <TextBlock Text="+84 121 123 121" VerticalAlignment="Center" FontSize="8" Margin="5" FontWeight="Light"/>
+                                <TextBlock Text="theroyalhotel@email.com" VerticalAlignment="Center" FontSize="8" Margin="5" FontWeight="Light"/>
+                                <TextBlock Text="+84 888 999 888" VerticalAlignment="Center" FontSize="8" Margin="5" FontWeight="Light"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>

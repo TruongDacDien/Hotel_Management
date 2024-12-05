@@ -347,21 +347,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Res\mountains.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Res\Light 010.png" />
-    <Resource Include="Res\logoKhachSan.png" />
-    <Resource Include="Res\logoKS.png" />
     <Resource Include="Res\ic_more.png" />
     <Resource Include="Res\backGround_DN.png" />
-    <Resource Include="Res\edit.png" />
-    <Resource Include="Res\delete_vs2.png" />
     <Resource Include="Res\add.png" />
-    <Resource Include="Res\Home0.png" />
-    <Resource Include="Res\Home1.png" />
-    <Resource Include="Res\Home2.png" />
-    <Resource Include="Res\Home3.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="BUS\BUS.csproj">
@@ -374,18 +363,30 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Res\avatar\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Res\MenuHeader.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Res\FieldCornerIcon.png" />
     <Resource Include="Res\IncomeIcon.png" />
     <Resource Include="Res\IncreaseIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="property.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Res\image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Res\logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Res\Home0.png" />
+    <Resource Include="Res\Home1.png" />
+    <Resource Include="Res\Home2.png" />
+    <Resource Include="Res\Home3.png" />
+    <Resource Include="Res\Home4.png" />
+    <Resource Include="Res\Home5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Res\delete.png" />
+    <Resource Include="Res\edit.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets" Condition="Exists('packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets')" />

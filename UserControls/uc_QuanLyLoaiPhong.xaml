@@ -114,7 +114,7 @@
                                     <DataTemplate>
                                         <Button x:Name="btnXoaLoaiPhong" Click="btnXoaLoaiPhong_Click" Width="25" Height="25" BorderThickness="0">
                                             <Button.Background>
-                                                <ImageBrush ImageSource="/GUI;component/Res/delete_vs2.png"/>
+                                                <ImageBrush ImageSource="/GUI;component/Res/delete.png"/>
                                             </Button.Background>
                                         </Button>
                                     </DataTemplate>
