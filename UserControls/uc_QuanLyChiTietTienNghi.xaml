@@ -44,8 +44,8 @@
                 </materialDesign:ColorZone>
 
 
-                <Button HorizontalAlignment="Right"  x:Name="btnThemCTTienNghi" Click="btnThemCTTienNghi_Click"                 
-                   Width="190" Height="38" Margin="0 0 60 0" Content="Thêm chi tiết tiện nghi"  Background="#478C10" >
+                <Button HorizontalAlignment="Left"  x:Name="btnThemCTTienNghi" Click="btnThemCTTienNghi_Click"                 
+                   Width="190" Height="38" Margin="1050,0,0,0" Content="Thêm chi tiết tiện nghi"  Background="#478C10" VerticalAlignment="Bottom" >
                     <Button.Clip>
                         <RectangleGeometry Rect="0,0,190,38" RadiusX="10" RadiusY="10" >
                         </RectangleGeometry>
@@ -104,7 +104,7 @@
                                     <DataTemplate>
                                         <Button x:Name="btnXoaCTTienNghi" Click="btnXoaCTTienNghi_Click" Width="25" Height="25" BorderThickness="0">
                                             <Button.Background>
-                                                <ImageBrush ImageSource="/GUI;component/Res/delete_vs2.png"/>
+                                                <ImageBrush ImageSource="/GUI;component/Res/delete.png"/>
                                             </Button.Background>
                                         </Button>
                                     </DataTemplate>

@@ -47,7 +47,7 @@ namespace GUI.UserControls
             try
             {
                 index++;
-                if (index > 3)
+                if (index > 5)
                     index = 0;
                 ImageBrush ENABLED_BACKGROUND = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Res/Home"+ index.ToString()  + ".png")));
                 this.Background = ENABLED_BACKGROUND;
@@ -66,7 +66,7 @@ namespace GUI.UserControls
             try
             {
                 index++;
-                if (index > 3)
+                if (index > 5)
                     index = 0;
                 ImageBrush ENABLED_BACKGROUND = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Res/Home" + index.ToString() + ".png")));
                 this.Background = ENABLED_BACKGROUND;
@@ -85,7 +85,7 @@ namespace GUI.UserControls
             {
                 index--;
                 if (index < 0)
-                    index = 3;
+                    index = 5;
                 ImageBrush ENABLED_BACKGROUND = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Res/Home" + index.ToString() + ".png")));
                 this.Background = ENABLED_BACKGROUND;
             }

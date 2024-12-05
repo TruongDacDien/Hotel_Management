@@ -233,7 +233,7 @@ namespace GUI.UserControls
         // Sự kiện loade UC
         private void ucPhong_Loaded(object sender, RoutedEventArgs e)
         {
-            dtpChonNgay.Text = "10/02/2021";
+            dtpChonNgay.Text = "01/11/2024";
             tpGio.Text = "12:00 AM";
         }
 

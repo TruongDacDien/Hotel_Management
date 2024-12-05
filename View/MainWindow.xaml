@@ -84,7 +84,7 @@
 
                             <Button Height="30"
                                     x:Name="btnOpenLVMenu" Background="Transparent" BorderThickness="0" Padding="0">
-                                <materialDesign:PackIcon Kind="Menu" Foreground="Black" Width="30" Height="30"/>
+                                <materialDesign:PackIcon Kind="Menu" Foreground="Black" Width="25" Height="25"/>
                             </Button>
 
                         </StackPanel>
@@ -99,7 +99,7 @@
                                 <ListBox>
                                     <ListBoxItem Content="Thông tin cá nhân" />
                                     <ListBoxItem Content="Thông tin tài khoản" />
-                                    <ListBoxItem Content="Đổi mật khẩu" />
+                                    <ListBoxItem Content="Đăng xuất" />
                                 </ListBox>
                             </materialDesign:PopupBox>
                         </Grid>
@@ -146,7 +146,7 @@
 
                         <Ellipse x:Name="imgAvatar" Width="130" Height="130" VerticalAlignment="Top" Margin="0 10 0 0">
                             <Ellipse.Fill>
-                                <ImageBrush ImageSource="/GUI;component/Res/mountains.jpg"/>
+                                <ImageBrush ImageSource="/GUI;component/Res/image.png"/>
                             </Ellipse.Fill>
                         </Ellipse>
                         <Grid x:Name="grdAvatar" Width="130" Height="130"  VerticalAlignment="Top" Margin="0 10 0 0">
