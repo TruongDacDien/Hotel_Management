@@ -41,13 +41,11 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = @"
-                    SELECT 
-                        tk.username, tk.password, tk.maNV, tk.capDoQuyen, tk.avatar,
-                        nv.hoTen, nv.chucVu, nv.sDT, nv.diaChi, nv.cCCD, nv.nTNS, nv.gioiTinh, nv.luong
-                    FROM TaiKhoan tk
-                    LEFT JOIN NhanVien nv ON tk.maNV = nv.maNV
-                    WHERE tk.username = @Username";
+					string query = @"SELECT tk.username, tk.password, tk.maNV, tk.capDoQuyen, tk.avatar, tk.disabled,
+									nv.hoTen, nv.chucVu, nv.sDT, nv.diaChi, nv.cCCD, nv.nTNS, nv.gioiTinh, nv.luong
+									FROM TaiKhoan tk
+									LEFT JOIN NhanVien nv ON tk.maNV = nv.maNV
+									WHERE tk.username = @Username";
 
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@Username", username);
@@ -64,6 +62,7 @@ namespace DAL.Data
 								MaNV = reader.IsDBNull(reader.GetOrdinal("maNV")) ? 0 : reader.GetInt32(reader.GetOrdinal("maNV")),
 								CapDoQuyen = reader.IsDBNull(reader.GetOrdinal("capDoQuyen")) ? 0 : reader.GetInt32(reader.GetOrdinal("capDoQuyen")),
 								Avatar = reader["avatar"] as byte[],
+								Disabled = reader.IsDBNull(reader.GetOrdinal("disabled")) ? false : reader.GetBoolean(reader.GetOrdinal("disabled")),
 								NhanVien = new NhanVien
 								{
 									MaNV = reader.IsDBNull(reader.GetOrdinal("maNV")) ? 0 : reader.GetInt32(reader.GetOrdinal("maNV")),

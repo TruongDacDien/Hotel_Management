@@ -32,8 +32,8 @@ namespace DAL.Data
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
-                        INSERT INTO PhieuThue (MaPhieuThue, NgayLapPhieu, MaKH, MaNV)
-                        VALUES (@MaPhieuThue, @NgayLapPhieu, @MaKH, @MaNV)";
+                        INSERT INTO PhieuThue (MaPhieuThue, NgayLapPhieu, MaKH, MaNV, IsDeleted)
+                        VALUES (@MaPhieuThue, @NgayLapPhieu, @MaKH, @MaNV, 0)";
 
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaPhieuThue", pt.MaPhieuThue);
@@ -63,7 +63,7 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "DELETE FROM PhieuThue WHERE MaPhieuThue = @MaPhieuThue";
+					string query = "UPDATE PhieuThue SET IsDeleted = 1 WHERE MaPhieuThue = @MaPhieuThue";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaPhieuThue", maPhieuThue);
 
@@ -99,7 +99,8 @@ namespace DAL.Data
                         SELECT pt.MaPhieuThue, pt.NgayLapPhieu, kh.TenKH, nv.HoTen
                         FROM PhieuThue pt
                         JOIN KhachHang kh ON pt.MaKH = kh.MaKH
-                        JOIN NhanVien nv ON pt.MaNV = nv.MaNV";
+                        JOIN NhanVien nv ON pt.MaNV = nv.MaNV
+						WHERE pt.IsDeleted = 0";
 
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();

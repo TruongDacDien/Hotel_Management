@@ -22,8 +22,8 @@ namespace GUI.View
     /// </summary>
     public partial class Them_SuaPhong : Window
     {
-        public delegate void TryenDuLieu(PhongDTO p);
-        public delegate void SuaDuLieu(PhongDTO p);
+        public delegate void TryenDuLieu(Phong p);
+        public delegate void SuaDuLieu(Phong p);
 
         public TryenDuLieu truyen;
         public SuaDuLieu sua;
@@ -39,7 +39,7 @@ namespace GUI.View
             cmbLoaiPhong.SelectedValuePath = "MaLoaiPhong";
         }
 
-        public Them_SuaPhong(PhongDTO phong) : this()
+        public Them_SuaPhong(Phong phong) : this()
         {
             cmbLoaiPhong.DisplayMemberPath = "TenLoaiPhong";
             cmbLoaiPhong.SelectedValuePath = "MaLoaiPhong";
@@ -111,7 +111,7 @@ namespace GUI.View
             }
             else
             {
-                PhongDTO phong = new PhongDTO()
+                Phong phong = new Phong()
                 {
                     SoPhong = txtSoPhong.Text,
                     TinhTrang = cmbTinhTrang.Text,
@@ -135,7 +135,7 @@ namespace GUI.View
             }
             else
             {
-                PhongDTO phong = new PhongDTO()
+                Phong phong = new Phong()
                 {
                     SoPhong = txtSoPhong.Text,
                     TinhTrang = cmbTinhTrang.Text,

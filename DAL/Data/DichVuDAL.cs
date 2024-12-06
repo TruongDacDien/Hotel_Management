@@ -35,7 +35,8 @@ namespace DAL.Data
                         SELECT 
                             dv.MaDV,dv.MaLoaiDV, dv.TenDV, dv.Gia, ldv.TenLoaiDV AS LoaiDV
                         FROM DichVu dv
-                        INNER JOIN LoaiDV ldv ON dv.MaLoaiDV = ldv.MaLoaiDV";
+                        INNER JOIN LoaiDV ldv ON dv.MaLoaiDV = ldv.MaLoaiDV
+						WHERE dv.IsDeleted = 0";
 
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
@@ -73,7 +74,7 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "SELECT * FROM LoaiDV";
+					string query = "SELECT * FROM LoaiDV WHERE IsDeleted = 0";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
@@ -108,7 +109,7 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "SELECT MaDV, TenDV, MaLoaiDV, Gia FROM DichVu";
+					string query = "SELECT MaDV, TenDV, MaLoaiDV, Gia FROM DichVu WHERE IsDeleted = 0";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
@@ -142,7 +143,7 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "INSERT INTO DichVu (TenDV, MaLoaiDV, Gia) VALUES (@TenDV, @MaLoaiDV, @Gia)";
+					string query = "INSERT INTO DichVu (TenDV, MaLoaiDV, Gia, IsDeleted) VALUES (@TenDV, @MaLoaiDV, @Gia, 0)";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenDV", dv.TenDV);
 					cmd.Parameters.AddWithValue("@MaLoaiDV", dv.MaLoaiDV);
@@ -196,7 +197,7 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "DELETE FROM DichVu WHERE MaDV = @MaDV";
+					string query = "UPDATE DichVu SET IsDeleted = 1 WHERE MaDV = @MaDV";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaDV", dv.MaDV);
 

@@ -139,7 +139,6 @@
     <Compile Include="DTO\DichVuDTO.cs" />
     <Compile Include="DTO\DichVu_DaChon.cs" />
     <Compile Include="DTO\HoaDon.cs" />
-    <Compile Include="DTO\HoaDonDTO.cs" />
     <Compile Include="DTO\KhachHang.cs" />
     <Compile Include="DTO\LoaiDV.cs" />
     <Compile Include="DTO\LoaiPhong.cs" />
@@ -147,7 +146,6 @@
     <Compile Include="DTO\PhieuThue.cs" />
     <Compile Include="DTO\PhieuThue_Custom.cs" />
     <Compile Include="DTO\Phong.cs" />
-    <Compile Include="DTO\PhongDTO.cs" />
     <Compile Include="DTO\PhongTrong.cs" />
     <Compile Include="DTO\Phong_Custom.cs" />
     <Compile Include="Data\PhieuThueDAL.cs" />

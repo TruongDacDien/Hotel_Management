@@ -6,16 +6,12 @@ using System.Threading.Tasks;
 
 namespace DAL.DTO
 {
-    public class PhieuThue_Custom
+    public class PhieuThue_Custom: PhieuThue
     {
-        private int maPhieuThue;
         private string tenKH;
         private string tenNV;
-        private DateTime? ngayLapPhieu;
 
-        public int MaPhieuThue { get => maPhieuThue; set => maPhieuThue = value; }
         public string TenKH { get => tenKH; set => tenKH = value; }
         public string TenNV { get => tenNV; set => tenNV = value; }
-        public DateTime? NgayLapPhieu { get => ngayLapPhieu; set => ngayLapPhieu = value; }
     }
 }

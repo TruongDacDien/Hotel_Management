@@ -78,6 +78,11 @@ namespace GUI.View
 			TaiKhoan taiKhoan = TaiKhoanBUS.GetInstance().kiemTraTKTonTaiKhong(username, pass);
 			if (taiKhoan != null)
 			{
+				if(taiKhoan.Disabled == true)
+				{
+					new DialogCustoms("Tài khoản đã bị vô hiệu hóa!", "Thông báo", DialogCustoms.OK).ShowDialog();
+					return;
+				}
 				new DialogCustoms("Đăng nhập thành công!", "Thông báo", DialogCustoms.OK).ShowDialog();
 				MainWindow main = new MainWindow(taiKhoan);
 				main.Show();

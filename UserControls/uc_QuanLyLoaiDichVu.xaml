@@ -82,7 +82,7 @@
 
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button x:Name="btnSuaLoaiDV" Click="btnSuaLoaiDV_Click"  Width="40" Height="40" BorderThickness="0">
+                                        <Button x:Name="btnSuaLoaiDV" Click="btnSuaLoaiDV_Click"  Width="25" Height="25" BorderThickness="0">
                                             <Button.Background>
                                                 <ImageBrush ImageSource="/GUI;component/Res/edit.png"/>
                                             </Button.Background>

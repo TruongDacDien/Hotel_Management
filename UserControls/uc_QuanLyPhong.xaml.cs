@@ -24,7 +24,7 @@ namespace GUI.UserControls
     /// </summary>
     public partial class uc_QuanLyPhong : UserControl
     {
-        ObservableCollection<PhongDTO> list;
+        ObservableCollection<Phong> list;
 
 
         public uc_QuanLyPhong()
@@ -42,16 +42,16 @@ namespace GUI.UserControls
             if (String.IsNullOrEmpty(txtFilter.Text))
                 return true;
             else
-                return (obj as PhongDTO).SoPhong.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
+                return (obj as Phong).SoPhong.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private void TaiDanhSach()
         {
-            list = new ObservableCollection<PhongDTO>(PhongBUS.GetInstance().getDataPhong());
+            list = new ObservableCollection<Phong>(PhongBUS.GetInstance().getDataPhong());
             lsvPhong.ItemsSource = list;
         }
 
-        void nhanData(PhongDTO p)
+        void nhanData(Phong p)
         {
 
             if (PhongBUS.GetInstance().addDataPhong(p))
@@ -65,7 +65,7 @@ namespace GUI.UserControls
             }
         }
 
-        void capNhatData(PhongDTO p)
+        void capNhatData(Phong p)
         {
 
             if (PhongBUS.GetInstance().capNhatDataPhong(p))
@@ -84,7 +84,7 @@ namespace GUI.UserControls
         }
         private void btnCapNhat_Click(object sender, RoutedEventArgs e)
         {
-            PhongDTO phong = (sender as Button).DataContext as PhongDTO;
+            Phong phong = (sender as Button).DataContext as Phong;
 
             Them_SuaPhong nhapThemPhong = new Them_SuaPhong(phong);
 
@@ -93,7 +93,7 @@ namespace GUI.UserControls
         }
         private void btnXoaPhong_Click(object sender, RoutedEventArgs e)
         {
-            PhongDTO phong = (sender as Button).DataContext as PhongDTO;
+            Phong phong = (sender as Button).DataContext as Phong;
             var thongbao = new DialogCustoms("Bạn có thật sự muốn xóa phòng " + phong.SoPhong, "Thông báo", DialogCustoms.YesNo);
 
             if (thongbao.ShowDialog() == true)
