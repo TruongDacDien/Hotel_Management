@@ -32,17 +32,19 @@ namespace DAL.Data
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
-                        INSERT INTO KhachHang (MaKH, TenKH, CCCD, DiaChi, SDT, IsDeleted)
-                        VALUES (@MaKH, @TenKH, @CCCD, @DiaChi, @SDT, 0)";
+                        INSERT INTO KhachHang (MaKH, TenKH, GioiTinh, CCCD, DiaChi, SDT, QuocTich, IsDeleted)
+                        VALUES (@MaKH, @TenKH, @GioiTinh, @CCCD, @DiaChi, @SDT, @QuocTich, 0)";
 
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaKH", kh.MaKH);
 					cmd.Parameters.AddWithValue("@TenKH", kh.TenKH);
-					cmd.Parameters.AddWithValue("@CCCD", kh.CCCD);
+                    cmd.Parameters.AddWithValue("@GioiTinh", kh.GioiTinh);
+                    cmd.Parameters.AddWithValue("@CCCD", kh.CCCD);
 					cmd.Parameters.AddWithValue("@DiaChi", kh.DiaChi);
-					cmd.Parameters.AddWithValue("@SDT", kh.SDT);
+					cmd.Parameters.AddWithValue("@SDT", kh.SDT); 
+					cmd.Parameters.AddWithValue("@QuocTich", kh.QuocTich);
 
-					conn.Open();
+                    conn.Open();
 					cmd.ExecuteNonQuery();
 				}
 				return true;
@@ -114,6 +116,7 @@ namespace DAL.Data
 							{
 								MaKH = reader.GetInt32(reader.GetOrdinal("MaKH")),
 								TenKH = reader.GetString(reader.GetOrdinal("TenKH")),
+								GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
 								CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
 								DiaChi = reader.GetString(reader.GetOrdinal("DiaChi")),
 								SDT = reader.GetString(reader.GetOrdinal("SDT")),
@@ -142,13 +145,14 @@ namespace DAL.Data
 				{
 					string query = @"
                         UPDATE KhachHang 
-                        SET TenKH = @TenKH, CCCD = @CCCD, DiaChi = @DiaChi, SDT = @SDT, QuocTich = @QuocTich
+                        SET TenKH = @TenKH, CCCD = @CCCD, GioiTinh = @GioiTinh, DiaChi = @DiaChi, SDT = @SDT, QuocTich = @QuocTich
                         WHERE MaKH = @MaKH";
 
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenKH", khachHang.TenKH);
 					cmd.Parameters.AddWithValue("@CCCD", khachHang.CCCD);
-					cmd.Parameters.AddWithValue("@DiaChi", khachHang.DiaChi);
+                    cmd.Parameters.AddWithValue("@GioiTinh", khachHang.GioiTinh);
+                    cmd.Parameters.AddWithValue("@DiaChi", khachHang.DiaChi);
 					cmd.Parameters.AddWithValue("@SDT", khachHang.SDT);
 					cmd.Parameters.AddWithValue("@QuocTich", khachHang.QuocTich);
 					cmd.Parameters.AddWithValue("@MaKH", khachHang.MaKH);

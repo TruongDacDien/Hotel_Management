@@ -38,8 +38,9 @@ namespace GUI.View
             txtTenLoaiPhong.IsReadOnly = true;
             txtTenLoaiPhong.Text = loaiPhong.TenLoaiPhong;
             txtSoNguoiToiDa.Text = loaiPhong.SoNguoiToiDa.ToString();
-            txtGiaNgay.Text = loaiPhong.GiaNgay.ToString();
-            txtGiaGio.Text = loaiPhong.GiaGio.ToString();
+
+            txtGiaNgay.Text = loaiPhong.GiaNgay % 1 == 0 ? ((int)loaiPhong.GiaNgay).ToString() : loaiPhong.GiaNgay.ToString();
+            txtGiaGio.Text = loaiPhong.GiaGio % 1 == 0 ? ((int)loaiPhong.GiaGio).ToString() : loaiPhong.GiaGio.ToString();
             txbTitle.Text = "Sửa thông tin " + loaiPhong.MaLoaiPhong;
             maLoaiPhong = loaiPhong.MaLoaiPhong.ToString();
         }

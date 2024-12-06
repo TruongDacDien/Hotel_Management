@@ -25,20 +25,21 @@ namespace GUI.UserControls
     public partial class uc_QuanLyChiTietTienNghi : UserControl
     {
         ObservableCollection<CT_TienNghi> list;
+        private CollectionView view;
 
         public uc_QuanLyChiTietTienNghi()
         {
             InitializeComponent();
             TaiDanhSach();
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lsvCTTienNghi.ItemsSource);
-            view.Filter = CTTienNghiFilter;
+            
         }
 
         private void TaiDanhSach()
         {
             list = new ObservableCollection<CT_TienNghi>(CT_TienNghiBUS.Instance.getData());
             lsvCTTienNghi.ItemsSource = list;
-            
+            view = (CollectionView)CollectionViewSource.GetDefaultView(lsvCTTienNghi.ItemsSource);
+            view.Filter = CTTienNghiFilter;
         }
 
 

@@ -25,14 +25,11 @@ namespace GUI.UserControls
     public partial class uc_QuanLyLoaiPhong : UserControl
     {
         ObservableCollection<LoaiPhong> listLP;
-
+        private CollectionView view;
         public uc_QuanLyLoaiPhong()
         {
             InitializeComponent();
             TaiDanhSach();
-
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lsvLoaiPhong.ItemsSource);
-            view.Filter = LoaiPhongFilter;
         }
 
         #region Method
@@ -45,6 +42,8 @@ namespace GUI.UserControls
         {
             listLP = new ObservableCollection<LoaiPhong>(LoaiPhongBUS.Instance.getDataLoaiPhong());
             lsvLoaiPhong.ItemsSource = listLP;
+            view = (CollectionView)CollectionViewSource.GetDefaultView(listLP);
+            view.Filter = LoaiPhongFilter;
         }
 
         private bool LoaiPhongFilter(object obj)
@@ -57,7 +56,7 @@ namespace GUI.UserControls
 
         void nhanData(LoaiPhong loaiPhong)
         {
-            if (LoaiPhongBUS.Instance.KiemTraTrungTen(loaiPhong))
+            if (!LoaiPhongBUS.Instance.KiemTraTrungTen(loaiPhong))
             {
                 if (LoaiPhongBUS.Instance.addLoaiPhong(loaiPhong))
                 {

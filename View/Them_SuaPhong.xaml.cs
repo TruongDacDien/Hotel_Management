@@ -115,7 +115,7 @@ namespace GUI.View
                 {
                     SoPhong = txtSoPhong.Text,
                     TinhTrang = cmbTinhTrang.Text,
-                    LoaiPhong = cmbLoaiPhong.SelectedValue.ToString()
+                    MaLoaiPhong = (int)cmbLoaiPhong.SelectedValue,
                 };
                 if (truyen != null)
                 {
@@ -135,11 +135,13 @@ namespace GUI.View
             }
             else
             {
+
                 Phong phong = new Phong()
+
                 {
                     SoPhong = txtSoPhong.Text,
                     TinhTrang = cmbTinhTrang.Text,
-                    LoaiPhong = cmbLoaiPhong.SelectedValue.ToString()
+                    MaLoaiPhong = (int)cmbLoaiPhong.SelectedValue,
                 };
                 if (sua != null)
                 {

@@ -65,7 +65,7 @@
         <Grid Grid.Row="1" >
             <Grid.Resources>
 
-                <DataTemplate x:Key="dtpMaNhanVien">
+                <DataTemplate x:Key="dtpMaKhachHang">
                     <TextBlock Text="{Binding MaKH}"></TextBlock>
                 </DataTemplate>
 
@@ -135,7 +135,7 @@
                             </GridView.ColumnHeaderContainerStyle>
 
 
-                            <GridViewColumn Width="120" Header="Mã nhân viên" CellTemplate="{StaticResource dtpMaNhanVien}"/>
+                            <GridViewColumn Width="120" Header="Mã Khách Hàng" CellTemplate="{StaticResource dtpMaKhachHang}"/>
 
 
                             <GridViewColumn Width="200" Header="Họ và tên"   CellTemplate="{StaticResource dtpHoTen}"  />

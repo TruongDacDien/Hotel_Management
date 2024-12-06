@@ -25,22 +25,22 @@ namespace GUI.UserControls
     public partial class uc_QuanLyDichVu : UserControl
     {
         ObservableCollection<DichVuDTO> list;
+        private CollectionView view;
 
         public uc_QuanLyDichVu()
         {
             InitializeComponent();
             TaiDanhSach();
 
-
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lsvDichVu.ItemsSource);
-            view.Filter = DichVuFilter;
         }
 
         private void TaiDanhSach()
         {
             list = new ObservableCollection<DichVuDTO>(DichVuBUS.GetInstance().getDichVu_Custom());
             lsvDichVu.ItemsSource = list;
-
+            view = (CollectionView)CollectionViewSource.GetDefaultView(list);
+            view.Filter = DichVuFilter;
+            
         }
 
         private bool DichVuFilter(object obj)   
@@ -59,6 +59,7 @@ namespace GUI.UserControls
                 {
                     new DialogCustoms("Thêm thành công", "Thông báo", DialogCustoms.OK).Show();
                     TaiDanhSach();
+                   
                 }
             }
             else
