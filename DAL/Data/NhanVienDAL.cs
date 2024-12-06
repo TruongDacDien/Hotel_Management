@@ -146,7 +146,7 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "UPDATE NhanVien SET IsDisabled = 1 WHERE MaNV = @MaNV";
+					string query = "UPDATE NhanVien SET IsDeleted = 1 WHERE MaNV = @MaNV";
 
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaNV", nv.MaNV);

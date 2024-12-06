@@ -82,7 +82,7 @@
                             <GridViewColumn Header="Mã dịch vụ" Width="100" DisplayMemberBinding="{Binding MaDV}" />
                             <GridViewColumn Header="Tên dịch vụ" Width="200" DisplayMemberBinding="{Binding TenDV}" />
                             <GridViewColumn Header="Loại" Width="140" DisplayMemberBinding="{Binding LoaiDV}" />
-                            <GridViewColumn Header="Đơn giá" Width="120" DisplayMemberBinding="{Binding Gia, StringFormat='{}{0:0.#}'}" />
+                            <GridViewColumn Header="Đơn giá" Width="120" DisplayMemberBinding="{Binding Gia, StringFormat={}{0:N0} VND}" />
                             <GridViewColumn Width="90" Header="Sửa">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>

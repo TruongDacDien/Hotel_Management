@@ -18,28 +18,41 @@ using BUS;
 using DAL.DTO;
 using System.Text.RegularExpressions;
 
+
 namespace GUI.UserControls
 {
 
     public partial class uc_NhanVien : UserControl
     {
         ObservableCollection<NhanVien> list;
+        private CollectionView view;
         public uc_NhanVien()
         {
             InitializeComponent();
-            list = new ObservableCollection<NhanVien>(NhanVienBUS.GetInstance().getDataNhanVien());
-            lvNhanVien.ItemsSource = list;
+            TaiDanhSach();
 
         }
         #region method
+
+        private void TaiDanhSach()
+        {
+            list = new ObservableCollection<NhanVien>(NhanVienBUS.GetInstance().getDataNhanVien());
+            lvNhanVien.ItemsSource = list;
+            view = (CollectionView)CollectionViewSource.GetDefaultView(list);
+            view.Filter = filterTimKiem;
+
+        }
+
         void nhanData(NhanVien nv)
         {
 			string error = string.Empty;
             if (NhanVienBUS.GetInstance().kiemTraTonTaiNhanVien(nv.CCCD.ToString()) == -1)
             {
-                list.Add(nv);
                 if (NhanVienBUS.GetInstance().addNhanVien(nv))
+                {
                     new DialogCustoms("Thêm nhân viên thành công!", "Thông báo", DialogCustoms.OK).ShowDialog();
+                    TaiDanhSach();
+                }
             }
             else
             {
@@ -64,6 +77,7 @@ namespace GUI.UserControls
             if (NhanVienBUS.GetInstance().updateNhanVien(nv))
             {
                 new DialogCustoms("Cập nhật nhân viên thành công!", "Thông báo", DialogCustoms.OK).ShowDialog();
+                TaiDanhSach();
             }
 
         }
@@ -109,8 +123,9 @@ namespace GUI.UserControls
             {
                 if (NhanVienBUS.GetInstance().deleteNhanVien(nv))
                 {
-                    list.Remove(nv);
+                    
                     new DialogCustoms("Xóa nhân viên thành công !", "Thông báo", DialogCustoms.OK).ShowDialog();
+                    TaiDanhSach();
                 }
                     
             }
