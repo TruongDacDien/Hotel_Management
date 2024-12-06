@@ -17,6 +17,7 @@ namespace DAL.DTO
 		private DateTime nTNS;
 		private string gioiTinh;
 		private decimal luong;
+		private bool isDeleted;
 
 		public int MaNV { get => maNV; set => maNV = value; }
 		public string HoTen { get => hoTen; set => hoTen = value; }
@@ -27,5 +28,6 @@ namespace DAL.DTO
 		public DateTime NTNS { get => nTNS; set => nTNS = value; }
 		public string GioiTinh { get => gioiTinh; set => gioiTinh = value; }
 		public decimal Luong { get => luong; set => luong = value; }
+		public bool IsDeleted { get => isDeleted; set => isDeleted = value; }
 	}
 }

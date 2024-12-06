@@ -58,5 +58,18 @@ namespace BUS
             else
                 return "Uknow";
         }
-    }
+
+		public int kiemTraTonTaiNhanVien(string cccd)
+		{
+			NhanVien nv = NhanVienDAL.GetInstance().kiemTraTonTaiNhanVien(cccd);
+			if (nv != null)
+			{
+				return nv.MaNV;
+			}
+			else
+			{
+				return -1;
+			}
+		}
+	}
 }

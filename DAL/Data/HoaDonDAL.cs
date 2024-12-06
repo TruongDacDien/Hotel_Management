@@ -22,9 +22,9 @@ namespace DAL.Data
 		}
 
 		// Lấy tất cả các hóa đơn
-		public List<HoaDonDTO> LayDuLieuHoaDon()
+		public List<HoaDon> LayDuLieuHoaDon()
 		{
-			List<HoaDonDTO> lstHoaDon = new List<HoaDonDTO>();
+			List<HoaDon> lstHoaDon = new List<HoaDon>();
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
@@ -49,7 +49,7 @@ namespace DAL.Data
 					{
 						while (reader.Read())
 						{
-							HoaDonDTO hoaDon = new HoaDonDTO
+							HoaDon hoaDon = new HoaDon
 							{
 								MaHD = reader.GetInt32(reader.GetOrdinal("MaHD")),
 								MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),

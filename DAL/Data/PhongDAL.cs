@@ -38,7 +38,7 @@ namespace DAL.Data
                         FROM Phong p
                         LEFT JOIN CT_PhieuThue ct ON p.SoPhong = ct.SoPhong
                         WHERE ct.NgayBD <= @NgayChon AND ct.NgayKT >= @NgayChon
-                            AND ct.TinhTrangThue != 'Đã thanh toán'";
+                            AND ct.TinhTrangThue != 'Đã thanh toán' AND p.IsDeleted = 0";
 
                     MySqlCommand cmd = new MySqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@NgayChon", ngayChon);
@@ -149,7 +149,7 @@ namespace DAL.Data
                     string query = @"
                         SELECT p.SoPhong, p.LoaiPhong.TenLoaiPhong
                         FROM Phong p
-                        WHERE p.SoPhong NOT IN (
+                        WHERE p.IsDeleted = 0 AND p.SoPhong NOT IN (
                             SELECT ct.SoPhong
                             FROM CT_PhieuThue ct
                             WHERE (ct.NgayBD <= @NgayBD AND ct.NgayKT >= @NgayKT) 
@@ -193,7 +193,7 @@ namespace DAL.Data
             {
                 using (MySqlConnection conn = new MySqlConnection(connectionString))
                 {
-                    string query = "INSERT INTO Phong (SoPhong, MaLoaiPhong, TinhTrang) VALUES (@SoPhong, @MaLoaiPhong, @TinhTrang)";
+                    string query = "INSERT INTO Phong (SoPhong, MaLoaiPhong, TinhTrang, IsDeleted) VALUES (@SoPhong, @MaLoaiPhong, @TinhTrang, 0)";
                     MySqlCommand cmd = new MySqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
                     cmd.Parameters.AddWithValue("@MaLoaiPhong", phong.MaLoaiPhong);
@@ -243,7 +243,7 @@ namespace DAL.Data
             {
                 using (MySqlConnection conn = new MySqlConnection(connectionString))
                 {
-                    string query = "DELETE FROM Phong WHERE SoPhong = @SoPhong";
+                    string query = "UPDATE Phong SET IsDeleted = 1 WHERE SoPhong = @SoPhong";
                     MySqlCommand cmd = new MySqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
                     conn.Open();
@@ -259,9 +259,9 @@ namespace DAL.Data
         }
 
         // Lấy danh sách phòng
-        public List<PhongDTO> getPhong()
+        public List<Phong> getPhong()
         {
-            List<PhongDTO> lstPhong = new List<PhongDTO>();
+            List<Phong> lstPhong = new List<Phong>();
             string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
             try
@@ -275,14 +275,15 @@ namespace DAL.Data
                                         p.TinhTrang, 
                                         lp.TenLoaiPhong AS LoaiPhong 
                                     FROM Phong p
-                                    INNER JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong";
+                                    INNER JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
+                                    WHERE p.IsDeleted = 0";
                     MySqlCommand cmd = new MySqlCommand(query, conn);
                     conn.Open();
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            lstPhong.Add(new PhongDTO
+                            lstPhong.Add(new Phong
                             {
                                 SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
                                 MaLoaiPhong = reader.GetInt32(reader.GetOrdinal("MaLoaiPhong")),
@@ -300,5 +301,65 @@ namespace DAL.Data
 
             return lstPhong;
         }
-    }
+
+		public List<Phong_Custom> filterPhongTheoLoai(string loai)
+		{
+			List<Phong_Custom> filteredPhongList = new List<Phong_Custom>();
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			try
+			{
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				{
+					string query = @"
+                    SELECT 
+                        p.SoPhong, 
+                        p.TinhTrang, 
+                        lp.TenLoaiPhong, 
+                        ct.MaCTPT, 
+                        ct.NgayBD, 
+                        ct.NgayKT, 
+                        ct.TinhTrangThue, 
+                        ct.PhieuThue.KhachHang.TenKH, 
+                        ct.SoNguoiO
+                    FROM Phong p
+                    INNER JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
+                    LEFT JOIN CT_PhieuThue ct ON p.SoPhong = ct.SoPhong
+                    WHERE lp.TenLoaiPhong = @LoaiPhong AND p.IsDeleted = 0";
+
+					MySqlCommand cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@LoaiPhong", loai);
+
+					conn.Open();
+					using (MySqlDataReader reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+						{
+							filteredPhongList.Add(new Phong_Custom
+							{
+								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+								MaPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
+								TinhTrang = reader.GetString(reader.GetOrdinal("TinhTrang")),
+								LoaiPhong = reader.GetString(reader.GetOrdinal("TenLoaiPhong")),
+								TenKH = reader.IsDBNull(reader.GetOrdinal("TenKH")) ? string.Empty : reader.GetString(reader.GetOrdinal("TenKH")),
+								NgayDen = reader.IsDBNull(reader.GetOrdinal("NgayBD")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("NgayBD")),
+								NgayDi = reader.IsDBNull(reader.GetOrdinal("NgayKT")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("NgayKT")),
+								SoNguoi = reader.IsDBNull(reader.GetOrdinal("SoNguoiO")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
+								SoNgayO = reader.IsDBNull(reader.GetOrdinal("NgayBD")) || reader.IsDBNull(reader.GetOrdinal("NgayKT")) ? (int?)null :
+										  (int)(reader.GetDateTime(reader.GetOrdinal("NgayKT")).Subtract(reader.GetDateTime(reader.GetOrdinal("NgayBD"))).TotalDays) + 1,
+								SoGio = reader.IsDBNull(reader.GetOrdinal("NgayBD")) || reader.IsDBNull(reader.GetOrdinal("NgayKT")) ? (int?)null :
+										(int)(reader.GetDateTime(reader.GetOrdinal("NgayKT")).Subtract(reader.GetDateTime(reader.GetOrdinal("NgayBD"))).TotalHours)
+							});
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Lỗi khi lọc danh sách phòng theo loại: " + ex.Message); // Log lỗi nếu cần
+			}
+
+			return filteredPhongList;
+		}
+	}
 }

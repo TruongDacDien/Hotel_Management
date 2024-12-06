@@ -13,10 +13,12 @@ namespace DAL.DTO
 		private int maKH;
 		private DateTime ngayLapPhieu;
 		private int maNV;
+		private bool isDeleted;
 
 		public int MaPhieuThue { get => maPhieuThue; set => maPhieuThue = value; }
 		public int MaKH { get => maKH; set => maKH = value; }
 		public DateTime NgayLapPhieu { get => ngayLapPhieu; set => ngayLapPhieu = value; }
 		public int MaNV { get => maNV; set => maNV = value; }
+		public bool IsDeleted { get => isDeleted; set => isDeleted = value; }
 	}
 }

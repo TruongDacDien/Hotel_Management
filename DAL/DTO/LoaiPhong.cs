@@ -14,11 +14,13 @@ namespace DAL.DTO
 		private int soNguoiToiDa;
 		private decimal giaNgay;
 		private decimal giaGio;
+		private bool isDeleted;
 
 		public int MaLoaiPhong { get => maLoaiPhong; set => maLoaiPhong = value; }
 		public string TenLoaiPhong { get => tenLoaiPhong; set => tenLoaiPhong = value; }
 		public int SoNguoiToiDa { get => soNguoiToiDa; set => soNguoiToiDa = value; }
 		public decimal GiaNgay { get => giaNgay; set => giaNgay = value; }
 		public decimal GiaGio { get => giaGio; set => giaGio = value; }
+		public bool IsDeleted { get => isDeleted; set => isDeleted = value; }
 	}
 }

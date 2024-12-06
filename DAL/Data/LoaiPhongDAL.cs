@@ -31,7 +31,7 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "SELECT * FROM LoaiPhong";
+					string query = "SELECT * FROM LoaiPhong WHERE IsDeleted = 0";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
@@ -68,8 +68,8 @@ namespace DAL.Data
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
-                        INSERT INTO LoaiPhong (TenLoaiPhong, SoNguoiToiDa, GiaNgay, GiaGio)
-                        VALUES (@TenLoaiPhong, @SoNguoiToiDa, @GiaNgay, @GiaGio)";
+                        INSERT INTO LoaiPhong (TenLoaiPhong, SoNguoiToiDa, GiaNgay, GiaGio, IsDeleted)
+                        VALUES (@TenLoaiPhong, @SoNguoiToiDa, @GiaNgay, @GiaGio, 0)";
 
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenLoaiPhong", loaiPhong.TenLoaiPhong);
@@ -98,7 +98,7 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "DELETE FROM LoaiPhong WHERE MaLoaiPhong = @MaLoaiPhong";
+					string query = "UPDATE LoaiPhong SET IsDeleted = 1 WHERE MaLoaiPhong = @MaLoaiPhong";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaLoaiPhong", loaiPhong.MaLoaiPhong);
 

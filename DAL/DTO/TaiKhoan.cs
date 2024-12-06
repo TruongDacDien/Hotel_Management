@@ -15,6 +15,7 @@ namespace DAL.DTO
 		private int capDoQuyen;
 		private byte[] avatar;
 		private NhanVien nhanVien;
+		private bool disabled;
 
 		public string Username { get => username; set => username = value; }
 		public string Password { get => password; set => password = value; }
@@ -22,5 +23,6 @@ namespace DAL.DTO
 		public int CapDoQuyen { get => capDoQuyen; set => capDoQuyen = value; }
 		public byte[] Avatar { get => avatar; set => avatar = value; }
 		public NhanVien NhanVien { get => nhanVien; set => nhanVien = value; }
+		public bool Disabled { get => disabled; set => disabled = value; }
 	}
 }

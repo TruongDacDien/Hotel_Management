@@ -13,11 +13,13 @@ namespace DAL.DTO
 		private string soPhong;
 		private int sL;
 		private string tenTN;
+		private bool isDeleted;
 
 		public int? MaCTTN { get => maCTTN; set => maCTTN = value; }
 		public int MaTN { get => maTN; set => maTN = value; }
 		public string SoPhong { get => soPhong; set => soPhong = value; }
 		public int SL { get => sL; set => sL = value; }
 		public string TenTN { get => tenTN; set => tenTN = value; }
+		public bool IsDeleted { get => isDeleted; set => isDeleted = value; }
 	}
 }

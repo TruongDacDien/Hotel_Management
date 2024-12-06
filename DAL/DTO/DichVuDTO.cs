@@ -8,12 +8,12 @@ namespace DAL.DTO
 {
 	public class DichVuDTO: DichVu
 	{
-		//private int maDichVu;
-		//private string tenDichVu;
-		//private string loaiDichVu;
+		private int maDichVu;
+		private string tenDichVu;
+		private string loaiDichVu;
 
-		//public int MaDichVu { get => maDichVu; set => maDichVu = value; }
-		//public string TenDichVu { get => tenDichVu; set => tenDichVu = value; }
-		//public string LoaiDichVu { get => loaiDichVu; set => loaiDichVu = value; }
+		public int MaDichVu { get => maDichVu; set => maDichVu = value; }
+		public string TenDichVu { get => tenDichVu; set => tenDichVu = value; }
+		public string LoaiDichVu { get => loaiDichVu; set => loaiDichVu = value; }
 	}
 }

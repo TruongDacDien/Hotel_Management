@@ -10,8 +10,10 @@ namespace DAL.DTO
 	{
 		private int maLoaiDV;
 		private string tenLoaiDV;
+		private bool isDeleted;
 
 		public int MaLoaiDV { get => maLoaiDV; set => maLoaiDV = value; }
 		public string TenLoaiDV { get => tenLoaiDV; set => tenLoaiDV = value; }
+		public bool IsDeleted { get => isDeleted; set => isDeleted = value; }
 	}
 }

@@ -32,8 +32,8 @@ namespace DAL.Data
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
-                        INSERT INTO KhachHang (MaKH, TenKH, CCCD, DiaChi, SDT)
-                        VALUES (@MaKH, @TenKH, @CCCD, @DiaChi, @SDT)";
+                        INSERT INTO KhachHang (MaKH, TenKH, CCCD, DiaChi, SDT, IsDeleted)
+                        VALUES (@MaKH, @TenKH, @CCCD, @DiaChi, @SDT, 0)";
 
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaKH", kh.MaKH);
@@ -102,7 +102,7 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "SELECT * FROM KhachHang";
+					string query = "SELECT * FROM KhachHang WHERE IsDeleted = 0";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
@@ -174,7 +174,7 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "DELETE FROM KhachHang WHERE MaKH = @MaKH";
+					string query = "UPDATE KhachHang SET IsDeleted = 1 WHERE MaKH = @MaKH";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaKH", khachHang.MaKH);
 

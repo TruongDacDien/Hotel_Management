@@ -34,10 +34,18 @@ namespace GUI.UserControls
         #region method
         void nhanData(NhanVien nv)
         {
-            list.Add(nv);
-            if (NhanVienBUS.GetInstance().addNhanVien(nv))
-                new DialogCustoms("Thêm nhân viên thành công!", "Thông báo", DialogCustoms.OK).ShowDialog();
-
+			string error = string.Empty;
+            if (NhanVienBUS.GetInstance().kiemTraTonTaiNhanVien(nv.CCCD.ToString()) == -1)
+            {
+                list.Add(nv);
+                if (NhanVienBUS.GetInstance().addNhanVien(nv))
+                    new DialogCustoms("Thêm nhân viên thành công!", "Thông báo", DialogCustoms.OK).ShowDialog();
+            }
+            else
+            {
+                new DialogCustoms("Nhân viên đã có", "Thông báo", DialogCustoms.OK).Show();
+                return;
+            }
         }
 
         void SuaThongTinNhanVien(NhanVien nv)

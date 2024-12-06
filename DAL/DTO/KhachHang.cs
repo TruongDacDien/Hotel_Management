@@ -15,6 +15,7 @@ namespace DAL.DTO
 		private string sDT;
 		private string diaChi;
 		private string quocTich;
+		private bool isDeleted;
 
 		public int MaKH { get => maKH; set => maKH = value; }
 		public string TenKH { get => tenKH; set => tenKH = value; }
@@ -23,5 +24,6 @@ namespace DAL.DTO
 		public string SDT { get => sDT; set => sDT = value; }
 		public string DiaChi { get => diaChi; set => diaChi = value; }
 		public string QuocTich { get => quocTich; set => quocTich = value; }
+		public bool IsDeleted { get => isDeleted; set => isDeleted = value; }
 	}
 }
