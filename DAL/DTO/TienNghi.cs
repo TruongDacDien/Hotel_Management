@@ -11,8 +11,10 @@ namespace DAL.DTO
 	{
 		private int maTN;
 		private string tenTN;
+		private bool isDeleted;
 
 		public int MaTN { get => maTN; set => maTN = value; }
 		public string TenTN { get => tenTN; set => tenTN = value; }
+		public bool IsDeleted { get => isDeleted; set => isDeleted = value; }
 	}
 }

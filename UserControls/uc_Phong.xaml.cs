@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GUI.View;
 using BUS;
+using DAL.Data;
 using DAL.DTO;
 using System.Collections.ObjectModel;
 
@@ -55,7 +56,7 @@ namespace GUI.UserControls
 
         private List<Phong_Custom> filterPhongTheoLoai(string loai)
         {
-            return lsPhong.Where(p => p.LoaiPhong.Equals(loai)).ToList();
+            return PhongBUS.GetInstance().filterPhongTheoLoai(loai);
         }
 
         private void refeshLoaiPhong()

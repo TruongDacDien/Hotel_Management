@@ -33,25 +33,26 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = @"SELECT CT.MaCTTN, CT.SoPhong, CT.SL, TN.TenTN, CT.MaTN
-									FROM CT_TienNghi CT
-									JOIN TienNghi TN ON CT.MaTN = TN.MaTN";
+					string query = @"
+					SELECT CT.MaCTTN, CT.SoPhong, CT.SL, TN.TenTN, CT.MaTN, CT.IsDeleted
+					FROM CT_TienNghi CT
+					JOIN TienNghi TN ON CT.MaTN = TN.MaTN
+					WHERE CT.IsDeleted = 0";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
-                    conn.Open();
+					conn.Open();
 
 					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
-					
-                        while (reader.Read())
+						while (reader.Read())
 						{
-                          
-                            CT_TienNghi ctTienNghi = new CT_TienNghi
+							CT_TienNghi ctTienNghi = new CT_TienNghi
 							{
 								MaCTTN = reader.GetInt32(reader.GetOrdinal("MaCTTN")),
 								MaTN = reader.GetInt32(reader.GetOrdinal("MaTN")),
 								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
 								SL = reader.GetInt32(reader.GetOrdinal("SL")),
-								TenTN = reader.GetString(reader.GetOrdinal("TenTN"))
+								TenTN = reader.GetString(reader.GetOrdinal("TenTN")),
+								IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
 							};
 							listCTTienNghi.Add(ctTienNghi);
 						}
@@ -62,7 +63,7 @@ namespace DAL.Data
 			{
 				Console.WriteLine(ex.Message); // Xử lý lỗi nếu cần
 			}
-            return listCTTienNghi;
+			return listCTTienNghi;
 		}
 
 		// Thêm một chi tiết tiện nghi mới
@@ -73,10 +74,11 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = @"INSERT INTO CT_TienNghi (MaTN, SoPhong, SL, TenTN)
-									SELECT @MaTN, @SoPhong, @SL, tn.TenTN
-									FROM TienNghi tn
-									WHERE tn.MaTN = @MaTN";
+					string query = @"
+					INSERT INTO CT_TienNghi (MaTN, SoPhong, SL, TenTN, IsDeleted)
+					SELECT @MaTN, @SoPhong, @SL, tn.TenTN, 0
+					FROM TienNghi tn
+					WHERE tn.MaTN = @MaTN";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
 					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
@@ -95,6 +97,7 @@ namespace DAL.Data
 			}
 		}
 
+
 		// Xóa chi tiết tiện nghi
 		public bool xoaCTTienNghi(CT_TienNghi chiTietTN)
 		{
@@ -103,7 +106,7 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "DELETE FROM CT_TienNghi WHERE MaCTTN = @MaCTTN";
+					string query = "UPDATE CT_TienNghi SET IsDeleted = 1 WHERE MaCTTN = @MaCTTN";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaCTTN", chiTietTN.MaCTTN);
 
@@ -129,13 +132,13 @@ namespace DAL.Data
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
-							UPDATE CT_TienNghi
-							SET 
-								MaTN = @MaTN,
-								SoPhong = @SoPhong,
-								SL = @SL,
-								TenTN = @TenTN
-							WHERE MaCTTN = @MaCTTN;";
+					UPDATE CT_TienNghi
+					SET 
+						MaTN = @MaTN,
+						SoPhong = @SoPhong,
+						SL = @SL,
+						TenTN = @TenTN,
+					WHERE MaCTTN = @MaCTTN;";
 					using (MySqlCommand cmd = new MySqlCommand(query, conn))
 					{
 						cmd.Parameters.AddWithValue("@MaCTTN", chiTietTN.MaCTTN);
@@ -161,6 +164,7 @@ namespace DAL.Data
 				return false;
 			}
 		}
+
 
 		// Kiểm tra chi tiết tiện nghi có tồn tại hay không
 		public bool KiemTraTonTai(CT_TienNghi chiTietTN)

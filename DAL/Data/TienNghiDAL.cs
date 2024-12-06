@@ -30,7 +30,7 @@ namespace DAL.Data
 
 			using (MySqlConnection conn = new MySqlConnection(connectionString))
 			{
-				string query = "SELECT * FROM TienNghi";
+				string query = "SELECT * FROM TienNghi WHERE IsDeleted = 0";
 				MySqlCommand cmd = new MySqlCommand(query, conn);
 				conn.Open();
 
@@ -58,7 +58,7 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "INSERT INTO TienNghi (TenTN) VALUES (@TenTN)";
+					string query = "INSERT INTO TienNghi (TenTN, IsDeleted) VALUES (@TenTN, 0)";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenTN", tn.TenTN);
 
@@ -81,7 +81,7 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "DELETE FROM TienNghi WHERE MaTN = @MaTN";
+					string query = "UPDATE TienNghi SET IsDeleted = 1 WHERE MaTN = @MaTN";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaTN", tn.MaTN);
 
