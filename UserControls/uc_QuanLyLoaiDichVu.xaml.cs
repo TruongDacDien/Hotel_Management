@@ -25,15 +25,12 @@ namespace GUI.UserControls
     public partial class uc_QuanLyLoaiDichVu : UserControl
     {
         ObservableCollection<LoaiDV> list;
+        private CollectionView view;
 
         public uc_QuanLyLoaiDichVu()
         {
             InitializeComponent();
             TaiDanhSach();
-
-
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lsvLoaiDV.ItemsSource);
-            view.Filter = LoaiDVFilter;
         }
 
         #region Event
@@ -78,6 +75,8 @@ namespace GUI.UserControls
         {
             list = new ObservableCollection<LoaiDV>(LoaiDichVuBUS.Instance.getDataLoaiDV());
             lsvLoaiDV.ItemsSource = list;
+            view = (CollectionView)CollectionViewSource.GetDefaultView(list);
+            view.Filter = LoaiDVFilter;
         }
 
         void nhanData(LoaiDV loaiDV)

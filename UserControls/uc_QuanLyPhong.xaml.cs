@@ -24,17 +24,14 @@ namespace GUI.UserControls
     /// </summary>
     public partial class uc_QuanLyPhong : UserControl
     {
-        ObservableCollection<Phong> list;
 
+        ObservableCollection<Phong> list;
+        private CollectionView view;
 
         public uc_QuanLyPhong()
         {
             InitializeComponent();
-
             TaiDanhSach();
-
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lsvPhong.ItemsSource);
-            view.Filter = PhongFilter;
         }
 
         private bool PhongFilter(object obj)
@@ -49,6 +46,8 @@ namespace GUI.UserControls
         {
             list = new ObservableCollection<Phong>(PhongBUS.GetInstance().getDataPhong());
             lsvPhong.ItemsSource = list;
+            view = (CollectionView)CollectionViewSource.GetDefaultView(list);
+            view.Filter = PhongFilter;
         }
 
         void nhanData(Phong p)

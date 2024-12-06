@@ -248,3 +248,9 @@ C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\obj\Debug\GUI.csproj.CoreCom
 C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\obj\Debug\GUI.csproj.Up2Date
 C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\obj\Debug\GUI.exe
 C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\obj\Debug\GUI.pdb
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\bin\Debug\System.Configuration.ConfigurationManager.dll
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\bin\Debug\System.Diagnostics.DiagnosticSource.dll
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\bin\Debug\System.Configuration.ConfigurationManager.xml
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\bin\Debug\System.Diagnostics.DiagnosticSource.xml

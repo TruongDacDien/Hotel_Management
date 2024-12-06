@@ -193,7 +193,9 @@ namespace DAL.Data
             {
                 using (MySqlConnection conn = new MySqlConnection(connectionString))
                 {
+
                     string query = "INSERT INTO Phong (SoPhong, MaLoaiPhong, TinhTrang, IsDeleted) VALUES (@SoPhong, @MaLoaiPhong, @TinhTrang, 0)";
+
                     MySqlCommand cmd = new MySqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
                     cmd.Parameters.AddWithValue("@MaLoaiPhong", phong.MaLoaiPhong);
@@ -218,15 +220,18 @@ namespace DAL.Data
             {
                 using (MySqlConnection conn = new MySqlConnection(connectionString))
                 {
+                    
                     string query = "UPDATE Phong SET MaLoaiPhong = @MaLoaiPhong, TinhTrang = @TinhTrang WHERE SoPhong = @SoPhong";
                     MySqlCommand cmd = new MySqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@MaLoaiPhong", phong.MaLoaiPhong);
                     cmd.Parameters.AddWithValue("@TinhTrang", phong.TinhTrang);
                     cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
                     conn.Open();
-                    cmd.ExecuteNonQuery();
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    return rowsAffected > 0;
                 }
-                return true;
+               
             }
             catch (Exception ex)
             {

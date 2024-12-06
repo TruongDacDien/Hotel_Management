@@ -25,20 +25,20 @@ namespace GUI.UserControls
     public partial class uc_QuanLyKhachHang : UserControl
     {
         ObservableCollection<KhachHang> list;
+        private CollectionView view;
 
         public uc_QuanLyKhachHang()
         {
             InitializeComponent();
             TaiDanhSach();
-
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lsvKhachHang.ItemsSource);
-            view.Filter = KhachHangFilter;
         }
 
         private void TaiDanhSach()
         {
             list = new ObservableCollection<KhachHang>(KhachHangBUS.GetInstance().GetKhachHangs());
             lsvKhachHang.ItemsSource = list;
+            view = (CollectionView)CollectionViewSource.GetDefaultView(list);
+            view.Filter = KhachHangFilter;
         }
 
         private bool KhachHangFilter(object obj)
