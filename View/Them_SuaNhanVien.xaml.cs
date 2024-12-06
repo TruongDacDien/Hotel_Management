@@ -38,7 +38,9 @@ namespace GUI.View
             txbCCCD.Text = nv.CCCD;
             txbChucVu.Text = nv.ChucVu;
             txbDiaChi.Text = nv.DiaChi;
-            txbLuong.Text = nv.Luong.ToString();
+
+            txbLuong.Text = nv.Luong % 1 == 0 ? ((int)nv.Luong).ToString() : nv.Luong.ToString();
+            //txbLuong.Text = nv.Luong.ToString();
             txbSDT.Text = nv.SDT;
             cbGioiTinh.Text = nv.GioiTinh;
             dtNTNS.Text = nv.NTNS.ToString();
