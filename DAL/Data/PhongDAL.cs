@@ -194,7 +194,7 @@ namespace DAL.Data
                 using (MySqlConnection conn = new MySqlConnection(connectionString))
                 {
 
-                    string query = "INSERT INTO Phong (SoPhong, MaLoaiPhong, TinhTrang, IsDeleted) VALUES (@SoPhong, @MaLoaiPhong, @TinhTrang, 0)";
+                    string query = "INSERT INTO Phong (SoPhong, MaLoaiPhong, DonDep, IsDeleted) VALUES (@SoPhong, @MaLoaiPhong, @TinhTrang, 0)";
 
                     MySqlCommand cmd = new MySqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
@@ -221,7 +221,7 @@ namespace DAL.Data
                 using (MySqlConnection conn = new MySqlConnection(connectionString))
                 {
                     
-                    string query = "UPDATE Phong SET MaLoaiPhong = @MaLoaiPhong, TinhTrang = @TinhTrang WHERE SoPhong = @SoPhong";
+                    string query = "UPDATE Phong SET MaLoaiPhong = @MaLoaiPhong, DonDep = @TinhTrang WHERE SoPhong = @SoPhong";
                     MySqlCommand cmd = new MySqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@MaLoaiPhong", phong.MaLoaiPhong);
                     cmd.Parameters.AddWithValue("@TinhTrang", phong.TinhTrang);
@@ -277,7 +277,7 @@ namespace DAL.Data
                                     SELECT 
                                         p.SoPhong, 
                                         p.MaLoaiPhong, 
-                                        p.TinhTrang, 
+                                        p.DonDep, 
                                         lp.TenLoaiPhong AS LoaiPhong 
                                     FROM Phong p
                                     INNER JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
@@ -292,7 +292,7 @@ namespace DAL.Data
                             {
                                 SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
                                 MaLoaiPhong = reader.GetInt32(reader.GetOrdinal("MaLoaiPhong")),
-                                TinhTrang = reader.GetString(reader.GetOrdinal("TinhTrang")),
+                                TinhTrang = reader.GetString(reader.GetOrdinal("DonDep")),
                                 LoaiPhong = reader.GetString(reader.GetOrdinal("LoaiPhong")) // Lấy tên loại phòng
                             });
                         }
@@ -319,7 +319,7 @@ namespace DAL.Data
 					string query = @"
                     SELECT 
                         p.SoPhong, 
-                        p.TinhTrang, 
+                        p.TinhTrangDonDep, 
                         lp.TenLoaiPhong, 
                         ct.MaCTPT, 
                         ct.NgayBD, 
@@ -344,7 +344,7 @@ namespace DAL.Data
 							{
 								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("MaCTPT")),
 								MaPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
-								TinhTrang = reader.GetString(reader.GetOrdinal("TinhTrang")),
+								TinhTrang = reader.GetString(reader.GetOrdinal("TinhTrangDonDep")),
 								LoaiPhong = reader.GetString(reader.GetOrdinal("TenLoaiPhong")),
 								TenKH = reader.IsDBNull(reader.GetOrdinal("TenKH")) ? string.Empty : reader.GetString(reader.GetOrdinal("TenKH")),
 								NgayDen = reader.IsDBNull(reader.GetOrdinal("NgayBD")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("NgayBD")),
