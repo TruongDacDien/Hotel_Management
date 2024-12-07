@@ -46,7 +46,7 @@ namespace GUI.View
 
             txtSoPhong.IsReadOnly = true;
             txtSoPhong.Text = phong.SoPhong;
-            cmbTinhTrang.Text = phong.TinhTrang;
+            cmbTinhTrang.Text = phong.DonDep;
             cmbLoaiPhong.Text = phong.LoaiPhong;
             txbTitle.Text = "Sửa thông tin phòng " + phong.SoPhong;
             soPhong = phong.SoPhong;
@@ -114,7 +114,7 @@ namespace GUI.View
                 Phong phong = new Phong()
                 {
                     SoPhong = txtSoPhong.Text,
-                    TinhTrang = cmbTinhTrang.Text,
+                    DonDep = cmbTinhTrang.Text,
                     MaLoaiPhong = (int)cmbLoaiPhong.SelectedValue,
                 };
                 if (truyen != null)
@@ -140,7 +140,7 @@ namespace GUI.View
 
                 {
                     SoPhong = txtSoPhong.Text,
-                    TinhTrang = cmbTinhTrang.Text,
+                    DonDep = cmbTinhTrang.Text,
                     MaLoaiPhong = (int)cmbLoaiPhong.SelectedValue,
                 };
                 if (sua != null)
