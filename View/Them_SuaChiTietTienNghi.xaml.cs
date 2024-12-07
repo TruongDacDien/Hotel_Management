@@ -93,7 +93,7 @@ namespace GUI.View
                 {
                     SoPhong = cmbSoPhong.SelectedValue.ToString(),
                     SL = int.Parse(txtSoLuong.Text),
-                    TenTN = cmbTienNghi.SelectedValue.ToString(),
+                    TenTN = cmbTienNghi.Text,
                     MaTN = (int)cmbTienNghi.SelectedValue,
                 };
                 if (truyenCT != null)
@@ -116,6 +116,7 @@ namespace GUI.View
             {
                 if (isEditing)
                 {
+                    
 
                     CT_TienNghi ctTienNghi = new CT_TienNghi()
                     {
@@ -123,7 +124,7 @@ namespace GUI.View
                         MaCTTN = string.IsNullOrEmpty(maCT) ? (int?)null : int.Parse(maCT),
                         SoPhong = cmbSoPhong.SelectedValue.ToString(),
                         SL = int.Parse(txtSoLuong.Text),
-                        TenTN = cmbTienNghi.SelectedValue.ToString(),
+                        TenTN = cmbTienNghi.Text,
                         MaTN = (int)cmbTienNghi.SelectedValue,
                     };
 

@@ -129,6 +129,7 @@ namespace DAL.Data
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
+				Console.WriteLine(chiTietTN.MaCTTN + " " + chiTietTN.MaTN + " "+ chiTietTN.SoPhong+ " " + chiTietTN.SL+ " " + chiTietTN.TenTN );
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
@@ -137,24 +138,23 @@ namespace DAL.Data
 						MaTN = @MaTN,
 						SoPhong = @SoPhong,
 						SL = @SL,
-						TenTN = @TenTN,
-					WHERE MaCTTN = @MaCTTN;";
-					using (MySqlCommand cmd = new MySqlCommand(query, conn))
-					{
-						cmd.Parameters.AddWithValue("@MaCTTN", chiTietTN.MaCTTN);
-						cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
-						cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
-						cmd.Parameters.AddWithValue("@SL", chiTietTN.SL);
-						cmd.Parameters.AddWithValue("@TenTN", chiTietTN.TenTN);
+						TenTN = @TenTN
+					WHERE MaCTTN = @MaCTTN";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@MaCTTN", chiTietTN.MaCTTN);
+					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
+					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
+					cmd.Parameters.AddWithValue("@SL", chiTietTN.SL);
+					cmd.Parameters.AddWithValue("@TenTN", chiTietTN.TenTN);
 
-						conn.Open();
+					conn.Open();
 
-						int rowsAffected = cmd.ExecuteNonQuery();
+					int rowsAffected = cmd.ExecuteNonQuery();
 
-						Console.WriteLine($"Rows affected: {rowsAffected}");
+					Console.WriteLine($"Rows affected: {rowsAffected}");
 
-						return rowsAffected > 0;
-					}
+					return rowsAffected > 0;
+					
 				}
 			}
 			catch (Exception ex)
