@@ -104,7 +104,7 @@
 
                                 <GridViewColumn Width="175" Header="Số phòng"  DisplayMemberBinding="{Binding SoPhong}"  />
 
-                                <GridViewColumn Width="235" Header="Tình trạng" DisplayMemberBinding="{Binding TinhTrang}" />
+                                <GridViewColumn Width="235" Header="Tình trạng" DisplayMemberBinding="{Binding DonDep}" />
 
                                 <GridViewColumn Width="180" Header="Loại Phòng" DisplayMemberBinding="{Binding LoaiPhong}" />
 
