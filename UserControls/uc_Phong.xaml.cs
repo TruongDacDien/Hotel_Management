@@ -51,15 +51,15 @@ namespace GUI.UserControls
         }
 
 
-        #region Method
+		#region Method
 
 
-        private List<Phong_Custom> filterPhongTheoLoai(string loai)
-        {
-            return PhongBUS.GetInstance().filterPhongTheoLoai(loai);
-        }
+		private List<Phong_Custom> filterPhongTheoLoai(string loai)
+		{
+			return lsPhong.Where(p => p.LoaiPhong.Equals(loai)).ToList();
+		}
 
-        private void refeshLoaiPhong()
+		private void refeshLoaiPhong()
         {
             lsPhongDon = new ObservableCollection<Phong_Custom>(filterPhongTheoLoai("Phòng đơn"));
             lsPhongDoi = new ObservableCollection<Phong_Custom>(filterPhongTheoLoai("Phòng đôi"));
@@ -234,8 +234,8 @@ namespace GUI.UserControls
         // Sự kiện loade UC
         private void ucPhong_Loaded(object sender, RoutedEventArgs e)
         {
-            dtpChonNgay.Text = "01/11/2024";
-            tpGio.Text = "12:00 AM";
+            dtpChonNgay.Text = DateTime.Now.ToString("dd/MM/yy");
+			tpGio.Text = DateTime.Now.ToShortTimeString();
         }
 
         //Khi click vào radioButton

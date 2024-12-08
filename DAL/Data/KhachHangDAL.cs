@@ -32,11 +32,10 @@ namespace DAL.Data
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
-                        INSERT INTO KhachHang (MaKH, TenKH, GioiTinh, CCCD, DiaChi, SDT, QuocTich, IsDeleted)
-                        VALUES (@MaKH, @TenKH, @GioiTinh, @CCCD, @DiaChi, @SDT, @QuocTich, 0)";
+                        INSERT INTO KhachHang (TenKH, GioiTinh, CCCD, DiaChi, SDT, QuocTich, IsDeleted)
+                        VALUES (@TenKH, @GioiTinh, @CCCD, @DiaChi, @SDT, @QuocTich, 0)";
 
                     MySqlCommand cmd = new MySqlCommand(query, conn);
-					cmd.Parameters.AddWithValue("@MaKH", kh.MaKH);
 					cmd.Parameters.AddWithValue("@TenKH", kh.TenKH);
                     cmd.Parameters.AddWithValue("@GioiTinh", kh.GioiTinh);
                     cmd.Parameters.AddWithValue("@CCCD", kh.CCCD);
@@ -77,11 +76,15 @@ namespace DAL.Data
 						{
 							khachHang = new KhachHang
 							{
+
 								MaKH = reader.GetInt32(reader.GetOrdinal("MaKH")),
 								TenKH = reader.GetString(reader.GetOrdinal("TenKH")),
+								GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
 								CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
 								DiaChi = reader.GetString(reader.GetOrdinal("DiaChi")),
-								SDT = reader.GetString(reader.GetOrdinal("SDT"))
+								SDT = reader.GetString(reader.GetOrdinal("SDT")),
+								QuocTich = reader.GetString(reader.GetOrdinal("QuocTich")),
+								IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
 							};
 						}
 					}
@@ -224,5 +227,35 @@ namespace DAL.Data
 			}
 			return tenKhachHang;
 		}
+
+		public int layMaKHMoiNhat()
+		{
+			int maKH = -1; // Giá trị mặc định nếu không tìm thấy
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			try
+			{
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				{
+					string query = "SELECT MAX(MaKH) AS MaKH FROM KhachHang";
+					MySqlCommand cmd = new MySqlCommand(query, conn);
+
+					conn.Open();
+					object result = cmd.ExecuteScalar();
+
+					if (result != null && result != DBNull.Value)
+					{
+						maKH = Convert.ToInt32(result);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Lỗi khi lấy MaKH mới nhất: " + ex.Message);
+			}
+
+			return maKH;
+		}
+
 	}
 }
