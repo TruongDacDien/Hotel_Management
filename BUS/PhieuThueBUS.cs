@@ -44,5 +44,5 @@ namespace BUS
         {
             return PhieuThueDAL.GetInstance().layMaPhieuThueMoiNhat();
         }
-    }
+	}
 }
