@@ -62,17 +62,41 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "UPDATE PhieuThue SET IsDeleted = 1 WHERE MaPhieuThue = @MaPhieuThue";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
-					cmd.Parameters.AddWithValue("@MaPhieuThue", maPhieuThue);
+					// Truy vấn kiểm tra TinhTrangThue của phiếu thuê
+					string queryTinhTrang = "SELECT TinhTrangThue FROM CT_PhieuThue WHERE MaPhieuThue = @MaPhieuThue LIMIT 1";
+					MySqlCommand cmdTinhTrang = new MySqlCommand(queryTinhTrang, conn);
+					cmdTinhTrang.Parameters.AddWithValue("@MaPhieuThue", maPhieuThue);
 
 					conn.Open();
-					int rowsAffected = cmd.ExecuteNonQuery();
+					string tinhTrangThue = cmdTinhTrang.ExecuteScalar()?.ToString();
 
-					if (rowsAffected == 0)
+					if (string.IsNullOrEmpty(tinhTrangThue))
 					{
-						error = "Không tồn tại phiếu thuê có mã " + maPhieuThue;
+						error = "Không tồn tại phiếu thuê với mã " + maPhieuThue;
 						return false;
+					}
+
+					if (tinhTrangThue == "Đã trả phòng" || tinhTrangThue == "Phòng đang thuê")
+					{
+						// Cập nhật IsDeleted = 1 cho phiếu thuê trong PhieuThue
+						string updatePhieuThueQuery = "UPDATE PhieuThue SET IsDeleted = 1 WHERE MaPhieuThue = @MaPhieuThue";
+						MySqlCommand updatePhieuThueCmd = new MySqlCommand(updatePhieuThueQuery, conn);
+						updatePhieuThueCmd.Parameters.AddWithValue("@MaPhieuThue", maPhieuThue);
+						updatePhieuThueCmd.ExecuteNonQuery();
+					}
+					else
+					{
+						// Nếu không phải 2 trạng thái trên, xóa luôn các bản ghi trong CT_PhieuThue và sau đó xóa phiếu thuê trong PhieuThue
+						string deleteCTQuery = "DELETE FROM CT_PhieuThue WHERE MaPhieuThue = @MaPhieuThue";
+						MySqlCommand deleteCTCmd = new MySqlCommand(deleteCTQuery, conn);
+						deleteCTCmd.Parameters.AddWithValue("@MaPhieuThue", maPhieuThue);
+						deleteCTCmd.ExecuteNonQuery();
+
+						// Xóa phiếu thuê trong bảng PhieuThue
+						string deletePhieuThueQuery = "DELETE FROM PhieuThue WHERE MaPhieuThue = @MaPhieuThue";
+						MySqlCommand deletePhieuThueCmd = new MySqlCommand(deletePhieuThueQuery, conn);
+						deletePhieuThueCmd.Parameters.AddWithValue("@MaPhieuThue", maPhieuThue);
+						deletePhieuThueCmd.ExecuteNonQuery();
 					}
 				}
 				return true;
@@ -83,6 +107,7 @@ namespace DAL.Data
 				return false;
 			}
 		}
+
 
 		// Lấy dữ liệu phiếu thuê từ DB
 		public List<PhieuThue_Custom> getDataFromDB()
