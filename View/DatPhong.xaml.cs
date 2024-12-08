@@ -11,7 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using DAL;
+using DAL.Data;
 using DAL.DTO;
 using BUS;
 using System.Globalization;
@@ -141,8 +141,8 @@ namespace GUI.View
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			//Khởi tạo giá trị cho ngày, giờ Bắt đầu và Kết thúc là ngày giờ hiện tại
-			dtpNgayBD.Text = new DateTime(2024, 12, 1).ToShortDateString();
-			dtpNgayKT.Text = new DateTime(2024, 12, 1).ToShortDateString();
+			dtpNgayBD.Text = DateTime.Now.ToShortDateString();
+			dtpNgayKT.Text = DateTime.Now.ToShortDateString();
 			tpGioBD.Text = DateTime.Now.ToShortTimeString();
 			tpGioKT.Text = DateTime.Now.ToShortTimeString();
 
@@ -255,7 +255,7 @@ namespace GUI.View
 					DiaChi = txbDiaChi.Text,
 					GioiTinh = cbGioiTinh.Text,
 					QuocTich = txbQuocTich.Text,
-					SDT = txbSDT.Text
+					SDT = txbSDT.Text,
 				};
 				//B1: THêm khách hàng kiểm tra xem khách hàng đã tồn tại trong CSDL chưa dựa vào CCCD nếu có rồi thì không thêm nữa, còn chưa có thì thêm vào CSDL
 				maKhachHangThemMoi = KhachHangBUS.GetInstance().kiemTraTonTaiKhachHang(kh.CCCD);
@@ -267,12 +267,16 @@ namespace GUI.View
 						new DialogCustoms("Lỗi: Thêm Khách Hàng " + errorKhachHang, "Thông báo", DialogCustoms.OK).ShowDialog();
 						return;
 					}
-					maKhachHangThemMoi = kh.MaKH;
-					themKhachHangMoi = true;
+					else
+					{
+						maKhachHangThemMoi = KhachHangBUS.GetInstance().layMaKHMoiNhat();
+						themKhachHangMoi = true; // Đánh dấu là khách hàng mới
+					}	
 				}
 				else
 				{
 					checkThemKHThanhCong = true;
+					themKhachHangMoi = false; // Đánh dấu là khách hàng cũ
 				}
 				//B2: Thêm phiếu thuê nếu thêm khách hàng thành công hoặc lấy ra được mã khách hàng đã tồn tại
 				if (checkThemKHThanhCong)
@@ -290,7 +294,7 @@ namespace GUI.View
 						foreach (CT_PhieuThue item in lsPDaChons)
 						{
 
-							item.MaPhieuThue = pt.MaPhieuThue;
+							item.MaPhieuThue = PhieuThueBUS.GetInstance().layMaPhieuThueMoiNhat();
 							item.TinhTrangThue = "Phòng đã đặt";
 							if (CT_PhieuThueBUS.GetInstance().addCTPhieuThue(item, out errorCTPT))
 							{
@@ -320,7 +324,7 @@ namespace GUI.View
 					}
 					else
 					{
-						new DialogCustoms("Khách hàng đã tồn tại đặt phòng thành công !", "Thông báo", DialogCustoms.OK).ShowDialog();
+						new DialogCustoms("Khách hàng đã tồn tại và đặt phòng thành công !", "Thông báo", DialogCustoms.OK).ShowDialog();
 					}
 
 					if (luuPhieuDatPhong != null)

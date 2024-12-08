@@ -84,9 +84,11 @@ namespace BUS
             return PhongDAL.GetInstance().layGiaTienTheoMaPhong(soPhong,isDay);
         }
 
+        /*
         public List<Phong_Custom> filterPhongTheoLoai(string loai)
         {
             return PhongDAL.GetInstance().filterPhongTheoLoai(loai);
         }
+        */
 	}
 }

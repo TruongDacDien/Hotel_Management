@@ -91,7 +91,7 @@
 
                                 <GridViewColumn  Header="Số phiếu thuê"  Width="190" DisplayMemberBinding="{Binding MaPhieuThue}" />
                                 <GridViewColumn Header="Tên khách hàng" Width="230" DisplayMemberBinding="{Binding TenKH}" />
-                                <GridViewColumn Header="Ngày lập phiếu" Width="230" DisplayMemberBinding="{Binding NgayLapPhieu, StringFormat=dd//MM/yyy }" />
+                                <GridViewColumn Header="Ngày lập phiếu" Width="230" DisplayMemberBinding="{Binding NgayLapPhieu, StringFormat=dd/MM/yyy }" />
                                 <GridViewColumn Header="Tên nhân viên" Width="230" DisplayMemberBinding="{Binding TenNV }" />
                             <GridViewColumn Width="55" Header="Chi tiết">
                                 <GridViewColumn.CellTemplate>

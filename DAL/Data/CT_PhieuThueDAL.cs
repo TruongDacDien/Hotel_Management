@@ -31,12 +31,17 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "INSERT INTO CT_PhieuThue (MaCTPT, MaPhieuThue, TinhTrangThue) " +
-								   "VALUES (@MaCTPT, @MaPhieuThue, @TinhTrangThue)";
+					string query = "INSERT INTO CT_PhieuThue (MaPhieuThue, SoPhong, NgayBD, NgayKT, SoNguoiO, TinhTrangThue, TienPhong, NgayTraThucTe) " +
+								   "VALUES (@MaPhieuThue, @SoPhong, @NgayBD, @NgayKT, @SoNguoiO, @TinhTrangThue, @TienPhong, @NgayTraThucTe)";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
-					cmd.Parameters.AddWithValue("@MaCTPT", ctpt.MaCTPT);
 					cmd.Parameters.AddWithValue("@MaPhieuThue", ctpt.MaPhieuThue);
+					cmd.Parameters.AddWithValue("@SoPhong", ctpt.SoPhong);
+					cmd.Parameters.AddWithValue("@NgayBD", ctpt.NgayBD);
+					cmd.Parameters.AddWithValue("@NgayKT", ctpt.NgayKT);
+					cmd.Parameters.AddWithValue("@SoNguoiO", ctpt.SoNguoiO);
 					cmd.Parameters.AddWithValue("@TinhTrangThue", ctpt.TinhTrangThue);
+					cmd.Parameters.AddWithValue("@TienPhong", ctpt.TienPhong);
+					cmd.Parameters.AddWithValue("@NgayTraThucTe", ctpt.NgayTraThucTe);
 
 					conn.Open();
 					cmd.ExecuteNonQuery();
@@ -111,7 +116,13 @@ namespace DAL.Data
 							{
 								MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
 								MaPhieuThue = reader.GetInt32(reader.GetOrdinal("MaPhieuThue")),
-								TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue"))
+								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
+								NgayBD = reader.GetDateTime(reader.GetOrdinal("NgayBD")),
+								NgayKT = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
+								SoNguoiO = reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
+								TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue")),
+								TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong")),
+								NgayTraThucTe = reader.GetDateTime(reader.GetOrdinal("NgayTraThucTe"))
 							};
 							ls.Add(ctpt);
 						}
