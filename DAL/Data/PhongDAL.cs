@@ -326,6 +326,7 @@ namespace DAL.Data
             return lstPhong;
         }
 
+        /*
 		public List<Phong_Custom> filterPhongTheoLoai(string loai)
 		{
 			List<Phong_Custom> filteredPhongList = new List<Phong_Custom>();
@@ -385,5 +386,6 @@ namespace DAL.Data
 
 			return filteredPhongList;
 		}
+        */
 	}
 }

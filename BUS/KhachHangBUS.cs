@@ -64,5 +64,10 @@ namespace BUS
         {
             return KhachHangDAL.GetInstance().layTenKhachHangTheoMaPT(maPhieuThue);
         }
+
+        public int layMaKHMoiNhat()
+        {
+            return KhachHangDAL.GetInstance().layMaKHMoiNhat();
+        }
     }
 }

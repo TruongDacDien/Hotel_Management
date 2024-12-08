@@ -32,11 +32,10 @@ namespace DAL.Data
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
-                        INSERT INTO PhieuThue (MaPhieuThue, NgayLapPhieu, MaKH, MaNV, IsDeleted)
-                        VALUES (@MaPhieuThue, @NgayLapPhieu, @MaKH, @MaNV, 0)";
+                        INSERT INTO PhieuThue (NgayLapPhieu, MaKH, MaNV, IsDeleted)
+                        VALUES (@NgayLapPhieu, @MaKH, @MaNV, 0)";
 
 					MySqlCommand cmd = new MySqlCommand(query, conn);
-					cmd.Parameters.AddWithValue("@MaPhieuThue", pt.MaPhieuThue);
 					cmd.Parameters.AddWithValue("@NgayLapPhieu", pt.NgayLapPhieu);
 					cmd.Parameters.AddWithValue("@MaKH", pt.MaKH);
 					cmd.Parameters.AddWithValue("@MaNV", pt.MaNV);
@@ -126,5 +125,35 @@ namespace DAL.Data
 
 			return ls;
 		}
+
+		public int layMaPhieuThueMoiNhat()
+		{
+			int maPhieuThue = -1; // Giá trị mặc định nếu không tìm thấy
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			try
+			{
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				{
+					string query = "SELECT MAX(MaPhieuThue) AS MaPhieuThue FROM PhieuThue";
+					MySqlCommand cmd = new MySqlCommand(query, conn);
+
+					conn.Open();
+					object result = cmd.ExecuteScalar();
+
+					if (result != null && result != DBNull.Value)
+					{
+						maPhieuThue = Convert.ToInt32(result);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Lỗi khi lấy MaKH mới nhất: " + ex.Message);
+			}
+
+			return maPhieuThue;
+		}
+
 	}
 }
