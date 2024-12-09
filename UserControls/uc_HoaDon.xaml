@@ -68,20 +68,20 @@
                                 </Style>
                             </GridView.ColumnHeaderContainerStyle>
 
-                            <GridViewColumn Width="100" Header="Mã hóa đơn"    DisplayMemberBinding="{Binding MaHoaDon}"  />
+                            <GridViewColumn Width="100" Header="Mã hóa đơn"    DisplayMemberBinding="{Binding MaHD}"  />
 
                             <GridViewColumn Width="200" Header="Ngày lập"  DisplayMemberBinding="{Binding NgayLap}" />
 
-                            <GridViewColumn Width="160" Header="Tên nhân viên lập"  DisplayMemberBinding="{Binding TenNHanVienLap}" />
+                            <GridViewColumn Width="160" Header="Tên nhân viên lập"  DisplayMemberBinding="{Binding NhanVien.HoTen}" />
 
                             <GridViewColumn Width="140" Header="Tổng tiền"  DisplayMemberBinding="{Binding TongTien}"/>
 
-                            <GridViewColumn Width="140" Header="Mã chi tiết phiếu thuê"  DisplayMemberBinding="{Binding MaCTPhieuThue}" />
+                            <GridViewColumn Width="140" Header="Mã chi tiết phiếu thuê"  DisplayMemberBinding="{Binding MaCTPT}" />
 
                             <GridViewColumn Width="150" Header="Chi tiết">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Width="25" Height="25" Click="chiTiet_Click" BorderThickness="0" Padding="0" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Button Width="25" Height="25" Click="chiTiet_Click" BorderThickness="0" Padding="0" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center" DataContext="{Binding}">
                                             <materialDesign:PackIcon  Kind="More" Foreground="Black"/>
                                         </Button>
                                     </DataTemplate>

@@ -74,8 +74,12 @@ namespace GUI.UserControls
 
         private void chiTiet_Click(object sender, RoutedEventArgs e)
         {
-            HoaDon hd = (sender as Button).DataContext as HoaDon;
-            new XuatHoaDon(hd.MaHD).ShowDialog();
-        }
+			HoaDon hoaDon = (sender as Button).DataContext as HoaDon;
+			if (hoaDon != null)
+			{
+				XuatHoaDon xuatHoaDon = new XuatHoaDon(hoaDon);
+				xuatHoaDon.ShowDialog();
+			}
+		}
     }
 }
