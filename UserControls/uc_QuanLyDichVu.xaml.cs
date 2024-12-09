@@ -36,7 +36,7 @@ namespace GUI.UserControls
 
         private void TaiDanhSach()
         {
-            list = new ObservableCollection<DichVuDTO>(DichVuBUS.GetInstance().getDichVu_Custom());
+            list = new ObservableCollection<DichVuDTO>(DichVuBUS.GetInstance().getDichVu());
             lsvDichVu.ItemsSource = list;
             view = (CollectionView)CollectionViewSource.GetDefaultView(list);
             view.Filter = DichVuFilter;

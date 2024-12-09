@@ -234,7 +234,7 @@ namespace GUI.UserControls
         // Sự kiện loade UC
         private void ucPhong_Loaded(object sender, RoutedEventArgs e)
         {
-            dtpChonNgay.Text = DateTime.Now.ToString("dd/MM/yy");
+            dtpChonNgay.Text = DateTime.Now.ToString("MM/dd/yyyy");
 			tpGio.Text = DateTime.Now.ToShortTimeString();
         }
 

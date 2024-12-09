@@ -72,7 +72,7 @@ namespace GUI.View
                 {
                     new DialogCustoms("Thêm hóa đơn thất bại!\nLỗi:" + error, "Thông báo", DialogCustoms.OK).ShowDialog();
                 }
-                txbSoHoaDon.Text = hd.MaHD.ToString();
+                txbSoHoaDon.Text = HoaDonBUS.GetInstance().layMaHDMoiNhat().ToString();
                 //Sửa trạng thái của ctpt
                 string errorSuaCTPT = string.Empty;
                 if (!CT_PhieuThueBUS.GetInstance().suaTinhTrangThuePhong(Phong.MaCTPT, "Đã thanh toán", out errorSuaCTPT))
@@ -103,20 +103,14 @@ namespace GUI.View
             }
         }
 
-        public XuatHoaDon(int mahd) : this()
+        public XuatHoaDon(HoaDon hoaDon) : this()
         {
             try
             {
-                HoaDon hd = HoaDonBUS.GetInstance().layHoaDonTheoMaHoaDon(mahd);
-                if (hd == null)
-                {
-                    new DialogCustoms("Hóa đơn không tồn tại!", "Thông báo", DialogCustoms.OK).ShowDialog();
-                    return;
-                }
-                txbNhanVien.Text = hd.NhanVien.HoTen;
-                txbSoPhong.Text = hd.CT_PhieuThue.SoPhong;
-                DateTime ngayBD = hd.CT_PhieuThue.NgayBD;
-                DateTime ngayKT = hd.CT_PhieuThue.NgayKT;
+                txbNhanVien.Text = hoaDon.NhanVien.HoTen;
+                txbSoPhong.Text = hoaDon.CT_PhieuThue.SoPhong;
+                DateTime ngayBD = hoaDon.CT_PhieuThue.NgayBD;
+                DateTime ngayKT = hoaDon.CT_PhieuThue.NgayKT;
                 TimeSpan Time = ngayKT - ngayBD;
                 int sogio = (int)Time.TotalHours;
                 int songay = (int)Time.TotalDays + 1;
@@ -132,18 +126,18 @@ namespace GUI.View
                     txbSoNgayOrGio.Text = "Số giờ: ";
                     txbSoNgay.Text = sogio.ToString();
                 }
-                txbSoHoaDon.Text = mahd.ToString();
-                txbTenKH.Text = KhachHangBUS.GetInstance().layTenKhachHangTheoMaPT(hd.CT_PhieuThue.MaPhieuThue);
-                txbSoNguoi.Text = hd.CT_PhieuThue.SoNguoiO.ToString();
-                txbNgayLapHD.Text = hd.NgayLap.ToString();
-                txbTongTien.Text = string.Format("{0:0,0 VND}", hd.TongTien);
-                ls = new List<DichVu_DaChon>(CTSDDV_BUS.GetInstance().getCTSDDVtheoMaCTPT(hd.MaCTPT));
+                txbSoHoaDon.Text = hoaDon.MaHD.ToString();
+                txbTenKH.Text = KhachHangBUS.GetInstance().layTenKhachHangTheoMaPT(hoaDon.CT_PhieuThue.MaPhieuThue);
+                txbSoNguoi.Text = hoaDon.CT_PhieuThue.SoNguoiO.ToString();
+                txbNgayLapHD.Text = hoaDon.NgayLap.ToString();
+                txbTongTien.Text = string.Format("{0:0,0 VND}", hoaDon.TongTien);
+                ls = new List<DichVu_DaChon>(CTSDDV_BUS.GetInstance().getCTSDDVtheoMaCTPT(hoaDon.MaCTPT));
                 DichVu_DaChon dv = new DichVu_DaChon()
                 {
                     SoLuong = sogio > 24 ? songay : sogio,
                     TenDV = "Thuê phòng",
-                    Gia = PhongBUS.GetInstance().layTienPhongTheoSoPhong(hd.CT_PhieuThue.SoPhong, isDay),
-                    ThanhTien = hd.CT_PhieuThue.TienPhong
+                    Gia = PhongBUS.GetInstance().layTienPhongTheoSoPhong(hoaDon.CT_PhieuThue.SoPhong, isDay),
+                    ThanhTien = hoaDon.CT_PhieuThue.TienPhong
                 };
                 ls.Add(dv);
                 lvDichVuDaSD.ItemsSource = ls;
