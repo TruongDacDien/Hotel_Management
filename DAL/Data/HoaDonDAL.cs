@@ -32,15 +32,14 @@ namespace DAL.Data
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
-                        SELECT 
-                            hd.MaHD, hd.MaNV, hd.MaCTPT, hd.NgayLap, hd.TongTien,
-                            nv.MaNV AS NV_MaNV, nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, 
-                            nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong, nv.MaTK,
-                            ctpt.MaCTPT, ctpt.MaPhieuThue, ctpt.SoPhong, ctpt.NgayBD, 
-                            ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong, ctpt.NgayTraThucTe
-                        FROM HoaDon hd
-                        LEFT JOIN NhanVien nv ON hd.MaNV = nv.MaNV
-                        LEFT JOIN CT_PhieuThue ctpt ON hd.MaCTPT = ctpt.MaCTPT";
+					SELECT 
+						hd.MaHD, hd.MaNV, hd.MaCTPT, hd.NgayLap, hd.TongTien,
+						nv.MaNV, nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, 
+						nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong,
+						ctpt.MaCTPT, ctpt.MaPhieuThue, ctpt.SoPhong, ctpt.NgayBD, 
+						ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong, ctpt.NgayTraThucTe
+					FROM HoaDon hd, NhanVien nv, CT_PhieuThue ctpt
+					WHERE hd.MaNV = nv.MaNV AND hd.MaCTPT = ctpt.MaCTPT";
 
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
@@ -56,9 +55,9 @@ namespace DAL.Data
 								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("MaCTPT")),
 								NgayLap = reader.GetDateTime(reader.GetOrdinal("NgayLap")),
 								TongTien = reader.GetDecimal(reader.GetOrdinal("TongTien")),
-								NhanVien = new NhanVien
+								NhanVien = reader.IsDBNull(reader.GetOrdinal("MaNV")) ? null : new NhanVien
 								{
-									MaNV = reader.GetInt32(reader.GetOrdinal("NV_MaNV")),
+									MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
 									HoTen = reader.GetString(reader.GetOrdinal("HoTen")),
 									ChucVu = reader.GetString(reader.GetOrdinal("ChucVu")),
 									SDT = reader.GetString(reader.GetOrdinal("SDT")),
@@ -66,7 +65,7 @@ namespace DAL.Data
 									CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
 									NTNS = reader.GetDateTime(reader.GetOrdinal("NTNS")),
 									GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
-									Luong = reader.GetDecimal(reader.GetOrdinal("Luong")),
+									Luong = reader.GetDecimal(reader.GetOrdinal("Luong"))
 								},
 								CT_PhieuThue = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? null : new CT_PhieuThue
 								{
@@ -178,12 +177,12 @@ namespace DAL.Data
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
-                        INSERT INTO HoaDon (MaHD, MaPhieuThue, NgayLap, TongTien)
-                        VALUES (@MaHD, @MaPhieuThue, @NgayLap, @TongTien)";
+                        INSERT INTO HoaDon (MaCTPT, MaNV, NgayLap, TongTien)
+                        VALUES (@MaCTPT, @MaNV ,@NgayLap, @TongTien)";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 
-					cmd.Parameters.AddWithValue("@MaHD", hd.MaHD);
-					cmd.Parameters.AddWithValue("@MaPhieuThue", hd.MaCTPT);
+					cmd.Parameters.AddWithValue("@MaCTPT", hd.MaCTPT);
+					cmd.Parameters.AddWithValue("@MaNV", hd.MaNV);
 					cmd.Parameters.AddWithValue("@NgayLap", hd.NgayLap);
 					cmd.Parameters.AddWithValue("@TongTien", hd.TongTien);
 
@@ -197,6 +196,35 @@ namespace DAL.Data
 				error = ex.Message;
 				return false;
 			}
+		}
+
+		public int layMaHDMoiNhat()
+		{
+			int maHD = -1; // Giá trị mặc định nếu không tìm thấy
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			try
+			{
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				{
+					string query = "SELECT MAX(MaHD) AS MaHD FROM HoaDon";
+					MySqlCommand cmd = new MySqlCommand(query, conn);
+
+					conn.Open();
+					object result = cmd.ExecuteScalar();
+
+					if (result != null && result != DBNull.Value)
+					{
+						maHD = Convert.ToInt32(result);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Lỗi khi lấy MaKH mới nhất: " + ex.Message);
+			}
+
+			return maHD;
 		}
 	}
 }

@@ -101,7 +101,7 @@
                                             </GridView.ColumnHeaderContainerStyle>
                                             <GridViewColumn  Header="Dịch vụ"  Width="150" DisplayMemberBinding="{Binding TenDV}" />
                                             <GridViewColumn Header="SL" Width="50" DisplayMemberBinding="{Binding SoLuong}"  />
-                                            <GridViewColumn Header="Thành tiền" Width="106" DisplayMemberBinding="{Binding ThanhTien , StringFormat={}{0:N0}}"  />
+                                            <GridViewColumn Header="Thành tiền" Width="106" DisplayMemberBinding="{Binding ThanhTien , StringFormat={}{0:N0} VND}"  />
                                         </GridView>
                                     </ListView.View>
                                     

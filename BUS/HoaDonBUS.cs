@@ -40,5 +40,10 @@ namespace BUS
         {
             return HoaDonDAL.GetInstance().layHoaDonTheoMaHoaDon(mahd);
         }
-    }
+
+		public int layMaHDMoiNhat()
+		{
+			return HoaDonDAL.GetInstance().layMaHDMoiNhat();
+		}
+	}
 }

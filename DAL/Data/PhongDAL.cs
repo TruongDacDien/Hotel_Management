@@ -31,38 +31,37 @@ namespace DAL.Data
             {
                 using (MySqlConnection conn = new MySqlConnection(connectionString))
                 {
-                    string query = @"
-                    SELECT 
-                        ct.MaCTPT,
-                        COALESCE(kh.TenKH, '') AS TenKH,
-                        p.SoPhong AS MaPhong,
-                        p.TinhTrang AS DonDep,
-                        COALESCE(ct.TinhTrangThue, 'Phòng trống') AS TinhTrang,
-                        lp.TenLoaiPhong AS LoaiPhong,
-                        ct.NgayBD AS NgayDen,
-                        CASE 
-                            WHEN ct.NgayBD IS NULL THEN 0
-                            ELSE DATEDIFF(ct.NgayKT, ct.NgayBD) + 1
-                        END AS SoNgayO,
-                        CASE 
-                            WHEN ct.NgayBD IS NULL THEN 0
-                            ELSE TIMESTAMPDIFF(HOUR, ct.NgayBD, ct.NgayKT)
-                        END AS SoGio,
-                        ct.NgayKT AS NgayDi,
-                        COALESCE(ct.SoNguoiO, 0) AS SoNguoi
-                    FROM Phongs p
-                    LEFT JOIN CT_PhieuThue ct ON p.SoPhong = ct.SoPhong
-                        AND ct.NgayBD <= @ngayChon
-                        AND ct.NgayKT >= @ngayChon
-                        AND ct.TinhTrangThue <> 'Đã thanh toán'
-                    LEFT JOIN PhieuThue pt ON ct.MaPhieuThue = pt.MaPhieuThue
-                    LEFT JOIN KhachHang kh ON pt.MaKH = kh.MaKH
-                    LEFT JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong";
+					string query = @"SELECT ct.MaCTPT,
+                                    COALESCE(kh.TenKH, '') AS TenKH,
+                                    p.SoPhong AS MaPhong,
+                                    p.DonDep AS DonDep,
+                                    COALESCE(ct.TinhTrangThue, 'Phòng trống') AS TinhTrang,
+                                    lp.TenLoaiPhong AS LoaiPhong,
+                                    ct.NgayBD AS NgayDen,
+                                    CASE 
+                                        WHEN ct.NgayBD IS NULL THEN 0
+                                        ELSE DATEDIFF(ct.NgayKT, ct.NgayBD) + 1
+                                    END AS SoNgayO,
+                                    CASE
+                                        WHEN ct.NgayBD IS NULL THEN 0 
+                                        ELSE TIMESTAMPDIFF(HOUR, ct.NgayBD, ct.NgayKT)
+                                    END AS SoGio,
+                                    ct.NgayKT AS NgayDi,
+                                    COALESCE(ct.SoNguoiO, 0) AS SoNguoi
+                                    FROM Phong p
+                                    LEFT JOIN CT_PhieuThue ct ON p.SoPhong = ct.SoPhong AND ((@ngayChon BETWEEN ct.NgayBD AND ct.NgayKT)
+                                                                                            OR (ct.NgayBD > @ngayChon) 
+                                                                                            OR ct.NgayBD IS NULL) 
+                                                                                        AND ct.TinhTrangThue <> 'Đã thanh toán'
+                                    LEFT JOIN PhieuThue pt ON ct.MaPhieuThue = pt.MaPhieuThue
+                                    LEFT JOIN KhachHang kh ON pt.MaKH = kh.MaKH
+                                    LEFT JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
+                                    WHERE p.IsDeleted = 0";
 
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@ngayChon", ngayChon);
+					MySqlCommand cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@ngayChon", ngayChon);
 
-                    conn.Open();
+					conn.Open();
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -167,15 +166,13 @@ namespace DAL.Data
                 {
                     string query = @"
                         SELECT p.SoPhong, lp.TenLoaiPhong
-                        FROM Phong p, LoaiPhong lp
-                        WHERE p.MaLoaiPhong = lp.MaLoaiPhong AND p.IsDeleted = 0 AND p.SoPhong NOT IN (
+                        FROM Phong p
+                        JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
+                        WHERE p.IsDeleted = 0
+                        AND p.SoPhong NOT IN (
                             SELECT ct.SoPhong
                             FROM CT_PhieuThue ct
-                            WHERE (ct.NgayBD <= @NgayBD AND ct.NgayKT >= @NgayKT) 
-                                OR (ct.NgayBD >= @NgayBD AND ct.NgayBD <= @NgayKT) 
-                                OR (ct.NgayKT >= @NgayBD AND ct.NgayKT <= @NgayKT) 
-                                OR (ct.NgayBD >= @NgayBD AND ct.NgayKT <= @NgayKT)
-                                AND ct.TinhTrangThue != 'Đã thanh toán'
+                            WHERE ((ct.NgayBD <= @NgayKT AND ct.NgayKT >= @NgayBD)) AND ct.TinhTrangThue != 'Đã thanh toán'
                         )";
 
                     MySqlCommand cmd = new MySqlCommand(query, conn);

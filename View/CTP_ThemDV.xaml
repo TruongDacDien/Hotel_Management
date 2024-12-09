@@ -100,7 +100,7 @@
                                     </GridView.ColumnHeaderContainerStyle>
                                     <GridViewColumn  Header="Loại DV"  Width="100" DisplayMemberBinding="{Binding LoaiDV}" />
                                     <GridViewColumn Header="Dịch vụ" Width="110" DisplayMemberBinding="{Binding TenDV}"  />
-                                    <GridViewColumn Header="Giá" Width="105"  DisplayMemberBinding="{Binding Gia , StringFormat={}{0:N0}}" />
+                                    <GridViewColumn Header="Giá" Width="105"  DisplayMemberBinding="{Binding Gia , StringFormat={}{0:N0} VND}" />
                                     <GridViewColumn Width="50" Header="Thêm">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
@@ -158,7 +158,7 @@
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
-                                    <GridViewColumn Header="Thành tiền" Width="120" DisplayMemberBinding="{Binding ThanhTien, StringFormat={}{0:N0}}"  />
+                                    <GridViewColumn Header="Thành tiền" Width="120" DisplayMemberBinding="{Binding ThanhTien, StringFormat={}{0:N0} VND}"  />
                                     <GridViewColumn Width="50" Header="Xóa">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
