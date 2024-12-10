@@ -45,5 +45,9 @@ namespace BUS
             return TienNghiDAL.Instance.KiemTraTenTienNghi(tn);
         }
 
+        public bool hienThiLaiTienNghi(string tenTN)
+        {
+            return TienNghiDAL.Instance.hienThiLaiTienNghi(tenTN);
+        }
     }
 }

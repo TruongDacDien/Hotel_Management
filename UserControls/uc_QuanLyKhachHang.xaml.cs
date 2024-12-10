@@ -92,11 +92,12 @@ namespace GUI.UserControls
             }
             else
             {
-                new DialogCustoms("Khách hàng đã có","Thông báo", DialogCustoms.OK).Show();
-                return;
-            }
-
-           
+                if (KhachHangBUS.GetInstance().hienThiLaiKhachHang(khachHang.CCCD))
+                {
+					new DialogCustoms("Khách hàng đã có trong hệ thống\nĐã cập nhật lại danh sách", "Thông báo", DialogCustoms.OK).Show();
+                    TaiDanhSach();
+				}
+            }          
         }
 
         void capNhatData(KhachHang khachHang)

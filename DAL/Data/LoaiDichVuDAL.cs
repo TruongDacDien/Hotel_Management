@@ -164,5 +164,40 @@ namespace DAL.Data
 			}
 			return isExist;
 		}
+
+		// Hiển thị lại loại dịch vụ đã xóa
+		public bool hienThiLaiLoaiDV(string tenLoaiDV)
+		{
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			try
+			{
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				{
+					string query = "UPDATE LoaiDV SET IsDeleted = 0 WHERE TenLoaiDV = @TenLoaiDV";
+					MySqlCommand cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@TenLoaiDV", tenLoaiDV);
+
+					conn.Open();
+					int rowsAffected = cmd.ExecuteNonQuery();
+
+					if (rowsAffected > 0)
+					{
+						Console.WriteLine($"Đã khôi phục loại phòng: {tenLoaiDV}");
+						return true;
+					}
+					else
+					{
+						Console.WriteLine($"Không tìm thấy loại phòng với tên: {tenLoaiDV}");
+						return false;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				return false;
+			}
+		}
 	}
 }

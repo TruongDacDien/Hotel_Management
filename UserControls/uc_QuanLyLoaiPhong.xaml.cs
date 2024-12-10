@@ -67,7 +67,11 @@ namespace GUI.UserControls
             }
             else
             {
-                new DialogCustoms("Tên loại phòng đã tồn tại", "Thông báo", DialogCustoms.OK).Show();
+                if (LoaiPhongBUS.Instance.hienThiLaiLoaiPhong(loaiPhong.TenLoaiPhong))
+                {
+					new DialogCustoms("Tên loại phòng đã tồn tại trong hệ thống\nĐã cập nhật lại danh sách", "Thông báo", DialogCustoms.OK).Show();
+					TaiDanhSach();
+				}
             }
 
         }

@@ -257,5 +257,39 @@ namespace DAL.Data
 			return maKH;
 		}
 
+		// Hiển thị lại khách hàng đã xóa
+		public bool hienThiLaiKhachHang(string cCCD)
+		{
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			try
+			{
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				{
+					string query = "UPDATE KhachHang SET IsDeleted = 0 WHERE CCCD = @CCCD";
+					MySqlCommand cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@CCCD", cCCD);
+
+					conn.Open();
+					int rowsAffected = cmd.ExecuteNonQuery();
+
+					if (rowsAffected > 0)
+					{
+						Console.WriteLine($"Đã khôi phục loại phòng: {cCCD}");
+						return true;
+					}
+					else
+					{
+						Console.WriteLine($"Không tìm thấy loại phòng với tên: {cCCD}");
+						return false;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				return false;
+			}
+		}
 	}
 }

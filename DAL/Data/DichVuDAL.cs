@@ -236,5 +236,38 @@ namespace DAL.Data
 				return false;
 			}
 		}
+
+		// Hiển thị lại dịch vụ đã xóa
+		public bool hienThiLaiDichVu(string tenDichVu)
+		{
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			try
+			{
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				{
+					string query = "UPDATE DichVu SET IsDeleted = 0 WHERE TenDV = @TenDV";
+					MySqlCommand cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@TenDV", tenDichVu);
+
+					conn.Open();
+					int rowsAffected = cmd.ExecuteNonQuery();
+
+					if (rowsAffected > 0)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				return false;
+			}
+		}
 	}
 }

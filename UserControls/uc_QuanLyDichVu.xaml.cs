@@ -64,7 +64,11 @@ namespace GUI.UserControls
             }
             else
             {
-                new DialogCustoms("Tên dịch vụ đã tồn tại","Thông báo", DialogCustoms.OK).Show();
+                if (DichVuBUS.GetInstance().hienThiLaiDichVu(dv.TenDV))
+                {
+					new DialogCustoms("Tên dịch vụ đã tồn tại trong hệ thống\nĐã cập nhật lại danh sách", "Thông báo", DialogCustoms.OK).Show();
+                    TaiDanhSach();
+				}            
             }
         }
 

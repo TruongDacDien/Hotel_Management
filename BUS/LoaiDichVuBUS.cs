@@ -45,5 +45,10 @@ namespace BUS
         {
             return LoaiDichVuDAL.Instance.KiemTraTenLoaiDichVu(loaiDV);
         }
+
+        public bool hienThiLaiLoaiDV(string tenLoaiDV)
+        {
+            return LoaiDichVuDAL.Instance.hienThiLaiLoaiDV(tenLoaiDV);
+        }
     }
 }

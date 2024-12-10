@@ -191,5 +191,39 @@ namespace DAL.Data
 				return false;
 			}
 		}
+
+		// Hiển thị lại chi tiết tiện nghi đã xóa
+		public bool hienThiLaiCT_TienNghi(int maTN, string soPhong)
+		{
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			try
+			{
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				{
+					string query = "UPDATE CT_TienNghi SET IsDeleted = 0 WHERE MaTN = @MaTN AND SoPhong = @SoPhong";
+					MySqlCommand cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaTN", maTN);
+					cmd.Parameters.AddWithValue("@SoPhong", soPhong);
+
+					conn.Open();
+					int rowsAffected = cmd.ExecuteNonQuery();
+
+					if (rowsAffected > 0)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				return false;
+			}
+		}
 	}
 }
