@@ -71,11 +71,11 @@ namespace GUI.UserControls
 
 		void capNhatData(TaiKhoan taiKhoan)
 		{
-                if (TaiKhoanBUS.GetInstance().capNhatTaiKhoan(taiKhoan))
-                {
-                    new DialogCustoms("Cập nhật tài khoản thành công", "Thông báo", DialogCustoms.OK).Show();
-                    TaiDanhSach();
-                }
+			if (TaiKhoanBUS.GetInstance().capNhatTaiKhoan(taiKhoan))
+			{
+				new DialogCustoms("Cập nhật tài khoản thành công", "Thông báo", DialogCustoms.OK).Show();
+				TaiDanhSach();
+			}
 		}
 
 		private void txtFilter_TextChanged(object sender, TextChangedEventArgs e)
