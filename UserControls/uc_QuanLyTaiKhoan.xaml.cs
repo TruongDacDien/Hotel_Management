@@ -55,7 +55,7 @@ namespace GUI.UserControls
 			{
 				if (TaiKhoanBUS.GetInstance().themTaiKhoan(taiKhoan))
 				{
-					new DialogCustoms("Thêm thành công", "Thông báo", DialogCustoms.OK).Show();
+					new DialogCustoms("Thêm tài khoản thành công", "Thông báo", DialogCustoms.OK).Show();
 					TaiDanhSach();
 				}
 			}
@@ -63,7 +63,7 @@ namespace GUI.UserControls
 			{
 				if (TaiKhoanBUS.GetInstance().hienThiLaiTaiKhoan(taiKhoan.Username))
 				{
-					new DialogCustoms("Tên dịch vụ đã tồn tại trong hệ thống\nĐã cập nhật lại danh sách", "Thông báo", DialogCustoms.OK).Show();
+					new DialogCustoms("Tên tài khoản đã tồn tại trong hệ thống", "Thông báo", DialogCustoms.OK).Show();
 					TaiDanhSach();
 				}
 			}
@@ -71,11 +71,12 @@ namespace GUI.UserControls
 
 		void capNhatData(TaiKhoan taiKhoan)
 		{
-			if (TaiKhoanBUS.GetInstance().capNhatTaiKhoan(taiKhoan))
-			{
-				new DialogCustoms("Cập nhật thành công", "Thông báo", DialogCustoms.OK).Show();
-				TaiDanhSach();
-			}
+                if (TaiKhoanBUS.GetInstance().capNhatTaiKhoan(taiKhoan))
+                {
+                    new DialogCustoms("Cập nhật tài khoản thành công", "Thông báo", DialogCustoms.OK).Show();
+                    TaiDanhSach();
+                }
+		
 		}
 
 		private void txtFilter_TextChanged(object sender, TextChangedEventArgs e)
@@ -99,17 +100,17 @@ namespace GUI.UserControls
 
 		private void btnThem_Click(object sender, RoutedEventArgs e)
 		{
-			//Them_SuaTaiKhoan ThemTaiKhoan = new Them_SuaTaiKhoan(false);
-			//ThemTaiKhoan.truyen = new Them_SuaTaiKhoan.TryenDuLieu(nhanData);
-			//ThemTaiKhoan.ShowDialog();
+			Them_SuaTaiKhoan ThemTaiKhoan = new Them_SuaTaiKhoan();
+			ThemTaiKhoan.truyenTaiKhoan = new Them_SuaTaiKhoan.truyenData(nhanData);
+			ThemTaiKhoan.ShowDialog();
 		}
 
 		private void btnCapNhat_Click(object sender, RoutedEventArgs e)
 		{
-			//TaiKhoan taiKhoan = (sender as Button).DataContext as TaiKhoan;
-			//Them_SuaTaiKhoan CapNhatTaiKhoan = new Them_SuaTaiKhoan(true, taiKhoan);
-			//CapNhatTaiKhoan.sua = new Them_SuaTaiKhoan.SuaDuLieu(capNhatData);
-			//Cap.ShowDialog();
+			TaiKhoan taiKhoan = (sender as Button).DataContext as TaiKhoan;
+			Them_SuaTaiKhoan CapNhatTaiKhoan = new Them_SuaTaiKhoan(taiKhoan);
+			CapNhatTaiKhoan.suaTaiKhoan = new Them_SuaTaiKhoan.suaData(capNhatData);
+            CapNhatTaiKhoan.ShowDialog();
 		}
 	}
 }

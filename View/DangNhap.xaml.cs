@@ -76,6 +76,7 @@ namespace GUI.View
 			string username = txbTenDangNhap.Text;
 			string pass = txbMatKhau.Password;
 			TaiKhoan taiKhoan = TaiKhoanBUS.GetInstance().kiemTraTKTonTaiKhong(username, pass);
+			
 			if (taiKhoan != null)
 			{
 				if(taiKhoan.Disabled == true)

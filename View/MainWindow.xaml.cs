@@ -118,7 +118,7 @@ namespace GUI.View
 				listMenu.Add(new ItemMenuMainWindow() { name = "QL tiện nghi", foreColor = "#FFF08033", kind_Icon = "Fridge" });
 				listMenu.Add(new ItemMenuMainWindow() { name = "QL chi tiết tiện nghi", foreColor = "#FFF08033", kind_Icon = "Fridge" });
 				listMenu.Add(new ItemMenuMainWindow() { name = "QL nhân Viên", foreColor = "#FFD41515", kind_Icon = "AccountHardHat" });
-				listMenu.Add(new ItemMenuMainWindow() { name = "QL tài  khoản", foreColor = "Blue", kind_Icon = "AccountCog" });
+				listMenu.Add(new ItemMenuMainWindow() { name = "QL tài khoản", foreColor = "Blue", kind_Icon = "AccountCog" });
 				listMenu.Add(new ItemMenuMainWindow() { name = "Thống kê", foreColor = "#FF0069C1", kind_Icon = "ChartAreaspline" });
 			}
 			else if(CapDoQuyen == 2)
