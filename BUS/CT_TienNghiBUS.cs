@@ -45,5 +45,9 @@ namespace BUS
         {
             return CT_TienNghiDAL.Instance.KiemTraTonTai(chiTietTN);
         }
+        public bool hienThiLaiCT_TienNghi(int maTN, string soPhong)
+        {
+            return CT_TienNghiDAL.Instance.hienThiLaiCT_TienNghi(maTN, soPhong);
+        }
     }
 }

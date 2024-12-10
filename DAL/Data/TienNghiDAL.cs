@@ -144,42 +144,39 @@ namespace DAL.Data
 			}
 		}
 
-   //     public List<CT_TienNghi> getDataBySoPhong(string maPhong)
-   //     {
-   //         List<CT_TienNghi> ctTienNghis = new List<CT_TienNghi>();
+		// Hiển thị lại tiện nghi đã xóa
+		public bool hienThiLaiTienNghi(string tenTN)
+		{
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
-   //         string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
-   //         string query = "SELECT CT.SoPhong, CT.SL, CT.MaTN, TN.TenTN FROM CT_TienNghi CT JOIN TienNghi TN ON CT.MaTN = TN.MaTN WHERE CT.SoPhong = @SoPhong";
+			try
+			{
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				{
+					string query = "UPDATE TienNghi SET IsDeleted = 0 WHERE TenTN = @TenTN";
+					MySqlCommand cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@TenTN", tenTN);
 
-   //         try
-   //         {
-   //             using (MySqlConnection conn = new MySqlConnection(connectionString))
-   //             {
-   //                 MySqlCommand cmd = new MySqlCommand(query, conn);
-   //                 cmd.Parameters.AddWithValue("@SoPhong", maPhong);
-			//		Console.WriteLine(query);
-   //                 conn.Open();
-   //                 MySqlDataReader reader = cmd.ExecuteReader();
+					conn.Open();
+					int rowsAffected = cmd.ExecuteNonQuery();
 
-   //                 while (reader.Read())
-   //                 {
-   //                     CT_TienNghi ctTienNghi = new CT_TienNghi
-   //                     {
-   //                         SoPhong = reader.GetString("SoPhong"),
-   //                         SL = reader.GetInt32("SL"),
-   //                         MaTN = reader.GetInt32("MaTN"),
-   //                         TenTN = reader.GetString("TenTN")
-   //                     };
-   //                     ctTienNghis.Add(ctTienNghi);
-   //                 }
-   //             }
-   //         }
-   //         catch (Exception ex)
-   //         {
-   //             Console.WriteLine("Error: " + ex.Message);
-   //         }
-			//MessageBox.Show(ctTienNghis.Count.ToString());
-   //         return ctTienNghis;
-   //     }
-    }
+					if (rowsAffected > 0)
+					{
+						Console.WriteLine($"Đã khôi phục tiện nghi: {tenTN}");
+						return true;
+					}
+					else
+					{
+						Console.WriteLine($"Không tìm thấy loại phòng với tên: {tenTN}");
+						return false;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				return false;
+			}
+		}
+	}
 }

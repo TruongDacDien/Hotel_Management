@@ -71,5 +71,10 @@ namespace BUS
 				return -1;
 			}
 		}
+
+        public bool hienThiLaiNhanVien(string cccd)
+        {
+            return NhanVienDAL.GetInstance().hienThiLaiNhanVien(cccd);
+        }
 	}
 }

@@ -60,8 +60,12 @@ namespace GUI.UserControls
             }
             else
             {
-                new DialogCustoms("Số phòng đã tồn tại", "Thông báo", DialogCustoms.OK).Show();
-            }
+                if (PhongBUS.GetInstance().hienThiLaiPhong(p.SoPhong))
+                {
+					new DialogCustoms("Số phòng đã tồn tại trong hệ thống\nĐã cập nhật lại danh sách", "Thông báo", DialogCustoms.OK).Show();
+					TaiDanhSach();
+				}            
+			}
         }
 
         void capNhatData(Phong p)

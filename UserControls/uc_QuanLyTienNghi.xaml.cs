@@ -95,7 +95,11 @@ namespace GUI.UserControls
             }
             else
             {
-                new DialogCustoms("Tên tiện nghi đã tồn tại", "Thông báo", DialogCustoms.OK).ShowDialog();
+                if (TienNghiBUS.Instance.hienThiLaiTienNghi(tn.TenTN))
+                {
+					new DialogCustoms("Tên tiện nghi đã tồn tại trong hệ thống\n Đã cập nhật lại danh sách", "Thông báo", DialogCustoms.OK).ShowDialog();
+                    TaiDanhSach();
+				}               
             }
 
         }
