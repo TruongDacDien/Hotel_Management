@@ -254,3 +254,7 @@ C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\bin\Debug\System.Diagnostics
 C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
 C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\bin\Debug\System.Configuration.ConfigurationManager.xml
 C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\bin\Debug\System.Diagnostics.DiagnosticSource.xml
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\obj\Debug\UserControls\uc_QuanLyTaiKhoan.g.cs
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\obj\Debug\View\Them_SuaTaiKhoan.g.cs
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\obj\Debug\UserControls\uc_QuanLyTaiKhoan.baml
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\obj\Debug\View\Them_SuaTaiKhoan.baml

@@ -33,8 +33,21 @@ namespace DAL.Data
 			}
 		}
 
-		// Lấy tài khoản theo username
-		public TaiKhoan layTaiKhoanTheoUsername(string username)
+        private byte[] GetDefaultAvatar()
+        {
+			string basePath = AppDomain.CurrentDomain.BaseDirectory; // Lấy thư mục gốc của ứng dụng
+            string filepath = Path.Combine(basePath, "Res", "default_image.jpg");
+            if (!File.Exists(filepath))
+                throw new FileNotFoundException("Không tìm thấy file ảnh mặc định", filepath);
+            using (Image image = Image.FromFile(filepath))
+			{
+				return ConvertImageToByteArray(image);
+			}
+
+		}
+
+        // Lấy tài khoản theo username
+        public TaiKhoan layTaiKhoanTheoUsername(string username)
 		{
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
@@ -135,7 +148,8 @@ namespace DAL.Data
 					string query = @"SELECT tk.Username, tk.Password, tk.MaNV, tk.CapDoQuyen, tk.Avatar, tk.Disabled,
                             nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong
                             FROM TaiKhoan tk
-                            LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV AND tk.Disabled = 0";
+                            LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV 
+							WHERE tk.Disabled = 0";
 
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					conn.Open();
@@ -188,22 +202,22 @@ namespace DAL.Data
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"INSERT INTO TaiKhoan (Username, Password, MaNV, CapDoQuyen, Avatar, Disabled)
-                             VALUES (@Username, @Password, @MaNV, @CapDoQuyen, @Avatar, @Disabled)";
+                             VALUES (@Username, @Password, @MaNV, @CapDoQuyen, @Avatar, 0)";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@Username", taiKhoan.Username);
 					cmd.Parameters.AddWithValue("@Password", taiKhoan.Password);
 					cmd.Parameters.AddWithValue("@MaNV", taiKhoan.MaNV);
 					cmd.Parameters.AddWithValue("@CapDoQuyen", taiKhoan.CapDoQuyen);
-					cmd.Parameters.AddWithValue("@Avatar", taiKhoan.Avatar ?? (object)DBNull.Value);
-					cmd.Parameters.AddWithValue("@Disabled", taiKhoan.Disabled);
+					cmd.Parameters.AddWithValue("@Avatar", taiKhoan.Avatar ?? GetDefaultAvatar());
 
 					conn.Open();
 					cmd.ExecuteNonQuery();
 					return true;
 				}
 			}
-			catch
+			catch (Exception ex)
 			{
+                Console.WriteLine($"Lỗi: {ex.Message}");
 				return false;
 			}
 		}
@@ -214,26 +228,27 @@ namespace DAL.Data
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+                Console.WriteLine(taiKhoan.Username + " " + taiKhoan.Password + " " + taiKhoan.CapDoQuyen + " " + taiKhoan.MaNV);
+                using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"UPDATE TaiKhoan
-                             SET Password = @Password,
+                             SET 
                                  MaNV = @MaNV,
                                  CapDoQuyen = @CapDoQuyen,
-                                 Avatar = @Avatar,
-                                 Disabled = @Disabled
+								 Password = CASE 
+									WHEN @Password = '' THEN Password 
+									ELSE @Password 
+									END
                              WHERE username = @Username";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@Username", taiKhoan.Username);
-					cmd.Parameters.AddWithValue("@Password", taiKhoan.Password);
+					cmd.Parameters.AddWithValue("@Password", "");
 					cmd.Parameters.AddWithValue("@MaNV", taiKhoan.MaNV);
 					cmd.Parameters.AddWithValue("@CapDoQuyen", taiKhoan.CapDoQuyen);
-					cmd.Parameters.AddWithValue("@Avatar", taiKhoan.Avatar ?? (object)DBNull.Value);
-					cmd.Parameters.AddWithValue("@Disabled", taiKhoan.Disabled);
 
 					conn.Open();
 					int rowsAffected = cmd.ExecuteNonQuery();
-
+					Console.WriteLine(rowsAffected);
 					if (rowsAffected == 0)
 					{
 						return false;
@@ -241,8 +256,9 @@ namespace DAL.Data
 					return true;
 				}
 			}
-			catch
+			catch ( Exception ex)
 			{
+				Console.WriteLine(ex.Message);
 				return false;
 			}
 		}

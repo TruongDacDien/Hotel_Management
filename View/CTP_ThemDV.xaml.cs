@@ -49,10 +49,11 @@ namespace GUI.View
 			lsCache = new List<DichVu>();
 			lsLoaiDV = new List<DichVuDTO>();
 			lsLoaiDV = DichVuBUS.GetInstance().getLoaiDichVu();
-			//lsLoaiDV.Add("Tất cả");
-			lvDanhSachDV.ItemsSource = lsdichVu_Customs;
+            var dsTenLoaiDV = lsLoaiDV.Select(dv => dv.LoaiDV).ToList(); // Thay "TenLoaiDichVu" bằng thuộc tính tên trong DichVuDTO
+            dsTenLoaiDV.Add("Tất cả");
+            lvDanhSachDV.ItemsSource = lsdichVu_Customs;
 			lvDichVuDaChon.ItemsSource = lsDichVu_DaChon;
-			cbTimKiemLoaiDV.ItemsSource = lsLoaiDV;
+			cbTimKiemLoaiDV.ItemsSource = dsTenLoaiDV;
 		}
 
 		private void click_Them(object sender, RoutedEventArgs e)
