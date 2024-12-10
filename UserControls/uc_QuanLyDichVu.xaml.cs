@@ -31,7 +31,6 @@ namespace GUI.UserControls
         {
             InitializeComponent();
             TaiDanhSach();
-
         }
 
         private void TaiDanhSach()
@@ -39,8 +38,7 @@ namespace GUI.UserControls
             list = new ObservableCollection<DichVuDTO>(DichVuBUS.GetInstance().getDichVu());
             lsvDichVu.ItemsSource = list;
             view = (CollectionView)CollectionViewSource.GetDefaultView(list);
-            view.Filter = DichVuFilter;
-            
+            view.Filter = DichVuFilter;         
         }
 
         private bool DichVuFilter(object obj)   
@@ -114,7 +112,6 @@ namespace GUI.UserControls
             Them_SuaDichVu CapNhatDichVu = new Them_SuaDichVu(true, dv);
             CapNhatDichVu.sua = new Them_SuaDichVu.SuaDuLieu(capNhatData);
             CapNhatDichVu.ShowDialog();
-
         }
     }
 }
