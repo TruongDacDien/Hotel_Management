@@ -231,18 +231,10 @@ namespace DAL.Data
                 Console.WriteLine(taiKhoan.Username + " " + taiKhoan.Password + " " + taiKhoan.CapDoQuyen + " " + taiKhoan.MaNV);
                 using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = @"UPDATE TaiKhoan
-                             SET 
-                                 MaNV = @MaNV,
-                                 CapDoQuyen = @CapDoQuyen,
-								 Password = CASE 
-									WHEN @Password = '' THEN Password 
-									ELSE @Password 
-									END
-                             WHERE username = @Username";
+					string query = @"UPDATE TaiKhoan SET MaNV = @MaNV, CapDoQuyen = @CapDoQuyen, Password = @Password WHERE Username = @Username";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@Username", taiKhoan.Username);
-					cmd.Parameters.AddWithValue("@Password", "");
+					cmd.Parameters.AddWithValue("@Password", taiKhoan.Password);
 					cmd.Parameters.AddWithValue("@MaNV", taiKhoan.MaNV);
 					cmd.Parameters.AddWithValue("@CapDoQuyen", taiKhoan.CapDoQuyen);
 
