@@ -49,11 +49,13 @@ namespace GUI.View
 			lsCache = new List<DichVu>();
 			lsLoaiDV = new List<DichVuDTO>();
 			lsLoaiDV = DichVuBUS.GetInstance().getLoaiDichVu();
-            var dsTenLoaiDV = lsLoaiDV.Select(dv => dv.LoaiDV).ToList(); // Thay "TenLoaiDichVu" bằng thuộc tính tên trong DichVuDTO
-            dsTenLoaiDV.Add("Tất cả");
-            lvDanhSachDV.ItemsSource = lsdichVu_Customs;
+			lsLoaiDV.Insert(0, new DichVuDTO { LoaiDV = "Tất cả", MaLoaiDV = 0 });
+			cbTimKiemLoaiDV.SelectedIndex = 0;
+			lvDanhSachDV.ItemsSource = lsdichVu_Customs;
 			lvDichVuDaChon.ItemsSource = lsDichVu_DaChon;
-			cbTimKiemLoaiDV.ItemsSource = dsTenLoaiDV;
+			cbTimKiemLoaiDV.ItemsSource = lsLoaiDV;
+			cbTimKiemLoaiDV.DisplayMemberPath = "LoaiDV";
+			cbTimKiemLoaiDV.SelectedValuePath = "MaLoaiDV";
 		}
 
 		private void click_Them(object sender, RoutedEventArgs e)
@@ -169,14 +171,14 @@ namespace GUI.View
 		}
 		private bool filterTimKiemLoaiDV(object obj)
 		{
-			if (cbTimKiemLoaiDV.SelectedItem.ToString().Equals("Tất cả"))
+			var selectedLoaiDV = cbTimKiemLoaiDV.SelectedItem as DichVuDTO;
+			if (selectedLoaiDV == null || selectedLoaiDV.LoaiDV == "Tất cả")
 				return true;
-			else
-			{
-				string objTenDV = RemoveVietnameseTone((obj as DichVu).LoaiDV);
-				string timkiem = RemoveVietnameseTone(cbTimKiemLoaiDV.SelectedItem.ToString());
-				return objTenDV.Contains(timkiem);
-			}
+
+			string objLoaiDV = RemoveVietnameseTone((obj as DichVu)?.LoaiDV ?? string.Empty);
+			string selectedLoaiDVText = RemoveVietnameseTone(selectedLoaiDV.LoaiDV);
+
+			return objLoaiDV.Contains(selectedLoaiDVText);
 		}
 		public string RemoveVietnameseTone(string text)
 		{

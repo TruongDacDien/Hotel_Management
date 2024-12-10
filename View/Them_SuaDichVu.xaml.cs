@@ -80,9 +80,7 @@ namespace GUI.View
             else
             {
                 if (isEditing)
-                {
-                   
-
+                {                
                     DichVuDTO dichVu = new DichVuDTO()
                     {
                         MaDV = int.Parse(maDV.ToString()),

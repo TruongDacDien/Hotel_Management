@@ -28,8 +28,9 @@ namespace GUI.View
 
         public truyenData truyenTaiKhoan;
         public suaData suaTaiKhoan;
+		private bool isEditing;
 
-        private string username;
+		private string username;
         ObservableCollection<NhanVien> list;
         public Them_SuaTaiKhoan()
 		{
@@ -37,28 +38,36 @@ namespace GUI.View
 
             list = new ObservableCollection<NhanVien>(NhanVienBUS.GetInstance().getDataNhanVien());
             cmbMaNV.ItemsSource = list;
-            cmbMaNV.DisplayMemberPath = "MaNV";
-            cmbMaNV.SelectedValuePath = "MaNV";
+            cmbMaNV.DisplayMemberPath = "DisplayInfo";
+			cmbMaNV.SelectedValuePath = "MaNV";
+		}
 
-        }
-
-		public Them_SuaTaiKhoan(TaiKhoan taiKhoan) : this()
+		public Them_SuaTaiKhoan(bool isEditing = false, TaiKhoan taiKhoan = null) : this()
 		{
+			this.isEditing = isEditing;
 			txtUsername.IsReadOnly = true;
-
 			txbTitle.Text = "Sửa thông tin " + taiKhoan.Username;
 			txtUsername.Text = taiKhoan.Username;
-			
-			cmbCapDo.Text = taiKhoan.CapDoQuyen.ToString();
-			cmbMaNV.Text = taiKhoan.MaNV.ToString();
+
+			if (isEditing && taiKhoan != null)
+			{
+				cmbCapDo.Text = taiKhoan.CapDoQuyen.ToString();
+				cmbMaNV.Text = taiKhoan.NhanVien.DisplayInfo.ToString();
+				txbTitle.Text = "Sửa thông tin tài khoản" + taiKhoan.Username;
+				username = taiKhoan.Username;
+			}
+			else
+			{
+				txbTitle.Text = "Nhập thông tin dịch vụ";
+			}
 		}
 
 		#region Method
 		private bool KiemTra()
 		{
-			if (string.IsNullOrWhiteSpace(txtUsername.Text))
+			if (string.IsNullOrWhiteSpace(txtUsername.Text) || txtUsername.Text.Any(ch => !char.IsLetterOrDigit(ch)))
 			{
-				new DialogCustoms("Vui lòng nhập tên tài khoản", "Thông báo", DialogCustoms.OK).Show();
+				new DialogCustoms("Vui lòng nhập tên tài khoản và không chứa ký tự đặc biệt", "Thông báo", DialogCustoms.OK).Show();
 				return false;
 			}
 
@@ -72,30 +81,12 @@ namespace GUI.View
 				new DialogCustoms("Vui lòng chọn mã nhân viên", "Thông báo", DialogCustoms.OK).Show();
 				return false;
 			}
-			else
+			if(string.IsNullOrWhiteSpace(txtPassword.Text))
 			{
-				//int so;
-                if (!txtUsername.Text.Any(char.IsLetter) || txtUsername.Text.All(char.IsDigit))
-                {
-                    new DialogCustoms("Vui lòng nhập đúng định dạng tên loại phòng (phải chứa ít nhất một chữ cái và không được hoàn toàn là số)",
-                                      "Thông báo", DialogCustoms.OK).Show();
-                    return false;
-                }
-                if (txtUsername.Text.Any(ch => !char.IsLetterOrDigit(ch)))
-                {
-                    new DialogCustoms("Tên loại phòng không được chứa ký tự đặc biệt", "Thông báo", DialogCustoms.OK).Show();
-                    return false;
-                }
-                //if (int.TryParse(txtPassword.Text, out so) == false)
-                //{
-                //	new DialogCustoms("Vui lòng nhập đúng định dạng số người tối đa", "Thông báo", DialogCustoms.OK).Show();
-                //	return false;
-                //}
-                else
-				{
-					return true;
-				}
-			}
+				new DialogCustoms("Vui lòng nhập mật khẩu", "Thông báo", DialogCustoms.OK).Show();
+				return false;
+			}	
+			return true;
 		}
 		#endregion
 
@@ -114,35 +105,25 @@ namespace GUI.View
 			}
 			else
 			{
-				
-				TaiKhoan taiKhoan;
-				if (txtPassword.Text == "")
+				if (isEditing)
 				{
-                    Console.WriteLine("Rỗng: " +txtPassword.Text);
-                   
-                   taiKhoan = new TaiKhoan()
-                    {
-                        Username = txtUsername.Text,
-                       
-                        CapDoQuyen = int.Parse(cmbCapDo.Text),
-                        MaNV = int.Parse(cmbMaNV.Text),
-                    };
-                }
-				else
+					string pass = Bcrypt_HashBUS.GetInstance().HashMatKhau(txtPassword.Text);
+					TaiKhoan taiKhoan = new TaiKhoan()
+					{
+						Username = txtUsername.Text,
+						Password = pass,
+						CapDoQuyen = int.Parse(cmbCapDo.Text),
+						MaNV = int.Parse(cmbMaNV.SelectedValue.ToString())
+					};
+
+					if (suaTaiKhoan != null)
+					{
+						suaTaiKhoan(taiKhoan);
+					}
+				}
+				else 
 				{
-                    string pass = Bcrypt_HashBUS.GetInstance().HashMatKhau(txtPassword.Text);
-                    taiKhoan = new TaiKhoan()
-                    {
-                        Username = txtUsername.Text,
-                        Password = pass,
-                        CapDoQuyen = int.Parse(cmbCapDo.Text),
-                        MaNV = int.Parse(cmbMaNV.Text),
-                    };
-                }
-				
-				if (suaTaiKhoan != null)
-				{
-					suaTaiKhoan(taiKhoan);
+					btnThem_Click(sender, e);
 				}
 			}
 
@@ -158,18 +139,13 @@ namespace GUI.View
 			}
 			else
 			{
-				if (txtPassword.Text == null)
-				{
-                    new DialogCustoms("Vui lòng nhập mật khẩu", "Thông báo", DialogCustoms.OK).Show();
-                    return ;
-                }	
                 string pass = Bcrypt_HashBUS.GetInstance().HashMatKhau(txtPassword.Text);
                 TaiKhoan taiKhoan = new TaiKhoan()
 				{
 					Username = txtUsername.Text,
 					Password = pass,
                     CapDoQuyen = int.Parse(cmbCapDo.Text),
-                    MaNV = int.Parse(cmbMaNV.Text),
+                    MaNV = int.Parse(cmbMaNV.SelectedValue.ToString())
 				};
                 if (truyenTaiKhoan != null)
 				{

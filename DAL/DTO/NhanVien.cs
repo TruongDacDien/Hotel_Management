@@ -29,5 +29,6 @@ namespace DAL.DTO
 		public string GioiTinh { get => gioiTinh; set => gioiTinh = value; }
 		public decimal Luong { get => luong; set => luong = value; }
 		public bool IsDeleted { get => isDeleted; set => isDeleted = value; }
+		public string DisplayInfo => $"{MaNV} - {HoTen}";
 	}
 }
