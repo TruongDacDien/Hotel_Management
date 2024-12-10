@@ -76,7 +76,6 @@ namespace GUI.UserControls
                     new DialogCustoms("Cập nhật tài khoản thành công", "Thông báo", DialogCustoms.OK).Show();
                     TaiDanhSach();
                 }
-		
 		}
 
 		private void txtFilter_TextChanged(object sender, TextChangedEventArgs e)
@@ -108,7 +107,7 @@ namespace GUI.UserControls
 		private void btnCapNhat_Click(object sender, RoutedEventArgs e)
 		{
 			TaiKhoan taiKhoan = (sender as Button).DataContext as TaiKhoan;
-			Them_SuaTaiKhoan CapNhatTaiKhoan = new Them_SuaTaiKhoan(taiKhoan);
+			Them_SuaTaiKhoan CapNhatTaiKhoan = new Them_SuaTaiKhoan(true, taiKhoan);
 			CapNhatTaiKhoan.suaTaiKhoan = new Them_SuaTaiKhoan.suaData(capNhatData);
             CapNhatTaiKhoan.ShowDialog();
 		}
