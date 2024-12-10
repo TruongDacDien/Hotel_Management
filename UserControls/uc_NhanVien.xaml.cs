@@ -56,8 +56,11 @@ namespace GUI.UserControls
             }
             else
             {
-                new DialogCustoms("Nhân viên đã có", "Thông báo", DialogCustoms.OK).Show();
-                return;
+                if (NhanVienBUS.GetInstance().hienThiLaiNhanVien(nv.CCCD))
+                {
+					new DialogCustoms("Nhân viên đã có trong hệ thống\nĐã cập nhật lại danh sách", "Thông báo", DialogCustoms.OK).Show();
+                    TaiDanhSach();
+				} 
             }
         }
 

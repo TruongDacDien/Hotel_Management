@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL.DTO;
 using DAL.Data;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace BUS
 {
@@ -59,5 +60,9 @@ namespace BUS
             return DichVuDAL.GetInstance().KiemTraTrungTen(dv);
         }
 
+        public bool hienThiLaiDichVu(string tenDV)
+        {
+            return DichVuDAL.GetInstance().hienThiLaiDichVu(tenDV);
+        }
     }
 }

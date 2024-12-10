@@ -323,66 +323,39 @@ namespace DAL.Data
             return lstPhong;
         }
 
-        /*
-		public List<Phong_Custom> filterPhongTheoLoai(string loai)
+		// Hiển thị lại phòng đã xóa
+		public bool hienThiLaiPhong(string soPhong)
 		{
-			List<Phong_Custom> filteredPhongList = new List<Phong_Custom>();
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = @"
-                    SELECT 
-                        p.SoPhong, 
-                        p.TinhTrangDonDep, 
-                        lp.TenLoaiPhong, 
-                        ct.MaCTPT, 
-                        ct.NgayBD, 
-                        ct.NgayKT, 
-                        ct.TinhTrangThue, 
-                        ct.PhieuThue.KhachHang.TenKH, 
-                        ct.SoNguoiO
-                    FROM Phong p
-                    INNER JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
-                    LEFT JOIN CT_PhieuThue ct ON p.SoPhong = ct.SoPhong
-                    WHERE lp.TenLoaiPhong = @LoaiPhong AND p.IsDeleted = 0";
-
+					string query = "UPDATE Phong SET IsDeleted = 0 WHERE SoPhong = @SoPhong";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
-					cmd.Parameters.AddWithValue("@LoaiPhong", loai);
+					cmd.Parameters.AddWithValue("@SoPhong", soPhong);
 
 					conn.Open();
-					using (MySqlDataReader reader = cmd.ExecuteReader())
+					int rowsAffected = cmd.ExecuteNonQuery();
+
+					if (rowsAffected > 0)
 					{
-						while (reader.Read())
-						{
-							filteredPhongList.Add(new Phong_Custom
-							{
-								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("MaCTPT")),
-								MaPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
-								TinhTrang = reader.GetString(reader.GetOrdinal("TinhTrangDonDep")),
-								LoaiPhong = reader.GetString(reader.GetOrdinal("TenLoaiPhong")),
-								TenKH = reader.IsDBNull(reader.GetOrdinal("TenKH")) ? string.Empty : reader.GetString(reader.GetOrdinal("TenKH")),
-								NgayDen = reader.IsDBNull(reader.GetOrdinal("NgayBD")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("NgayBD")),
-								NgayDi = reader.IsDBNull(reader.GetOrdinal("NgayKT")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("NgayKT")),
-								SoNguoi = reader.IsDBNull(reader.GetOrdinal("SoNguoiO")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
-								SoNgayO = reader.IsDBNull(reader.GetOrdinal("NgayBD")) || reader.IsDBNull(reader.GetOrdinal("NgayKT")) ? (int?)null :
-										  (int)(reader.GetDateTime(reader.GetOrdinal("NgayKT")).Subtract(reader.GetDateTime(reader.GetOrdinal("NgayBD"))).TotalDays) + 1,
-								SoGio = reader.IsDBNull(reader.GetOrdinal("NgayBD")) || reader.IsDBNull(reader.GetOrdinal("NgayKT")) ? (int?)null :
-										(int)(reader.GetDateTime(reader.GetOrdinal("NgayKT")).Subtract(reader.GetDateTime(reader.GetOrdinal("NgayBD"))).TotalHours)
-							});
-						}
+						Console.WriteLine($"Đã khôi phục phòng: {soPhong}");
+						return true;
+					}
+					else
+					{
+						Console.WriteLine($"Không tìm thấy loại phòng với tên: {soPhong}");
+						return false;
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("Lỗi khi lọc danh sách phòng theo loại: " + ex.Message); // Log lỗi nếu cần
+				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				return false;
 			}
-
-			return filteredPhongList;
 		}
-        */
 	}
 }

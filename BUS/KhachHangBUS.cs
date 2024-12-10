@@ -69,5 +69,10 @@ namespace BUS
         {
             return KhachHangDAL.GetInstance().layMaKHMoiNhat();
         }
+
+        public bool hienThiLaiKhachHang(string cccd)
+        {
+            return KhachHangDAL.GetInstance().hienThiLaiKhachHang(cccd);
+        }
     }
 }

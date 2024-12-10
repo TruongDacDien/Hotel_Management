@@ -92,8 +92,12 @@ namespace GUI.UserControls
             }
             else
             {
-                new DialogCustoms("Tên loại dịch vụ đã tồn tại", "Thông báo", DialogCustoms.OK).Show();
-            }
+                if (LoaiDichVuBUS.Instance.hienThiLaiLoaiDV(loaiDV.TenLoaiDV))
+                {
+					new DialogCustoms("Tên loại dịch vụ đã tồn tại", "Thông báo", DialogCustoms.OK).Show();
+                    TaiDanhSach();
+				}
+			}
         }
         void capNhatData(LoaiDV loaiDV)
         {
