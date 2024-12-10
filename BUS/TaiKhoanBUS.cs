@@ -47,5 +47,40 @@ namespace BUS
         {
             return TaiKhoanDAL.GetInstance().capNhatAvatar( username , avatar, out error);
         }
-    }
+
+        public List<TaiKhoan> getDataTaiKhoan()
+        {
+            return TaiKhoanDAL.GetInstance().getDataTaiKhoan();
+        }
+
+        public TaiKhoan layTaiKhoanTheoUsername(string username)
+        {
+            return TaiKhoanDAL.GetInstance().layTaiKhoanTheoUsername(username);
+        }
+
+        public bool kiemTraTrungUsername(string username)
+        {
+            return TaiKhoanDAL.GetInstance().kiemTraTrungUsername(username);
+        }
+
+        public bool xoaTaiKhoan(TaiKhoan taiKhoan)
+        {
+            return TaiKhoanDAL.GetInstance().xoaTaiKhoan(taiKhoan);
+        }
+
+        public bool themTaiKhoan(TaiKhoan taiKhoan)
+        {
+            return TaiKhoanDAL.GetInstance().themTaiKhoan(taiKhoan);
+        }
+
+		public bool capNhatTaiKhoan(TaiKhoan taiKhoan)
+		{
+			return TaiKhoanDAL.GetInstance().capNhatTaiKhoan(taiKhoan);
+		}
+
+        public bool hienThiLaiTaiKhoan(string username)
+        {
+            return TaiKhoanDAL.GetInstance().hienThiLaiTaiKhoan(username);
+        }
+	}
 }
