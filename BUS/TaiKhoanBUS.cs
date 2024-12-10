@@ -31,6 +31,7 @@ namespace BUS
 		{
 			// Lấy tài khoản từ cơ sở dữ liệu theo username
 			TaiKhoan taiKhoan = TaiKhoanDAL.GetInstance().layTaiKhoanTheoUsername(username);
+           
 			if (taiKhoan == null)
 			{
 				// Không tồn tại tài khoản
@@ -39,7 +40,7 @@ namespace BUS
 
 			// Kiểm tra mật khẩu nhập vào có khớp với hash trong cơ sở dữ liệu
 			bool isPasswordMatch = Bcrypt_HashBUS.GetInstance().VerifyMatKhau(pass, taiKhoan.Password);
-
+            Console.WriteLine(isPasswordMatch);
 			return isPasswordMatch ? taiKhoan : null;
 		}
 

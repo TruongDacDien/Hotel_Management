@@ -74,12 +74,12 @@
                         <TextBlock Text="{Binding NhanVien.HoTen}"></TextBlock>
                     </DataTemplate>
 
-                    <DataTemplate x:Key="dtpTenTK">
-                        <TextBlock Text="{Binding Username}"></TextBlock>
+                    <DataTemplate x:Key="dtpMaNV">
+                        <TextBlock Text="{Binding NhanVien.MaNV}"></TextBlock>
                     </DataTemplate>
 
-                    <DataTemplate x:Key="dtpAvatar">
-                        <TextBlock Text="{Binding Avatar}"></TextBlock>
+                    <DataTemplate x:Key="dtpTenTK">
+                        <TextBlock Text="{Binding Username}"></TextBlock>
                     </DataTemplate>
 
                     <DataTemplate x:Key="dtpQuyen">
@@ -123,7 +123,7 @@
 
                             <GridViewColumn  Header="Tên tài khoản"  Width="160" CellTemplate="{StaticResource dtpTenTK}" />
                             <GridViewColumn Header="Tên nhân viên" Width="200" CellTemplate="{StaticResource dtpTenNV}" />
-                            <GridViewColumn Header="Ảnh đại diện" Width="180" CellTemplate="{StaticResource dtpAvatar}" />
+                            <GridViewColumn Header="Mã nhân viên" Width="180" CellTemplate="{StaticResource dtpMaNV}" />
                             <GridViewColumn Header="Cấp độ quyền" Width="120" CellTemplate="{StaticResource dtpQuyen}" />
                             <GridViewColumn Width="70" Header="Sửa" CellTemplate="{StaticResource dtpNutSua}" />
                             <GridViewColumn Width="70" Header="Xóa" CellTemplate="{StaticResource dtpNutXoa}" />

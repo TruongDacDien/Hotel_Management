@@ -26,7 +26,7 @@
 
             <!--Làm phần tiêu đề -->
             <Grid Grid.Row="0">
-                <TextBlock Name="txbTitle" Text="Nhập thông tin loại phòng"  
+                <TextBlock Name="txbTitle" Text="Nhập thông tin tài khoản"  
                                HorizontalAlignment="Center" VerticalAlignment="Bottom"
                                Height="40"
                                FontSize="30"
@@ -65,8 +65,8 @@
                             <materialDesign:PackIcon Kind="AccountCog" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25"/>
                         </Grid>
                         <Grid Grid.Column="1" Margin="2 0 0 0">
-                            <TextBox  Width="150" Name="txtTenLoaiPhong"                     
-                                materialDesign:HintAssist.Hint="Nhập tên loại phòng"                        
+                            <TextBox  Width="150" Name="txtUsername"                     
+                                materialDesign:HintAssist.Hint="Tài khoản"                        
                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"                        
                                 VerticalAlignment="Center"  />
 
@@ -82,11 +82,11 @@
                         </Grid.ColumnDefinitions>
 
                         <Grid Grid.Column="0">
-                            <materialDesign:PackIcon Kind="AccountGroup" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" />
+                            <materialDesign:PackIcon Kind="Lock" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" />
                         </Grid>
                         <Grid Grid.Column="1" Margin="2 0 0 0">
-                            <TextBox  Width="150" Name="txtSoNguoiToiDa"                     
-                                materialDesign:HintAssist.Hint="Nhập số người ở tối đa"                        
+                            <TextBox  Width="150" Name="txtPassword"                     
+                                materialDesign:HintAssist.Hint="Mật khẩu"                        
                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"                        
                                 VerticalAlignment="Center"  />
 
@@ -102,14 +102,13 @@
                         </Grid.ColumnDefinitions>
 
                         <Grid Grid.Column="0">
-                            <materialDesign:PackIcon Kind="CurrencyUsd" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" />
+                            <materialDesign:PackIcon Kind="Person" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" />
                         </Grid>
                         <Grid Grid.Column="1" Margin="2 0 0 0">
-                            <TextBox  Width="150" Name="txtGiaNgay"                     
-                                materialDesign:HintAssist.Hint="Nhập giá ngày"                        
-                                Style="{StaticResource MaterialDesignFloatingHintTextBox}"                        
-                                VerticalAlignment="Center"  />
-
+                            <ComboBox Name="cmbMaNV" MaxDropDownHeight="80"                                 
+                                        Width="143"                                                                        
+                                        materialDesign:HintAssist.Hint="Mã nhân viên">
+                            </ComboBox>
                         </Grid>
 
                     </Grid>
@@ -121,14 +120,17 @@
                         </Grid.ColumnDefinitions>
 
                         <Grid Grid.Column="0">
-                            <materialDesign:PackIcon Kind="CurrencyUsd" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" />
+                            <materialDesign:PackIcon Kind="Counter" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" />
                         </Grid>
                         <Grid Grid.Column="1" Margin="2 0 0 0">
-                            <TextBox  Width="150" Name="txtGiaGio"                     
-                                materialDesign:HintAssist.Hint="Nhập giá giờ"                        
-                                Style="{StaticResource MaterialDesignFloatingHintTextBox}"                        
-                                VerticalAlignment="Center"  />
-
+                            <ComboBox Name="cmbCapDo" MaxDropDownHeight="80"                                 
+                                        Width="143"                                                                        
+                                        materialDesign:HintAssist.Hint="Cấp độ quyền">
+                                <ComboBoxItem>1</ComboBoxItem>
+                                <ComboBoxItem>2</ComboBoxItem>
+                                <ComboBoxItem>3</ComboBoxItem>
+                            </ComboBox>
+                            
                         </Grid>
 
                     </Grid>
@@ -166,7 +168,7 @@
                                 <Style TargetType="Button">
                                     <Setter Property="Visibility" Value="Hidden"></Setter>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=Text, ElementName=txbTitle }" Value="Nhập thông tin loại phòng">
+                                        <DataTrigger Binding="{Binding Path=Text, ElementName=txbTitle }" Value="Nhập thông tin tài khoản">
                                             <Setter Property="Visibility" Value="Visible"></Setter>
                                         </DataTrigger>
                                     </Style.Triggers>
