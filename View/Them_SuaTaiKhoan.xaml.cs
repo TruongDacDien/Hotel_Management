@@ -1,4 +1,5 @@
 ﻿using BUS;
+using DAL.Data;
 using DAL.DTO;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,6 @@ namespace GUI.View
         public suaData suaTaiKhoan;
 		private bool isEditing;
 
-		private string username;
         ObservableCollection<NhanVien> list;
         public Them_SuaTaiKhoan()
 		{
@@ -46,19 +46,17 @@ namespace GUI.View
 		{
 			this.isEditing = isEditing;
 			txtUsername.IsReadOnly = true;
-			txbTitle.Text = "Sửa thông tin " + taiKhoan.Username;
-			txtUsername.Text = taiKhoan.Username;
 
 			if (isEditing && taiKhoan != null)
 			{
+				txtUsername.Text = taiKhoan.Username;
 				cmbCapDo.Text = taiKhoan.CapDoQuyen.ToString();
 				cmbMaNV.Text = taiKhoan.NhanVien.DisplayInfo.ToString();
-				txbTitle.Text = "Sửa thông tin tài khoản" + taiKhoan.Username;
-				username = taiKhoan.Username;
+				txbTitle.Text = "Sửa thông tin tài khoản " + taiKhoan.Username;
 			}
 			else
 			{
-				txbTitle.Text = "Nhập thông tin dịch vụ";
+				txbTitle.Text = "Nhập thông tin tài khoản";
 			}
 		}
 
@@ -81,11 +79,6 @@ namespace GUI.View
 				new DialogCustoms("Vui lòng chọn mã nhân viên", "Thông báo", DialogCustoms.OK).Show();
 				return false;
 			}
-			if(string.IsNullOrWhiteSpace(txtPassword.Text))
-			{
-				new DialogCustoms("Vui lòng nhập mật khẩu", "Thông báo", DialogCustoms.OK).Show();
-				return false;
-			}	
 			return true;
 		}
 		#endregion
@@ -98,7 +91,6 @@ namespace GUI.View
 
 		private void btnCapNhat_Click(object sender, RoutedEventArgs e)
 		{
-
 			if (!KiemTra())
 			{
 				return;
@@ -107,7 +99,15 @@ namespace GUI.View
 			{
 				if (isEditing)
 				{
-					string pass = Bcrypt_HashBUS.GetInstance().HashMatKhau(txtPassword.Text);
+					string pass = string.Empty;
+					if (string.IsNullOrWhiteSpace(txtPassword.Text))
+					{
+						pass = TaiKhoanDAL.GetInstance().layTaiKhoanTheoUsername(txtUsername.Text).Password;
+					}
+					else
+					{
+						pass = Bcrypt_HashBUS.GetInstance().HashMatKhau(txtPassword.Text);
+					}	
 					TaiKhoan taiKhoan = new TaiKhoan()
 					{
 						Username = txtUsername.Text,
@@ -139,7 +139,12 @@ namespace GUI.View
 			}
 			else
 			{
-                string pass = Bcrypt_HashBUS.GetInstance().HashMatKhau(txtPassword.Text);
+				if (string.IsNullOrWhiteSpace(txtPassword.Text))
+				{
+					new DialogCustoms("Vui lòng nhập mật khẩu", "Thông báo", DialogCustoms.OK).Show();
+					return;
+				}
+				string pass = Bcrypt_HashBUS.GetInstance().HashMatKhau(txtPassword.Text);
                 TaiKhoan taiKhoan = new TaiKhoan()
 				{
 					Username = txtUsername.Text,
