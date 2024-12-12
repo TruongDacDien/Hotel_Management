@@ -136,7 +136,6 @@
     <Compile Include="DTO\CT_SDDichVu.cs" />
     <Compile Include="DTO\CT_TienNghi.cs" />
     <Compile Include="DTO\DichVu.cs" />
-    <Compile Include="DTO\DichVuDTO.cs" />
     <Compile Include="DTO\DichVu_DaChon.cs" />
     <Compile Include="DTO\HoaDon.cs" />
     <Compile Include="DTO\KhachHang.cs" />

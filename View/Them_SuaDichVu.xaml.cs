@@ -21,12 +21,12 @@ namespace GUI.View
     /// </summary>
     public partial class Them_SuaDichVu : Window
     {
-        public delegate void TryenDuLieu(DichVuDTO dv);
-        public delegate void SuaDuLieu(DichVuDTO dv);
+        public delegate void TryenDuLieu(DichVu dv);
+        public delegate void SuaDuLieu(DichVu dv);
 
         public TryenDuLieu truyen;
         public SuaDuLieu sua;
-        private List<DichVuDTO> loaiDV;
+        private List<LoaiDV> loaiDV;
         private string maDV;
         private bool isEditing;
         public Them_SuaDichVu()
@@ -37,24 +37,24 @@ namespace GUI.View
 
         private void TaiDanhSach()
         {
-            loaiDV = new List<DichVuDTO>(DichVuBUS.GetInstance().getLoaiDichVu());
+            loaiDV = new List<LoaiDV>(LoaiDichVuBUS.Instance.getDataLoaiDV());
             Console.WriteLine($"Số lượng loại DV: {loaiDV.Count}");
            
             cmbMaLoai.ItemsSource = loaiDV;
-            cmbMaLoai.DisplayMemberPath = "LoaiDV";
+            cmbMaLoai.DisplayMemberPath = "TenLoaiDV";
             cmbMaLoai.SelectedValuePath = "MaLoaiDV";
         }
-        public Them_SuaDichVu(bool isEditing = false, DichVuDTO dv = null) : this()
+        public Them_SuaDichVu(bool isEditing = false, DichVu dv = null) : this()
         {
             this.isEditing = isEditing;
             txtTenDichVu.IsReadOnly = false;
-            cmbMaLoai.DisplayMemberPath = "LoaiDV";
+            cmbMaLoai.DisplayMemberPath = "TenLoaiDV";
             cmbMaLoai.SelectedValuePath = "MaLoaiDV";
 
             if (isEditing && dv != null)
             {
                 txtTenDichVu.Text = dv.TenDV;
-                cmbMaLoai.Text = dv.LoaiDV;
+                cmbMaLoai.Text = dv.TenLoaiDV;
                 txtGia.Text = dv.Gia % 1 == 0 ? ((int)dv.Gia).ToString() : dv.Gia.ToString();
                 //txtGia.Text = dv.Gia.ToString();
                 txbTitle.Text = "Sửa thông tin dịch vụ " + dv.MaDV;
@@ -81,7 +81,7 @@ namespace GUI.View
             {
                 if (isEditing)
                 {                
-                    DichVuDTO dichVu = new DichVuDTO()
+                    DichVu dichVu = new DichVu()
                     {
                         MaDV = int.Parse(maDV.ToString()),
                         TenDV = txtTenDichVu.Text,
@@ -111,7 +111,7 @@ namespace GUI.View
             }
             else
             {
-                DichVuDTO dichVu = new DichVuDTO()
+                DichVu dichVu = new DichVu()
                 {
                     TenDV = txtTenDichVu.Text,
                     Gia = int.Parse(txtGia.Text),

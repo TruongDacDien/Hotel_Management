@@ -27,35 +27,30 @@ namespace BUS
             return Instance;
         }
 
-        public List<DichVuDTO> getDichVu_Custom()
+        public List<DichVu> getDichVu_Custom()
         {
             return DichVuDAL.GetInstance().getDataDichVu_Custom();
         }
 
-        public List<DichVuDTO> getLoaiDichVu()
-        {
-            return DichVuDAL.GetInstance().getDataLoaiDichVu();
-        }
-
-        public List<DichVuDTO> getDichVu()
+        public List<DichVu> getDichVu()
         {
             return DichVuDAL.GetInstance().getDataDichVu();
         }
-        public bool ThemDichVu(DichVuDTO dv)
+        public bool ThemDichVu(DichVu dv)
         {
             return DichVuDAL.GetInstance().addDichVu(dv);
         }
-        public void xoaDataDichVu(DichVuDTO dv)
+        public void xoaDataDichVu(DichVu dv)
         {
             DichVuDAL.GetInstance().xoaDichVu(dv);
         }
 
-        public bool capNhatDichVu(DichVuDTO dv)
+        public bool capNhatDichVu(DichVu dv)
         {
             return DichVuDAL.GetInstance().capNhatDichVu(dv);
         }
 
-        public bool KiemTraTrungTen(DichVuDTO dv)
+        public bool KiemTraTrungTen(DichVu dv)
         {
             return DichVuDAL.GetInstance().KiemTraTrungTen(dv);
         }
