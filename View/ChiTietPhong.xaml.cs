@@ -50,7 +50,7 @@ namespace GUI.View
 		{
 			//Nhận dữ liệu từ form cha và gán giá trị lên form con
 			phong_CTPhong = phong;
-			txblTieuDe.Text = phong.MaPhong;
+			txblTieuDe.Text = "Thông tin chi tiết phòng "+ phong.MaPhong;
 			txblTenKH.Text = phong.TenKH;
 			if (phong.IsDay == true)
 			{

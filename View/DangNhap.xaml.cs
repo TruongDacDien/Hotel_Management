@@ -73,7 +73,7 @@ namespace GUI.View
 				new DialogCustoms("Không thể kết nối tới cơ sở dữ liệu.\nVui lòng kiểm tra kết nối mạng hoặc cấu hình máy chủ!", "Thông báo", DialogCustoms.OK).ShowDialog();
 				return; // Dừng xử lý nếu không kết nối được
 			}
-			string username = txbTenDangNhap.Text;
+			string username = txbTenDangNhap.Text.Trim();
 			string pass = txbMatKhau.Password;
 			TaiKhoan taiKhoan = TaiKhoanBUS.GetInstance().kiemTraTKTonTaiKhong(username, pass);
 			
@@ -91,7 +91,7 @@ namespace GUI.View
 			}
 			else
 			{
-				new DialogCustoms("Không tồn tại tài khoản mật khẩu  !", "Thông báo", DialogCustoms.OK).ShowDialog();
+				new DialogCustoms("Không tồn tại tài khoản hoặc mật khẩu không đúng!", "Thông báo", DialogCustoms.OK).ShowDialog();
 			}
 		}
         private void txbMatKhau_KeyDown(object sender, KeyEventArgs e)

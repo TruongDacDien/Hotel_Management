@@ -152,7 +152,6 @@ namespace GUI.View
 		#endregion
 
 		#region event
-
 		private void load_Windows(object sender, RoutedEventArgs e)
 		{
 			this.DataContext = this;
@@ -200,7 +199,6 @@ namespace GUI.View
 			initListViewMenu();
 		}
 
-
 		private void lisviewMenu_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
 			if (lisviewMenu.SelectedValue != null)
@@ -216,94 +214,56 @@ namespace GUI.View
 						contenDisplayMain.Content = Home;
 						break;
 					case 1:
-						if (Phong_UC == null)
-						{
-							Phong_UC = new uc_Phong(MaNV);
-						}
+						Phong_UC = new uc_Phong(MaNV);
 						contenDisplayMain.Content = Phong_UC;
 						break;
 					case 2:
-						if (ThuePhong_UC == null)
-						{
-							ThuePhong_UC = new uc_PhieuThue(MaNV);
-						}
+						ThuePhong_UC = new uc_PhieuThue(MaNV);
 						contenDisplayMain.Content = ThuePhong_UC;
 						break;
 					case 3:
-						if (HoaDon_UC == null)
-						{
-							HoaDon_UC = new uc_HoaDon();
-						}
+						HoaDon_UC = new uc_HoaDon();
 						contenDisplayMain.Content = HoaDon_UC;
-						break;			
+						break;
 					case 4:
-						if (QuanLyKhachHang_UC == null)
-						{
-							QuanLyKhachHang_UC = new uc_QuanLyKhachHang();
-						}
+						QuanLyKhachHang_UC = new uc_QuanLyKhachHang();
 						contenDisplayMain.Content = QuanLyKhachHang_UC;
 						break;
 					case 5:
-						if (QuanLyPhong_UC == null)
-						{
-							QuanLyPhong_UC = new uc_QuanLyPhong();
-						}
+						QuanLyPhong_UC = new uc_QuanLyPhong();
 						contenDisplayMain.Content = QuanLyPhong_UC;
 						break;
 					case 6:
-						if (QuanLyLoaiPhong_UC == null)
-						{
-							QuanLyLoaiPhong_UC = new uc_QuanLyLoaiPhong();
-						}
+						QuanLyLoaiPhong_UC = new uc_QuanLyLoaiPhong();
 						contenDisplayMain.Content = QuanLyLoaiPhong_UC;
 						break;
 					case 7:
-						if (QuanLyDichVu_UC == null)
-						{
-							QuanLyDichVu_UC = new uc_QuanLyDichVu();
-						}
+						QuanLyDichVu_UC = new uc_QuanLyDichVu();
 						contenDisplayMain.Content = QuanLyDichVu_UC;
 						break;
 					case 8:
-						if (QuanLyLoaiDichVu_UC == null)
-						{
-							QuanLyLoaiDichVu_UC = new uc_QuanLyLoaiDichVu();
-						}
+						QuanLyLoaiDichVu_UC = new uc_QuanLyLoaiDichVu();
 						contenDisplayMain.Content = QuanLyLoaiDichVu_UC;
 						break;
 					case 9:
-						if (QuanLyTienNghi_UC == null)
-						{
-							QuanLyTienNghi_UC = new uc_QuanLyTienNghi();
-						}
+						QuanLyTienNghi_UC = new uc_QuanLyTienNghi();
 						contenDisplayMain.Content = QuanLyTienNghi_UC;
 						break;
 					case 10:
-						if (QuanLyChiTietTienNghi_UC == null)
-						{
-							QuanLyChiTietTienNghi_UC = new uc_QuanLyChiTietTienNghi();
-						}
+						QuanLyChiTietTienNghi_UC = new uc_QuanLyChiTietTienNghi();
 						contenDisplayMain.Content = QuanLyChiTietTienNghi_UC;
 						break;
 					case 11:
-						if (NhanVien_UC == null)
-						{
-							NhanVien_UC = new uc_NhanVien();
-						}
+						NhanVien_UC = new uc_NhanVien();
 						contenDisplayMain.Content = NhanVien_UC;
 						break;
 					case 12:
-						if (QuanLyTaiKhoan_UC == null)
-						{
-							QuanLyTaiKhoan_UC = new uc_QuanLyTaiKhoan();
-						}
+						QuanLyTaiKhoan_UC = new uc_QuanLyTaiKhoan();
 						contenDisplayMain.Content = QuanLyTaiKhoan_UC;
 						break;
 					case 13:
-						if (ThongKe_UC == null)
-						{
-							ThongKe_UC = new uc_ThongKe();
-						}
+						ThongKe_UC = new uc_ThongKe();
+
 						contenDisplayMain.Content = ThongKe_UC;
 						break;
 				}
@@ -330,6 +290,15 @@ namespace GUI.View
 					// Đọc file ảnh đã chọn
 					string sourceFile = openFile.FileName;
 
+					// Hiển thị ảnh lên giao diện
+					BitmapImage bitmap = new BitmapImage();
+					bitmap.BeginInit();
+					bitmap.UriSource = new Uri(sourceFile, UriKind.Absolute);
+					bitmap.CacheOption = BitmapCacheOption.OnLoad;
+					bitmap.EndInit();
+					ImageBrush imageBrush = new ImageBrush(bitmap);
+					imgAvatar.Fill = imageBrush;
+
 					// Chuyển đổi ảnh thành mảng byte
 					byte[] avatarBytes;
 					using (FileStream fs = new FileStream(sourceFile, FileMode.Open, FileAccess.Read))
@@ -340,16 +309,6 @@ namespace GUI.View
 							avatarBytes = ms.ToArray();
 						}
 					}
-
-					// Hiển thị ảnh lên giao diện
-					BitmapImage bitmap = new BitmapImage();
-					bitmap.BeginInit();
-					bitmap.UriSource = new Uri(sourceFile, UriKind.Absolute);
-					bitmap.CacheOption = BitmapCacheOption.OnLoad;
-					bitmap.EndInit();
-
-					ImageBrush imageBrush = new ImageBrush(bitmap);
-					imgAvatar.Fill = imageBrush;
 
 					// Cập nhật avatar vào cơ sở dữ liệu
 					string error;
@@ -369,7 +328,6 @@ namespace GUI.View
 			}
 		}
 
-
 		private void btnDangXuat_Click(object sender, RoutedEventArgs e)
         {
             DialogCustoms dialog = new DialogCustoms("Bạn có muốn đăng xuất ?", "Thông báo", DialogCustoms.YesNo);
@@ -387,8 +345,6 @@ namespace GUI.View
         public string name { get; set; }
         public string foreColor { get; set; }
         public string kind_Icon { get; set; }
-
         public ItemMenuMainWindow() { }
-
     }
 }

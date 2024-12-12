@@ -40,7 +40,6 @@ namespace BUS
 
 			// Kiểm tra mật khẩu nhập vào có khớp với hash trong cơ sở dữ liệu
 			bool isPasswordMatch = Bcrypt_HashBUS.GetInstance().VerifyMatKhau(pass, taiKhoan.Password);
-            Console.WriteLine(isPasswordMatch);
 			return isPasswordMatch ? taiKhoan : null;
 		}
 

@@ -175,7 +175,7 @@
 
                         </Grid>
 
-                        <TextBlock x:Name="txbHoTenNV" Text="Nguyễn Văn Duy" FontSize="18" Margin="0 0 0 4" 
+                        <TextBlock x:Name="txbHoTenNV" Text="Trương Đắc Điền" FontSize="18" Margin="0 0 0 4" 
                                    HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="#DDDFE9F7" TextDecorations="{x:Null}" FontFamily="Oboto"/>
                     </Grid>
 
