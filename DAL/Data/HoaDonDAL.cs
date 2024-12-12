@@ -37,7 +37,7 @@ namespace DAL.Data
 						nv.MaNV, nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, 
 						nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong,
 						ctpt.MaCTPT, ctpt.MaPhieuThue, ctpt.SoPhong, ctpt.NgayBD, 
-						ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong, ctpt.NgayTraThucTe
+						ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong
 					FROM HoaDon hd, NhanVien nv, CT_PhieuThue ctpt
 					WHERE hd.MaNV = nv.MaNV AND hd.MaCTPT = ctpt.MaCTPT";
 
@@ -76,8 +76,7 @@ namespace DAL.Data
 									NgayKT = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
 									SoNguoiO = reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
 									TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue")),
-									TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong")),
-									NgayTraThucTe = reader.GetDateTime(reader.GetOrdinal("NgayTraThucTe"))
+									TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong"))
 								}
 							};
 
@@ -105,41 +104,40 @@ namespace DAL.Data
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
 					string query = @"
-                        SELECT 
-                            hd.MaHD, hd.MaNV, hd.MaCTPT, hd.NgayLap, hd.TongTien,
-                            nv.HoTen AS TenNhanVien, nv.ChucVu, nv.SDT, nv.DiaChi, nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong, nv.MaTK,
-                            ctpt.MaPhieuThue, ctpt.SoPhong, ctpt.NgayBD, ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong, ctpt.NgayTraThucTe
-                        FROM HoaDon hd
-                        LEFT JOIN NhanVien nv ON hd.MaNV = nv.MaNV
-                        LEFT JOIN CT_PhieuThue ctpt ON hd.MaCTPT = ctpt.MaCTPT
-                        WHERE hd.MaHD = @MaHD";
+					SELECT 
+						hd.MaHD, hd.MaNV, hd.MaCTPT, hd.NgayLap, hd.TongTien,
+						nv.MaNV, nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, 
+						nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong,
+						ctpt.MaCTPT, ctpt.MaPhieuThue, ctpt.SoPhong, ctpt.NgayBD, 
+						ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong
+					FROM HoaDon hd, NhanVien nv, CT_PhieuThue ctpt
+					WHERE hd.MaNV = nv.MaNV AND hd.MaCTPT = ctpt.MaCTPT";
 
 					MySqlCommand cmd = new MySqlCommand(query, conn);
-					cmd.Parameters.AddWithValue("@MaHD", mahd);
 					conn.Open();
 
 					using (MySqlDataReader reader = cmd.ExecuteReader())
 					{
-						if (reader.Read())
+						while (reader.Read())
 						{
 							hoaDon = new HoaDon
 							{
 								MaHD = reader.GetInt32(reader.GetOrdinal("MaHD")),
 								MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
-								MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("MaCTPT")),
 								NgayLap = reader.GetDateTime(reader.GetOrdinal("NgayLap")),
 								TongTien = reader.GetDecimal(reader.GetOrdinal("TongTien")),
-								NhanVien = new NhanVien
+								NhanVien = reader.IsDBNull(reader.GetOrdinal("MaNV")) ? null : new NhanVien
 								{
 									MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
-									HoTen = reader.GetString(reader.GetOrdinal("TenNhanVien")),
+									HoTen = reader.GetString(reader.GetOrdinal("HoTen")),
 									ChucVu = reader.GetString(reader.GetOrdinal("ChucVu")),
 									SDT = reader.GetString(reader.GetOrdinal("SDT")),
 									DiaChi = reader.GetString(reader.GetOrdinal("DiaChi")),
 									CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
 									NTNS = reader.GetDateTime(reader.GetOrdinal("NTNS")),
 									GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
-									Luong = reader.GetDecimal(reader.GetOrdinal("Luong")),
+									Luong = reader.GetDecimal(reader.GetOrdinal("Luong"))
 								},
 								CT_PhieuThue = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? null : new CT_PhieuThue
 								{
@@ -150,8 +148,7 @@ namespace DAL.Data
 									NgayKT = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
 									SoNguoiO = reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
 									TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue")),
-									TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong")),
-									NgayTraThucTe = reader.GetDateTime(reader.GetOrdinal("NgayTraThucTe"))
+									TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong"))
 								}
 							};
 						}
@@ -162,7 +159,6 @@ namespace DAL.Data
 			{
 				Console.WriteLine("Lỗi: " + ex.Message);
 			}
-
 			return hoaDon;
 		}
 

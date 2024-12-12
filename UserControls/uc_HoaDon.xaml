@@ -19,7 +19,7 @@
         <Grid Width="1300" Grid.Row="0" VerticalAlignment="Center">
             <DatePicker Margin="203,0,0,0" Width="150" x:Name="dtpChonNgay" SelectedDateChanged="dtpChonNgay_SelectedDateChanged"
                         VerticalAlignment="Center" HorizontalAlignment="Left"
-                        materialDesign:HintAssist.Hint="Chọn ngày" Padding="10 10 10 5" Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
+                        materialDesign:HintAssist.Hint="Chọn ngày" Padding="10 10 10 5" Style="{StaticResource MaterialDesignOutlinedDatePicker}" Language="vi-VN"/>
             <!--ô tìm kiếm-->
             <materialDesign:ColorZone Mode="Standard" CornerRadius="5" HorizontalAlignment="Right" Margin="0,0,208,0" 
                                           VerticalAlignment="Center" materialDesign:ShadowAssist.ShadowDepth="Depth1" Width="250">
@@ -70,7 +70,7 @@
 
                             <GridViewColumn Width="100" Header="Mã hóa đơn"    DisplayMemberBinding="{Binding MaHD}"  />
 
-                            <GridViewColumn Width="200" Header="Ngày lập"  DisplayMemberBinding="{Binding NgayLap}" />
+                            <GridViewColumn Width="200" Header="Ngày lập"  DisplayMemberBinding="{Binding NgayLap, StringFormat=dd/MM/yyyy hh:mm:ss tt}" />
 
                             <GridViewColumn Width="160" Header="Tên nhân viên lập"  DisplayMemberBinding="{Binding NhanVien.HoTen}" />
 
