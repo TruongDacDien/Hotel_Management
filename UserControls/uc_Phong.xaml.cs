@@ -17,6 +17,7 @@ using BUS;
 using DAL.Data;
 using DAL.DTO;
 using System.Collections.ObjectModel;
+using System.Windows.Forms.VisualStyles;
 
 namespace GUI.UserControls
 {
@@ -25,26 +26,19 @@ namespace GUI.UserControls
     /// </summary>
     public partial class uc_Phong : UserControl
     {
-        #region Khai bao bien
-        List<Phong_Custom> lsPhong;
-        ObservableCollection<Phong_Custom> lsPhongDon;
-        ObservableCollection<Phong_Custom> lsPhongDoi;
-        ObservableCollection<Phong_Custom> lsPhongGiaDinh;
+        ObservableCollection<Phong_Custom> lsPhong_Custom;
         ObservableCollection<Phong_Custom> lsTrong;
-        #endregion
-
         private int maNV;
-
         public int MaNV { get => maNV; set => maNV = value; }
 
         private uc_Phong()
         {
             InitializeComponent();
-
-            lsPhong = new List<Phong_Custom>();
             lsTrong = new ObservableCollection<Phong_Custom>();
-            initEvent();
+			lsPhong_Custom = PhongBUS.GetInstance().getDataPhong_Custom();
+			initEvent();
         }
+
         public uc_Phong(int maNV):this()
         {
             this.MaNV = maNV;
@@ -52,113 +46,141 @@ namespace GUI.UserControls
 
 
 		#region Method
-
-
-		private List<Phong_Custom> filterPhongTheoLoai(string loai)
+		private void ThemRadioButtonLoaiPhong(string loaiPhong)
 		{
-			return lsPhong.Where(p => p.LoaiPhong.Equals(loai)).ToList();
+			// Kiểm tra xem radio button đã tồn tại chưa
+			if (spLoaiPhong.Children.OfType<RadioButton>().Any(rb => rb.Content.ToString() == loaiPhong)) return;
+			// Tạo mới radio button
+			RadioButton newRadioButton = new RadioButton
+			{
+				Content = loaiPhong,
+				GroupName = "LoaiPhong",
+				Margin = new Thickness(3),
+				FontSize = 15,         
+				Height = 24             
+			};
+			newRadioButton.Click += rb_Click; // Gắn sự kiện click
+			spLoaiPhong.Children.Add(newRadioButton);
+		}
+
+		private void ThemDanhSachPhong(string loaiPhong)
+		{
+			// Tạo tiêu đề cho phòng
+			TextBlock title = new TextBlock
+			{
+				Text = loaiPhong,
+				FontSize = 20,
+				Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#00A3FF")),
+				Margin = new Thickness(40, 20, 0, 0)
+			};
+
+			// Lọc danh sách phòng theo loại phòng
+			var filteredPhong = lsPhong_Custom.Where(p => p.LoaiPhong == loaiPhong).ToList();
+
+			// Tạo ListView cho phòng
+			ListView listView = new ListView
+			{
+				Margin = new Thickness(20, 10, 20, 20),
+				ItemsSource = new ObservableCollection<Phong_Custom>(filteredPhong), // Gán danh sách phòng đã lọc
+				ItemTemplate = (DataTemplate)this.Resources["PhongItemTemplate"], // Sử dụng DataTemplate đã khai báo
+				HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+				VerticalAlignment = System.Windows.VerticalAlignment.Top,
+				Name = $"lv{loaiPhong.Replace(" ", "")}" // Đặt tên cho ListView để dễ dàng quản lý
+			};
+
+			// Khởi tạo sự kiện cho ListView
+			listView.PreviewMouseLeftButtonUp += ListViewPhong_PreviewMouseLeftButtonUp;
+
+			// Thêm tiêu đề và ListView vào StackPanel
+			spDanhSachPhong.Children.Add(title);
+			spDanhSachPhong.Children.Add(listView);
 		}
 
 		private void refeshLoaiPhong()
+		{
+			spDanhSachPhong.Children.Clear(); // Xóa danh sách hiện tại
+			spLoaiPhong.Children.Clear(); // Xóa các radio button cũ
+
+			// Kiểm tra dữ liệu
+			if (lsPhong_Custom == null || !lsPhong_Custom.Any())
+			{
+				new DialogCustoms("Không có dữ liệu phòng để hiển thị!", "Thông báo", DialogCustoms.OK).Show();
+				return;
+			}
+
+			// Thêm radio button "Tất cả loại phòng"
+			RadioButton rbTatCaLoaiPhong = new RadioButton
+			{
+				Content = "Tất cả loại phòng",
+				GroupName = "LoaiPhong",
+				Margin = new Thickness(3),
+				FontSize = 15,
+				Height = 24,
+				IsChecked = true // Mặc định chọn
+			};
+			rbTatCaLoaiPhong.Click += rb_Click;
+			spLoaiPhong.Children.Add(rbTatCaLoaiPhong);
+
+			// Thêm các loại phòng từ danh sách
+			var allLoaiPhong = lsPhong_Custom.Select(p => p.LoaiPhong).Distinct().ToList();
+
+			foreach (var loaiPhong in allLoaiPhong)
+			{
+				ThemRadioButtonLoaiPhong(loaiPhong); // Tạo các radio button cho loại phòng
+				ThemDanhSachPhong(loaiPhong);       // Tạo danh sách phòng tương ứng
+			}
+		}
+
+		private void initEvent()
         {
-            lsPhongDon = new ObservableCollection<Phong_Custom>(filterPhongTheoLoai("Phòng đơn"));
-            lsPhongDoi = new ObservableCollection<Phong_Custom>(filterPhongTheoLoai("Phòng đôi"));
-            lsPhongGiaDinh = new ObservableCollection<Phong_Custom>(filterPhongTheoLoai("Phòng gia đình"));
-            lvPhongDon.ItemsSource = lsPhongDon;
-            lvPhongDoi.ItemsSource = lsPhongDoi;
-            lvPhongGiaDinh.ItemsSource = lsPhongGiaDinh;
-        }
+			// Gắn sự kiện Click cho RadioButton trong spTrangThai
+			foreach (var radioButton in spTrangThai.Children.OfType<RadioButton>())
+			{
+				radioButton.Click += rb_Click;
+			}
 
-        private void initEvent()
-        {
-            //Khởi tạo sự kiện cho listView
-            lvPhongDon.PreviewMouseLeftButtonUp += LvPhongDon_PreviewMouseLeftButtonUp;
-            lvPhongDoi.PreviewMouseLeftButtonUp += LvPhongDon_PreviewMouseLeftButtonUp;
-            lvPhongGiaDinh.PreviewMouseLeftButtonUp += LvPhongDon_PreviewMouseLeftButtonUp;
-            //Khởi tạo sự kiện click cho RadioButton
-            rdPhongTrong.Click += rb_Click;
-            rdPhongDaDat.Click += rb_Click;
-            rdPhongDangThue.Click += rb_Click;
-            rdPhongDon.Click += rb_Click;
-            rdPhongDoi.Click += rb_Click;
-            rdPhongGiaDinh.Click += rb_Click;
-            rdDaDonDep.Click += rb_Click;
-            rdChuaDonDep.Click += rb_Click;
-            rdSuaChua.Click += rb_Click;
-            rdTatCaPhong.Click += rb_Click;
-            rdTatCaLoaiPhong.Click += rb_Click;
-            rdTatCa.Click += rb_Click;
+			// Gắn sự kiện Click cho RadioButton trong spDonDep
+			foreach (var radioButton in spDonDep.Children.OfType<RadioButton>())
+			{
+				radioButton.Click += rb_Click;
+			}
+		}
 
-        }
+		private bool PhongFilter(object obj)
+		{
+			if (!(obj is Phong_Custom ph)) return false;
 
-        private bool PhongFilter(object obj)
-        {
-            Phong_Custom ph = obj as Phong_Custom;
-            RadioButton radioTinhTrang = null;
-            RadioButton radioDonDep = null;
+			// Lấy các RadioButton được chọn
+			var radioTinhTrang = spTrangThai.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked == true);
+			var radioDonDep = spDonDep.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked == true);
+			var radioLoaiPhong = spLoaiPhong.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked == true);
 
-            foreach (RadioButton i in spTrangThai.Children)
-            {
-                if (i.IsChecked.Value == true)
-                {
-                    radioTinhTrang = i;
-                }
-            }
-            foreach (RadioButton j in spDonDep.Children)
-            {
-                if ( j.IsChecked.Value == true)
-                {
-                    radioDonDep = j;
-                }
-            }
-            if (radioDonDep != null && radioTinhTrang != null)
-            {
-                if (radioDonDep.Content.ToString().Equals("Tất cả") && radioTinhTrang.Content.ToString().Equals("Tất cả phòng"))
-                {
-                    return true;
-                }
-                else if (radioTinhTrang.Content.ToString().Equals("Tất cả phòng"))
-                {
-                    return ph.DonDep.Equals(radioDonDep.Content.ToString());
-                }
-                else if (radioDonDep.Content.ToString().Equals("Tất cả"))
-                {
-                    return ph.TinhTrang.Equals(radioTinhTrang.Content.ToString());
-                }
-                else
-                {
-                    return ph.TinhTrang.Equals(radioTinhTrang.Content.ToString()) && ph.DonDep.Equals(radioDonDep.Content.ToString());
-                }
-            }
-            else if (radioDonDep != null)
-            {
-                if (radioDonDep.Content.ToString().Equals("Tất cả"))
-                    return true;
-                else
-                    return ph.DonDep.Equals(radioDonDep.Content.ToString());
-            }
-            else if (radioTinhTrang != null)
-            {
-                if (radioTinhTrang.Content.ToString().Equals("Tất cả phòng"))
-                    return true;
-                else
-                    return ph.TinhTrang.Equals(radioTinhTrang.Content.ToString());
-            }
-            return true;
-        }
+			// Điều kiện lọc theo Tình Trạng
+			bool matchTinhTrang = radioTinhTrang == null || radioTinhTrang.Content.ToString() == "Tất cả phòng" || ph.TinhTrang == radioTinhTrang.Content.ToString();
 
-        private void timKiemTheomaPhong()
-        {
-            CollectionView viewPhongDon = (CollectionView)CollectionViewSource.GetDefaultView(lvPhongDon.ItemsSource);
-            viewPhongDon.Filter = filterTimKiem;
-            CollectionView viewPhongDoi = (CollectionView)CollectionViewSource.GetDefaultView(lvPhongDoi.ItemsSource);
-            viewPhongDoi.Filter = filterTimKiem;
-            CollectionView viewPhongGiaDinh = (CollectionView)CollectionViewSource.GetDefaultView(lvPhongGiaDinh.ItemsSource);
-            viewPhongGiaDinh.Filter = filterTimKiem;
-            refreshListView();
-        }
+			// Điều kiện lọc theo Dọn Dẹp
+			bool matchDonDep = radioDonDep == null || radioDonDep.Content.ToString() == "Tất cả" || ph.DonDep == radioDonDep.Content.ToString();
 
-        private bool filterTimKiem(object obj)
+			// Điều kiện lọc theo Loại Phòng
+			bool matchLoaiPhong = radioLoaiPhong == null || radioLoaiPhong.Content.ToString() == "Tất cả loại phòng" || ph.LoaiPhong == radioLoaiPhong.Content.ToString();
+
+			// Kết hợp tất cả các điều kiện
+			return matchTinhTrang && matchDonDep && matchLoaiPhong;
+		}
+
+		private void timKiemTheomaPhong()
+		{
+			foreach (var listView in spDanhSachPhong.Children.OfType<ListView>())
+			{
+				if (listView.ItemsSource == null) continue;
+
+				var view = CollectionViewSource.GetDefaultView(listView.ItemsSource);
+				view.Filter = filterTimKiem;
+			}
+			refreshListView();
+		}
+
+		private bool filterTimKiem(object obj)
         {
             if (String.IsNullOrEmpty(txbTimKiem.Text))
                 return true;
@@ -166,46 +188,15 @@ namespace GUI.UserControls
                 return (obj as Phong_Custom).MaPhong.Contains(txbTimKiem.Text);
         }
 
-        private void checkLoaiPhong(RadioButton rd)
-        {
-            if (rd.Content.Equals("Phòng đơn"))
-            {
-                lvPhongDon.ItemsSource = lsPhongDon;
-                lvPhongDoi.ItemsSource = lsTrong;
-                lvPhongGiaDinh.ItemsSource = lsTrong;
-                refreshListView();
-            }
-            else if (rd.Content.Equals("Phòng đôi"))
-            {
-                lvPhongDoi.ItemsSource = lsPhongDoi;
-                lvPhongDon.ItemsSource = lsTrong;
-                lvPhongGiaDinh.ItemsSource = lsTrong;
-                refreshListView();
-            }
-            else if (rd.Content.Equals("Phòng gia đình"))
-            {
-                lvPhongGiaDinh.ItemsSource = lsPhongGiaDinh;
-                lvPhongDoi.ItemsSource = lsTrong;
-                lvPhongDon.ItemsSource = lsTrong;
-                refreshListView();
-            }
-            else if (rd.Content.Equals("Tất cả loại phòng"))
-            {
-                lvPhongGiaDinh.ItemsSource = lsPhongGiaDinh;
-                lvPhongDoi.ItemsSource = lsPhongDoi;
-                lvPhongDon.ItemsSource = lsPhongDon;
-                refreshListView();
-            }
+		private void refreshListView()
+		{
+			foreach (var listView in spDanhSachPhong.Children.OfType<ListView>())
+			{
+				CollectionViewSource.GetDefaultView(listView.ItemsSource)?.Refresh();
+			}
+		}
 
-        }
-
-        private void refreshListView()
-        {
-            CollectionViewSource.GetDefaultView(lvPhongDon.ItemsSource).Refresh();
-            CollectionViewSource.GetDefaultView(lvPhongDoi.ItemsSource).Refresh();
-            CollectionViewSource.GetDefaultView(lvPhongGiaDinh.ItemsSource).Refresh();
-        }
-        private void capNhatLaiDuLieuListViewTheoNgayGio()
+		private void capNhatLaiDuLieuListViewTheoNgayGio()
         {
             DateTime dateTime = new DateTime();
             if (!DateTime.TryParse(dtpChonNgay.Text + " " + tpGio.Text, out dateTime))
@@ -219,64 +210,65 @@ namespace GUI.UserControls
             }
             else
             {
-                lsPhong = PhongBUS.GetInstance().getDataPhongCustomTheoNgay(dateTime);
+                lsPhong_Custom = PhongBUS.GetInstance().getDataPhongCustomTheoNgay(dateTime);
             }
 
             refeshLoaiPhong();
-            rdTatCa.IsChecked = true;
-            rdTatCaLoaiPhong.IsChecked = true;
-            rdTatCaPhong.IsChecked = true;
+            rdTatCaDonDep.IsChecked = true;
+            rdTatCaTrangThai.IsChecked = true;
         }
 
-        #endregion
+		#endregion
 
-        #region Event
-        // Sự kiện loade UC
-        private void ucPhong_Loaded(object sender, RoutedEventArgs e)
-        {
-            dtpChonNgay.Text = DateTime.Now.ToShortDateString();
+		#region Event
+		// Sự kiện loade UC
+		private void ucPhong_Loaded(object sender, RoutedEventArgs e)
+		{
+			dtpChonNgay.Text = DateTime.Now.ToShortDateString();
 			tpGio.Text = DateTime.Now.ToShortTimeString();
-        }
+			if (lsPhong_Custom == null || !lsPhong_Custom.Any())
+			{
+				new DialogCustoms("Không có dữ liệu phòng để hiển thị!", "Thông báo", DialogCustoms.OK).Show();
+				return;
+			}
+			refeshLoaiPhong();
+		}
 
-        //Khi click vào radioButton
-        private void rb_Click(object sender, RoutedEventArgs e)
-        {
 
-            if ( ( (sender as RadioButton).Parent as StackPanel ).Name.ToString().Equals("spLoaiPhong") ){
-                checkLoaiPhong(sender as RadioButton);
-            }
-            else
-            {
-                CollectionView viewPhongDon = (CollectionView)CollectionViewSource.GetDefaultView(lvPhongDon.ItemsSource);
-                CollectionView viewPhongDoi = (CollectionView)CollectionViewSource.GetDefaultView(lvPhongDoi.ItemsSource);
-                CollectionView viewPhongGiaDinh = (CollectionView)CollectionViewSource.GetDefaultView(lvPhongGiaDinh.ItemsSource);
-                viewPhongDon.Filter = PhongFilter;
-                viewPhongDoi.Filter = PhongFilter;
-                viewPhongGiaDinh.Filter = PhongFilter;
-                refreshListView();
-            }
-            
-        }
+		//Khi click vào radioButton
+		private void rb_Click(object sender, RoutedEventArgs e)
+		{
+			// Lọc danh sách phòng dựa trên các điều kiện
+			foreach (var listView in spDanhSachPhong.Children.OfType<ListView>())
+			{
+				var view = CollectionViewSource.GetDefaultView(listView.ItemsSource);
+				if (view != null)
+				{
+					view.Filter = PhongFilter; // Áp dụng bộ lọc
+					view.Refresh();
+				}
+			}
+		}
 
-        //Khi click vào 1 item trong LV
-        private void LvPhongDon_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            ListView lv = sender as ListView;
-            Phong_Custom phong = lv.SelectedItem as Phong_Custom;
-            if(phong != null)
-            {
-                ChiTietPhong ct = new ChiTietPhong(maNV);
-                ct.truyenData(phong);
-                if ( ct.ShowDialog() == true )
-                {
-                    capNhatLaiDuLieuListViewTheoNgayGio();
-                }
-                lv.UnselectAll();
-            }
-            
-        }
-        //Tìm kiếm theo mã phòng
-        private void click_EnterSearch(object sender, RoutedEventArgs e)
+		//Khi click vào 1 item trong LV
+		private void ListViewPhong_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			ListView lv = sender as ListView;
+			Phong_Custom phong = lv.SelectedItem as Phong_Custom;
+			if (phong != null)
+			{
+				ChiTietPhong ct = new ChiTietPhong(maNV);
+				ct.truyenData(phong);
+				if (ct.ShowDialog() == true)
+				{
+					capNhatLaiDuLieuListViewTheoNgayGio();
+				}
+				lv.UnselectAll();
+			}
+		}
+
+		//Tìm kiếm theo mã phòng
+		private void click_EnterSearch(object sender, RoutedEventArgs e)
         {
             timKiemTheomaPhong();
         }
@@ -285,6 +277,7 @@ namespace GUI.UserControls
         {
             timKiemTheomaPhong();
         }
+
         // Filter theo ngày tháng năm
         private void tpGio_SelectedTimeChanged(object sender, RoutedPropertyChangedEventArgs<DateTime?> e)
         {
@@ -295,8 +288,6 @@ namespace GUI.UserControls
         {
             capNhatLaiDuLieuListViewTheoNgayGio();
         }
-
         #endregion
-
     }
 }

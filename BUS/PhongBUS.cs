@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL.DTO;
 using DAL.Data;
+using System.Collections.ObjectModel;
 
 namespace BUS
 {
@@ -27,12 +28,17 @@ namespace BUS
         }
         
 
-        public List<Phong_Custom> getDataPhongCustomTheoNgay(DateTime? ngayChon)
+        public ObservableCollection<Phong_Custom> getDataPhongCustomTheoNgay(DateTime? ngayChon)
         {
             return PhongDAL.GetInstance().getDataPhongTheoNgay(ngayChon);
         }
 
-        public List<PhongTrong> getPhongTrong(DateTime? ngayBD, DateTime? ngayKT)
+        public ObservableCollection<Phong_Custom> getDataPhong_Custom()
+        {
+            return PhongDAL.GetInstance().getDataPhong_Custom();
+        }
+
+		public List<PhongTrong> getPhongTrong(DateTime? ngayBD, DateTime? ngayKT)
         {
             return PhongDAL.GetInstance().getPhongTrong(ngayBD,ngayKT);
         }
@@ -85,7 +91,7 @@ namespace BUS
 
         public List<Phong> getDataPhong()
         {
-            return PhongDAL.GetInstance().getPhong();
+            return PhongDAL.GetInstance().getDataPhong();
         }
 
         public bool addDataPhong(Phong phong)
