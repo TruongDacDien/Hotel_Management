@@ -150,6 +150,7 @@ namespace GUI.View
 				}
 				else
 				{
+					CT_PhieuThueBUS.GetInstance().capNhatNgayBD(phong_CTPhong.MaCTPT, DateTime.Now, out error);
 					this.DialogResult = true;
 				}
 				this.Close();

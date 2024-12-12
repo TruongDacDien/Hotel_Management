@@ -24,7 +24,7 @@ namespace GUI.UserControls
     /// </summary>
     public partial class uc_QuanLyDichVu : UserControl
     {
-        ObservableCollection<DichVuDTO> list;
+        ObservableCollection<DichVu> list;
         private CollectionView view;
 
         public uc_QuanLyDichVu()
@@ -35,7 +35,7 @@ namespace GUI.UserControls
 
         private void TaiDanhSach()
         {
-            list = new ObservableCollection<DichVuDTO>(DichVuBUS.GetInstance().getDichVu());
+            list = new ObservableCollection<DichVu>(DichVuBUS.GetInstance().getDichVu());
             lsvDichVu.ItemsSource = list;
             view = (CollectionView)CollectionViewSource.GetDefaultView(list);
             view.Filter = DichVuFilter;         
@@ -46,10 +46,10 @@ namespace GUI.UserControls
             if (String.IsNullOrEmpty(txtFilter.Text))
                 return true;
             else
-                return (obj as DichVuDTO).TenDV.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
+                return (obj as DichVu).TenDV.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        void nhanData(DichVuDTO dv)
+        void nhanData(DichVu dv)
         {
             if (!DichVuBUS.GetInstance().KiemTraTrungTen(dv))
             {
@@ -70,7 +70,7 @@ namespace GUI.UserControls
             }
         }
 
-        void capNhatData(DichVuDTO dv)
+        void capNhatData(DichVu dv)
         {
             if (DichVuBUS.GetInstance().capNhatDichVu(dv))
             {
@@ -87,7 +87,7 @@ namespace GUI.UserControls
 
         private void btnXoa_Click(object sender, RoutedEventArgs e)
         {
-            DichVuDTO dv = (sender as Button).DataContext as DichVuDTO;
+            DichVu dv = (sender as Button).DataContext as DichVu;
 
             var thongbao = new DialogCustoms("Bạn có thật sự muốn xóa " + dv.TenDV, "Thông báo", DialogCustoms.YesNo);
             
@@ -108,7 +108,7 @@ namespace GUI.UserControls
 
         private void btnCapNhat_Click(object sender, RoutedEventArgs e)
         {
-            DichVuDTO dv = (sender as Button).DataContext as DichVuDTO;
+            DichVu dv = (sender as Button).DataContext as DichVu;
             Them_SuaDichVu CapNhatDichVu = new Them_SuaDichVu(true, dv);
             CapNhatDichVu.sua = new Them_SuaDichVu.SuaDuLieu(capNhatData);
             CapNhatDichVu.ShowDialog();

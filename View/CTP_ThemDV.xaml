@@ -98,7 +98,7 @@
                                             <Setter Property="FontWeight" Value="Bold" />
                                         </Style>
                                     </GridView.ColumnHeaderContainerStyle>
-                                    <GridViewColumn  Header="Loại DV"  Width="100" DisplayMemberBinding="{Binding LoaiDV}" />
+                                    <GridViewColumn  Header="Loại DV"  Width="100" DisplayMemberBinding="{Binding TenLoaiDV}" />
                                     <GridViewColumn Header="Dịch vụ" Width="110" DisplayMemberBinding="{Binding TenDV}"  />
                                     <GridViewColumn Header="Giá" Width="105"  DisplayMemberBinding="{Binding Gia , StringFormat={}{0:N0} VND}" />
                                     <GridViewColumn Width="50" Header="Thêm">

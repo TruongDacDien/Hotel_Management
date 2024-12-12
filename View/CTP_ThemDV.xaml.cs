@@ -29,7 +29,7 @@ namespace GUI.View
 
 		ObservableCollection<DichVu> lsdichVu_Customs;
 		ObservableCollection<DichVu_DaChon> lsDichVu_DaChon;
-		List<DichVuDTO> lsLoaiDV;
+		List<LoaiDV> lsLoaiDV;
 		List<DichVu> lsCache;
 
 		private int? maCTPhieuThue;
@@ -47,14 +47,14 @@ namespace GUI.View
 			lsdichVu_Customs = new ObservableCollection<DichVu>(DichVuBUS.GetInstance().getDichVu_Custom());
 			lsDichVu_DaChon = new ObservableCollection<DichVu_DaChon>();
 			lsCache = new List<DichVu>();
-			lsLoaiDV = new List<DichVuDTO>();
-			lsLoaiDV = DichVuBUS.GetInstance().getLoaiDichVu();
-			lsLoaiDV.Insert(0, new DichVuDTO { LoaiDV = "Tất cả", MaLoaiDV = 0 });
+			lsLoaiDV = new List<LoaiDV>();
+			lsLoaiDV = LoaiDichVuBUS.Instance.getDataLoaiDV();
+			lsLoaiDV.Insert(0, new LoaiDV { TenLoaiDV = "Tất cả", MaLoaiDV = 0 });
 			cbTimKiemLoaiDV.SelectedIndex = 0;
 			lvDanhSachDV.ItemsSource = lsdichVu_Customs;
 			lvDichVuDaChon.ItemsSource = lsDichVu_DaChon;
 			cbTimKiemLoaiDV.ItemsSource = lsLoaiDV;
-			cbTimKiemLoaiDV.DisplayMemberPath = "LoaiDV";
+			cbTimKiemLoaiDV.DisplayMemberPath = "TenLoaiDV";
 			cbTimKiemLoaiDV.SelectedValuePath = "MaLoaiDV";
 		}
 
@@ -171,15 +171,13 @@ namespace GUI.View
 		}
 		private bool filterTimKiemLoaiDV(object obj)
 		{
-			var selectedLoaiDV = cbTimKiemLoaiDV.SelectedItem as DichVuDTO;
-			if (selectedLoaiDV == null || selectedLoaiDV.LoaiDV == "Tất cả")
-				return true;
-
-			string objLoaiDV = RemoveVietnameseTone((obj as DichVu)?.LoaiDV ?? string.Empty);
-			string selectedLoaiDVText = RemoveVietnameseTone(selectedLoaiDV.LoaiDV);
-
-			return objLoaiDV.Contains(selectedLoaiDVText);
+			var dichVu = obj as DichVu;
+			var selectedLoaiDV = cbTimKiemLoaiDV.SelectedItem as LoaiDV;
+			if (selectedLoaiDV == null || selectedLoaiDV.TenLoaiDV == "Tất cả") // Nếu không chọn loại dịch vụ hoặc chọn "Tất cả", hiển thị tất cả
+				return true;		
+			return dichVu.MaLoaiDV == selectedLoaiDV.MaLoaiDV; // So sánh MaLoaiDV của DichVu với MaLoaiDV của loại dịch vụ được chọn
 		}
+
 		public string RemoveVietnameseTone(string text)
 		{
 			string result = text.ToLower();

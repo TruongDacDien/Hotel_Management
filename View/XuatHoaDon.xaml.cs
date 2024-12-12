@@ -33,124 +33,145 @@ namespace GUI.View
         {
             InitializeComponent();
         }
-        public XuatHoaDon(int maNV, Phong_Custom ph, ObservableCollection<DichVu_DaChon> lsDV) : this()
-        {
-            this.MaNV = maNV;
-            this.Phong = ph;
-            ls = lsDV.ToList();
-            try
-            {
-                decimal? tienPhong = PhongBUS.GetInstance().tinhTienPhong(Phong);
-                decimal? tienDV = CTSDDV_BUS.GetInstance().tinhTongTienDichVuTheoMaCTPT(Phong.MaCTPT);
-                txbSoPhong.Text = Phong.MaPhong;
-                if (Phong.IsDay == true)
-                {
-                    txbSoNgayOrGio.Text = "Số ngày: ";
-                    txbSoNgay.Text = Phong.SoNgayO.ToString();
-                }
-                else
-                {
-                    txbSoNgayOrGio.Text = "Số giờ: ";
-                    txbSoNgay.Text = Phong.SoGio.ToString();
-                }
-                txbTenKH.Text = Phong.TenKH;
-                txbSoNguoi.Text = Phong.SoNguoi.ToString();
-                txbNhanVien.Text = NhanVienBUS.GetInstance().layNhanVienTheoMaNV(MaNV);
-                txbNgayLapHD.Text = DateTime.Now.ToString();
-                txbTongTien.Text = string.Format("{0:0,0 VND}", ((tienDV == null ? 0 : tienDV) + tienPhong));
+		public XuatHoaDon(int maNV, Phong_Custom ph, ObservableCollection<DichVu_DaChon> lsDV) : this()
+		{
+			this.MaNV = maNV;
+			this.Phong = ph;
+			ls = lsDV.ToList();
+			try
+			{
+				string error = string.Empty;
 
-                //Thêm hóa đơn vào DB
-                HoaDon hd = new HoaDon()
-                {
-                    MaNV = this.MaNV,
-                    MaCTPT = Phong.MaCTPT,
-                    NgayLap = DateTime.Now,
-                    TongTien = decimal.Parse(((tienDV == null ? 0 : tienDV) + tienPhong).ToString())
-                };
-                string error = string.Empty;
-                if (!HoaDonBUS.GetInstance().themHoaDon(hd, out error))
-                {
-                    new DialogCustoms("Thêm hóa đơn thất bại!\nLỗi:" + error, "Thông báo", DialogCustoms.OK).ShowDialog();
-                }
-                txbSoHoaDon.Text = HoaDonBUS.GetInstance().layMaHDMoiNhat().ToString();
-                //Sửa trạng thái của ctpt
-                string errorSuaCTPT = string.Empty;
-                if (!CT_PhieuThueBUS.GetInstance().suaTinhTrangThuePhong(Phong.MaCTPT, "Đã thanh toán", out errorSuaCTPT))
-                {
-                    new DialogCustoms("Lỗi sửa CTPT\nLỗi:" + errorSuaCTPT, "Thông báo", DialogCustoms.OK).ShowDialog();
-                }
-                // Cập nhật lại tiền phòng và ngày trả thực tế
-                string errorCapNhatCTPT = string.Empty;
-                if(!CT_PhieuThueBUS.GetInstance().capNhatTienVaNgayTraThucTe(ph.MaCTPT ,tienPhong,DateTime.Now, out errorCapNhatCTPT))
-                {
-                    new DialogCustoms("Lỗi cập nhật CTPT\nLỗi:" + errorCapNhatCTPT, "Thông báo", DialogCustoms.OK).ShowDialog();
-                }
-                // Thêm 1 dịch vụ là thuê phòng vào 
-                DichVu_DaChon dv = new DichVu_DaChon()
-                {
-                    SoLuong = Phong.IsDay == true ? Phong.SoNgayO : Phong.SoGio,
-                    TenDV = "Thuê phòng",
-                    Gia = PhongBUS.GetInstance().layTienPhongTheoSoPhong(Phong),
-                    ThanhTien = tienPhong
-                };
-                ls.Add(dv);
-                lvDichVuDaSD.ItemsSource = ls;
-            }
-            catch (Exception)
-            {
+				// Cập nhật thời gian kết thúc thuê phòng
+				DateTime ngayKT = DateTime.Now;
+				CT_PhieuThueBUS.GetInstance().capNhatNgayKT(Phong.MaCTPT, ngayKT, out error);
 
-                new DialogCustoms("Lỗi load thông tin!", "Thông báo", DialogCustoms.OK).ShowDialog();
-            }
-        }
+				// Lấy thông tin chi tiết phiếu thuê
+				CT_PhieuThue cT_PhieuThue = CT_PhieuThueBUS.GetInstance().getCTPhieuThueTheoMaCTPT(Phong.MaCTPT);
 
-        public XuatHoaDon(HoaDon hoaDon) : this()
-        {
-            try
-            {
-                txbNhanVien.Text = hoaDon.NhanVien.HoTen;
-                txbSoPhong.Text = hoaDon.CT_PhieuThue.SoPhong;
-                DateTime ngayBD = hoaDon.CT_PhieuThue.NgayBD;
-                DateTime ngayKT = hoaDon.CT_PhieuThue.NgayKT;
-                TimeSpan Time = ngayKT - ngayBD;
-                int sogio = (int)Time.TotalHours;
-                int songay = (int)Time.TotalDays + 1;
-                bool isDay = false;
-                if (sogio > 24)
-                {
-                    isDay = true;
-                    txbSoNgayOrGio.Text = "Số ngày: ";
-                    txbSoNgay.Text = songay.ToString();
-                }
-                else
-                {
-                    txbSoNgayOrGio.Text = "Số giờ: ";
-                    txbSoNgay.Text = sogio.ToString();
-                }
-                txbSoHoaDon.Text = hoaDon.MaHD.ToString();
-                txbTenKH.Text = KhachHangBUS.GetInstance().layTenKhachHangTheoMaPT(hoaDon.CT_PhieuThue.MaPhieuThue);
-                txbSoNguoi.Text = hoaDon.CT_PhieuThue.SoNguoiO.ToString();
-                txbNgayLapHD.Text = hoaDon.NgayLap.ToString();
-                txbTongTien.Text = string.Format("{0:0,0 VND}", hoaDon.TongTien);
-                ls = new List<DichVu_DaChon>(CTSDDV_BUS.GetInstance().getCTSDDVtheoMaCTPT(hoaDon.MaCTPT));
-                DichVu_DaChon dv = new DichVu_DaChon()
-                {
-                    SoLuong = sogio > 24 ? songay : sogio,
-                    TenDV = "Thuê phòng",
-                    Gia = PhongBUS.GetInstance().layTienPhongTheoSoPhong(hoaDon.CT_PhieuThue.SoPhong, isDay),
-                    ThanhTien = hoaDon.CT_PhieuThue.TienPhong
-                };
-                ls.Add(dv);
-                lvDichVuDaSD.ItemsSource = ls;
+				// Tính tiền phòng và tiền dịch vụ
+				decimal? tienPhong = PhongBUS.GetInstance().tinhTienPhong(Phong, cT_PhieuThue);
+				decimal? tienDV = CTSDDV_BUS.GetInstance().tinhTongTienDichVuTheoMaCTPT(Phong.MaCTPT);
 
-            }
-            catch (Exception ex)
-            {
-                new DialogCustoms("Lỗi: " + ex.Message, "Thông báo", DialogCustoms.OK).ShowDialog();
-            }
+				// Hiển thị thông tin chi tiết
+				txbSoPhong.Text = Phong.MaPhong;
 
-        }
+				// Phân tích số ngày và giờ từ tổng thời gian thuê
+				TimeSpan time = ngayKT - cT_PhieuThue.NgayBD;
+				int songay = (int)time.TotalDays;
+				int sogio = time.Hours + (time.Seconds > 0 ? 1 : 0); // Làm tròn giờ nếu có phút dư
 
-        private void click_InHoaDon(object sender, RoutedEventArgs e)
+				string thoiGianThue = $"{songay} ngày {sogio} giờ";
+
+				// Hiển thị thời gian thuê
+				txbSoNgayOrGio.Text = "Thời gian thuê: ";
+				txbSoNgay.Text = thoiGianThue;
+
+				txbTenKH.Text = "Khách hàng: " + Phong.TenKH;
+				txbSoNguoi.Text = Phong.SoNguoi.ToString();
+				txbNhanVien.Text = NhanVienBUS.GetInstance().layNhanVienTheoMaNV(MaNV);
+				txbNgayLapHD.Text = ngayKT.ToString();
+				txbTongTien.Text = string.Format("{0:0,0 VND}", ((tienDV ?? 0) + tienPhong));
+
+				// Thêm hóa đơn vào DB
+				HoaDon hd = new HoaDon()
+				{
+					MaNV = this.MaNV,
+					MaCTPT = Phong.MaCTPT,
+					NgayLap = ngayKT,
+					TongTien = decimal.Parse(((tienDV ?? 0) + tienPhong).ToString())
+				};
+
+				if (!HoaDonBUS.GetInstance().themHoaDon(hd, out error))
+				{
+					new DialogCustoms("Thêm hóa đơn thất bại!\nLỗi: " + error, "Thông báo", DialogCustoms.OK).ShowDialog();
+				}
+
+				// Lấy mã hóa đơn mới nhất
+				txbSoHoaDon.Text = HoaDonBUS.GetInstance().layMaHDMoiNhat().ToString();
+
+				// Sửa trạng thái của phiếu thuê
+				string errorSuaCTPT = string.Empty;
+				if (!CT_PhieuThueBUS.GetInstance().suaTinhTrangThuePhong(Phong.MaCTPT, "Đã thanh toán", out errorSuaCTPT))
+				{
+					new DialogCustoms("Lỗi sửa CTPT\nLỗi: " + errorSuaCTPT, "Thông báo", DialogCustoms.OK).ShowDialog();
+				}
+
+				// Cập nhật tiền phòng cho phiếu thuê
+				string errorCapNhatCTPT = string.Empty;
+				if (!CT_PhieuThueBUS.GetInstance().capNhatTien(ph.MaCTPT, tienPhong, out errorCapNhatCTPT))
+				{
+					new DialogCustoms("Lỗi cập nhật CTPT\nLỗi: " + errorCapNhatCTPT, "Thông báo", DialogCustoms.OK).ShowDialog();
+				}
+
+				// Thêm dịch vụ thuê phòng vào danh sách dịch vụ đã sử dụng
+				decimal temp = 0;
+				if (songay > 0) temp = decimal.Parse($"{songay}.{sogio:D2}"); else temp = sogio;
+				DichVu_DaChon dv = new DichVu_DaChon()
+				{
+					SoLuong = temp, // Hiển thị số lượng theo định dạng
+					TenDV = "Thuê phòng",
+					Gia = PhongBUS.GetInstance().layTienPhongTheoSoPhong(Phong),
+					ThanhTien = tienPhong
+				};
+
+				ls.Add(dv);
+				lvDichVuDaSD.ItemsSource = ls;
+			}
+			catch (Exception ex)
+			{
+				new DialogCustoms("Lỗi load thông tin!\nLỗi: " + ex.Message, "Thông báo", DialogCustoms.OK).ShowDialog();
+			}
+		}
+
+		public XuatHoaDon(HoaDon hoaDon) : this()
+		{
+			try
+			{
+				txbNhanVien.Text = hoaDon.NhanVien.HoTen.ToString();
+				txbSoPhong.Text = hoaDon.CT_PhieuThue.SoPhong.ToString();
+
+				DateTime ngayBD = hoaDon.CT_PhieuThue.NgayBD;
+				DateTime ngayKT = hoaDon.CT_PhieuThue.NgayKT;
+
+				// Phân tích số ngày và giờ
+				TimeSpan time = ngayKT - ngayBD;
+				int songay = (int)time.TotalDays;
+				int sogio = time.Hours + (time.Seconds > 0 ? 1 : 0);
+
+				string thoiGianThue = $"{songay} ngày {sogio} giờ";
+
+				// Hiển thị thời gian thuê
+				txbSoNgayOrGio.Text = "Thời gian thuê: ";
+				txbSoNgay.Text = thoiGianThue;
+
+				txbSoHoaDon.Text = hoaDon.MaHD.ToString();
+				txbTenKH.Text = "Khách hàng: " + KhachHangBUS.GetInstance().layTenKhachHangTheoMaPT(hoaDon.CT_PhieuThue.MaPhieuThue);
+				txbSoNguoi.Text = hoaDon.CT_PhieuThue.SoNguoiO.ToString();
+				txbNgayLapHD.Text = hoaDon.NgayLap.ToString();
+				txbTongTien.Text = string.Format("{0:0,0 VND}", hoaDon.TongTien);
+
+				// Danh sách dịch vụ đã sử dụng
+				ls = new List<DichVu_DaChon>(CTSDDV_BUS.GetInstance().getCTSDDVtheoMaCTPT(hoaDon.MaCTPT));
+				decimal temp = 0;
+				if (songay > 0) temp = decimal.Parse($"{songay}.{sogio:D2}"); else temp = sogio;
+				DichVu_DaChon dv = new DichVu_DaChon()
+				{
+					SoLuong = temp,
+					TenDV = "Thuê phòng",
+					Gia = PhongBUS.GetInstance().layTienPhongTheoSoPhong(hoaDon.CT_PhieuThue.SoPhong, songay > 0),
+					ThanhTien = hoaDon.CT_PhieuThue.TienPhong
+				};
+				ls.Add(dv);
+				lvDichVuDaSD.ItemsSource = ls;
+			}
+			catch (Exception ex)
+			{
+				new DialogCustoms("Lỗi: " + ex.Message, "Thông báo", DialogCustoms.OK).ShowDialog();
+			}
+		}
+
+		private void click_InHoaDon(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -170,8 +191,6 @@ namespace GUI.View
             {
                 btnInHoaDon.Visibility = Visibility.Visible;
             }
-        }
-
-        
+        }   
     }
 }

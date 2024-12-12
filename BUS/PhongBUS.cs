@@ -36,20 +36,44 @@ namespace BUS
         {
             return PhongDAL.GetInstance().getPhongTrong(ngayBD,ngayKT);
         }
-        public decimal? tinhTienPhong(Phong_Custom phong)
-        {
-            decimal? tienPhong;
-            tienPhong = PhongDAL.GetInstance().layGiaTienTheoMaPhong(phong.MaPhong, phong.IsDay);
-            if(phong.IsDay== true)
-            {
-                return phong.SoNgayO * tienPhong;
-            }
-            else
-            {
-                return phong.SoGio * tienPhong;
-            }
-        }
-        public decimal layTienPhongTheoSoPhong(Phong_Custom phong)
+		public decimal? tinhTienPhong(Phong_Custom phong, CT_PhieuThue cT_PhieuThue)
+		{
+			// Lấy giá tiền theo ngày và giờ
+			decimal? giaNgay = PhongDAL.GetInstance().layGiaTienTheoMaPhong(phong.MaPhong, true); // Giá theo ngày
+			decimal? giaGio = PhongDAL.GetInstance().layGiaTienTheoMaPhong(phong.MaPhong, false); // Giá theo giờ
+
+			if (giaNgay == null || giaGio == null)
+			{
+				// Trường hợp không tìm thấy giá tiền, trả về null
+				return null;
+			}
+
+			// Nếu ở theo ngày
+			if (phong.IsDay)
+			{
+				// Tính số ngày nguyên và số giờ dư
+				TimeSpan duration = cT_PhieuThue.NgayKT - cT_PhieuThue.NgayBD;
+				int soNgay = (int)duration.TotalDays; // Số ngày nguyên
+				decimal soGioLe = (decimal)(duration.TotalHours % 24); // Số giờ dư
+				int soGioLamTron = soGioLe > 0 ? (int)Math.Ceiling(soGioLe) : 0; // Làm tròn giờ dư
+
+				// Tính tổng tiền
+				return (soNgay * giaNgay) + (soGioLamTron * giaGio);
+			}
+			else
+			{
+				// Tính tiền theo giờ (dựa trên khoảng thời gian)
+				TimeSpan duration = cT_PhieuThue.NgayKT - cT_PhieuThue.NgayBD;
+				decimal soPhut = (decimal)duration.TotalMinutes; // Tổng số phút
+
+				// Làm tròn theo chính sách: nếu thời gian nhỏ hơn 1h thì làm tròn lên 1h
+				int soGioLamTron = soPhut > 0 ? Math.Max(1, (int)Math.Ceiling(soPhut / 60)) : 0;
+
+				// Tính tổng tiền
+				return soGioLamTron * giaGio;
+			}
+		}
+		public decimal layTienPhongTheoSoPhong(Phong_Custom phong)
         {
             return PhongDAL.GetInstance().layGiaTienTheoMaPhong(phong.MaPhong, phong.IsDay);
         }

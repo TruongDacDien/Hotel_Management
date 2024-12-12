@@ -31,8 +31,8 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "INSERT INTO CT_PhieuThue (MaPhieuThue, SoPhong, NgayBD, NgayKT, SoNguoiO, TinhTrangThue, TienPhong, NgayTraThucTe) " +
-								   "VALUES (@MaPhieuThue, @SoPhong, @NgayBD, @NgayKT, @SoNguoiO, @TinhTrangThue, @TienPhong, @NgayTraThucTe)";
+					string query = "INSERT INTO CT_PhieuThue (MaPhieuThue, SoPhong, NgayBD, NgayKT, SoNguoiO, TinhTrangThue, TienPhong) " +
+								   "VALUES (@MaPhieuThue, @SoPhong, @NgayBD, @NgayKT, @SoNguoiO, @TinhTrangThue, @TienPhong)";
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaPhieuThue", ctpt.MaPhieuThue);
 					cmd.Parameters.AddWithValue("@SoPhong", ctpt.SoPhong);
@@ -41,7 +41,6 @@ namespace DAL.Data
 					cmd.Parameters.AddWithValue("@SoNguoiO", ctpt.SoNguoiO);
 					cmd.Parameters.AddWithValue("@TinhTrangThue", ctpt.TinhTrangThue);
 					cmd.Parameters.AddWithValue("@TienPhong", ctpt.TienPhong);
-					cmd.Parameters.AddWithValue("@NgayTraThucTe", ctpt.NgayTraThucTe);
 
 					conn.Open();
 					cmd.ExecuteNonQuery();
@@ -121,8 +120,7 @@ namespace DAL.Data
 								NgayKT = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
 								SoNguoiO = reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
 								TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue")),
-								TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong")),
-								NgayTraThucTe = reader.GetDateTime(reader.GetOrdinal("NgayTraThucTe"))
+								TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong"))
 							};
 							ls.Add(ctpt);
 						}
@@ -136,8 +134,124 @@ namespace DAL.Data
 			return ls;
 		}
 
-		// Cập nhật tiền phòng và ngày trả thực tế
-		public bool capNhatTienVaNgayTraThucTe(int? maCTPT, decimal? tienPhong, DateTime now, out string errorCapNhatCTPT)
+		// Lấy chi tiết phiếu thuê theo mã chi tiết phiếu thuê
+		public CT_PhieuThue getCT_PhieuThueTheoMaCTPT(int? maCTPT)
+		{
+			CT_PhieuThue cT_PhieuThue = null;
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			try
+			{
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				{
+					string query = "SELECT * FROM CT_PhieuThue WHERE MaCTPT = @MaCTPT";
+					MySqlCommand cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
+
+					conn.Open();
+					using (MySqlDataReader reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+						{
+							cT_PhieuThue = new CT_PhieuThue
+							{
+								MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+								MaPhieuThue = reader.GetInt32(reader.GetOrdinal("MaPhieuThue")),
+								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
+								NgayBD = reader.GetDateTime(reader.GetOrdinal("NgayBD")),
+								NgayKT = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
+								SoNguoiO = reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
+								TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue")),
+								TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong"))
+							};
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+			return cT_PhieuThue;
+		}
+
+		// Cập nhật ngày bắt đầu
+		public bool capNhatNgayBD(int? maCTPT, DateTime ngayBD, out string error)
+		{
+			error = string.Empty;
+			if (maCTPT == null)
+			{
+				error = "Không tồn tại mã chi tiết phiếu thuê";
+				return false;
+			}
+
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			try
+			{
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				{
+					string query = "UPDATE CT_PhieuThue SET NgayBD = @NgayBD WHERE MaCTPT = @MaCTPT";
+					MySqlCommand cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@NgayBD", ngayBD);
+					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
+
+					conn.Open();
+					int rowsAffected = cmd.ExecuteNonQuery();
+					if (rowsAffected == 0)
+					{
+						error = "Không tồn tại chi tiết phiếu thuê có mã: " + maCTPT;
+						return false;
+					}
+				}
+				return true;
+			}
+			catch (Exception ex)
+			{
+				error = ex.Message;
+				return false;
+			}
+		}
+
+		// Cập nhật ngày kết thúc
+		public bool capNhatNgayKT(int? maCTPT, DateTime ngayKT, out string error)
+		{
+			error = string.Empty;
+			if (maCTPT == null)
+			{
+				error = "Không tồn tại mã chi tiết phiếu thuê";
+				return false;
+			}
+
+			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			try
+			{
+				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				{
+					string query = "UPDATE CT_PhieuThue SET NgayKT = @NgayKT WHERE MaCTPT = @MaCTPT";
+					MySqlCommand cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@NgayKT", ngayKT);
+					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
+
+					conn.Open();
+					int rowsAffected = cmd.ExecuteNonQuery();
+					if (rowsAffected == 0)
+					{
+						error = "Không tồn tại chi tiết phiếu thuê có mã: " + maCTPT;
+						return false;
+					}
+				}
+				return true;
+			}
+			catch (Exception ex)
+			{
+				error = ex.Message;
+				return false;
+			}
+		}
+
+		// Cập nhật tiền phòng
+		public bool capNhatTien(int? maCTPT, decimal? tienPhong, out string errorCapNhatCTPT)
 		{
 			errorCapNhatCTPT = string.Empty;
 			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
@@ -146,14 +260,11 @@ namespace DAL.Data
 			{
 				using (MySqlConnection conn = new MySqlConnection(connectionString))
 				{
-					string query = "UPDATE CT_PhieuThue " +
-								   "SET TienPhong = @TienPhong, NgayTraThucTe = @NgayTraThucTe " +
-								   "WHERE MaCTPT = @MaCTPT";
+					string query = "UPDATE CT_PhieuThue SET TienPhong = @TienPhong WHERE MaCTPT = @MaCTPT";
 
 					MySqlCommand cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
 					cmd.Parameters.AddWithValue("@TienPhong", tienPhong);
-					cmd.Parameters.AddWithValue("@NgayTraThucTe", now);
 
 					conn.Open();
 					int rowsAffected = cmd.ExecuteNonQuery();

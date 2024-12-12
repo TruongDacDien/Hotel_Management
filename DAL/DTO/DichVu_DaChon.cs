@@ -10,7 +10,7 @@ namespace DAL.DTO
     public class DichVu_DaChon: INotifyPropertyChanged
     {
         private string tenDV;
-        private int? soLuong;
+        private decimal? soLuong;
         private decimal? thanhTien;
         private decimal gia;
         private int? maDV;
@@ -19,7 +19,7 @@ namespace DAL.DTO
         public int? MaDV { get => maDV; set => maDV = value; }
         public decimal Gia { get => gia; set => gia = value; }
 
-        public int? SoLuong
+        public decimal? SoLuong
         {
             get => soLuong;
             set
