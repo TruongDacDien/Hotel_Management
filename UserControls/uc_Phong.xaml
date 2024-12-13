@@ -17,7 +17,8 @@
              Background="White"
              Loaded="ucPhong_Loaded"
              HorizontalAlignment="Stretch"
-             VerticalAlignment="Stretch">
+             VerticalAlignment="Stretch" 
+             SizeChanged="Window_SizeChanged">
     <Grid >
         <!--Phân grid ngang ra làm 2 phần-->
         <Grid.RowDefinitions>
@@ -93,7 +94,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <!--nửa trái dành cho việc làm các checkbox-->
-            <Grid Grid.Row="0" Grid.Column="0" Background="#F2F1F1" Margin="0 3 0 0" x:Name="grdCheckBox"
+            <Grid Grid.Row="0" Grid.Column="0" Background="#F2F1F1" Margin="0 2 0 0" x:Name="grdCheckBox"
       VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Grid.Clip>
                     <RectangleGeometry Rect="0,0,200,1800" RadiusX="10" RadiusY="10" />
@@ -138,13 +139,32 @@
             </Grid>
             <!--nửa phải để hiện thị phòng-->
             <Grid Grid.Row="0" Grid.Column="1">
-                <ScrollViewer>
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <ScrollViewer.Resources>
                         <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">12</sys:Double>
                     </ScrollViewer.Resources>
-                    <StackPanel x:Name="spDanhSachPhong" Orientation="Vertical" Margin="10" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
-                        <!-- Các danh sách loại phòng sẽ được thêm động -->
-                    </StackPanel>
+                    <WrapPanel x:Name="spDanhSachPhong" Orientation="Vertical" Margin="10" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListView x:Name="listView"
+                              Margin="50 10 0 0"
+                              ItemsSource="{Binding FilteredPhong}" 
+                              ItemTemplate="{DynamicResource PhongItemTemplate}"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                              ScrollViewer.VerticalScrollBarVisibility="Disabled" >
+                            <!--Vô hiệu hóa cuộn-->
+                            <ListView.Template>
+                                <ControlTemplate>
+                                    <ItemsPresenter />
+                                </ControlTemplate>
+                            </ListView.Template>
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <!--Các danh sách phòng thêm động-->
+                        </ListView>
+                    </WrapPanel>
                 </ScrollViewer>
             </Grid>
         </Grid>
