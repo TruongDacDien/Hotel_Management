@@ -26,12 +26,17 @@ namespace GUI.UserControls
     /// </summary>
     public partial class uc_Phong : UserControl
     {
-        ObservableCollection<Phong_Custom> lsPhong_Custom;
+		#region Khai báo biến
+		ObservableCollection<Phong_Custom> lsPhong_Custom;
         ObservableCollection<Phong_Custom> lsTrong;
         private int maNV;
         public int MaNV { get => maNV; set => maNV = value; }
+		private string lastTinhTrangSelection;
+		private string lastDonDepSelection;
+		private string lastLoaiPhongSelection;
+		#endregion
 
-        private uc_Phong()
+		private uc_Phong()
         {
             InitializeComponent();
             lsTrong = new ObservableCollection<Phong_Custom>();
@@ -80,13 +85,22 @@ namespace GUI.UserControls
 			// Tạo ListView cho phòng
 			ListView listView = new ListView
 			{
-				Margin = new Thickness(20, 10, 20, 20),
-				ItemsSource = new ObservableCollection<Phong_Custom>(filteredPhong), // Gán danh sách phòng đã lọc
-				ItemTemplate = (DataTemplate)this.Resources["PhongItemTemplate"], // Sử dụng DataTemplate đã khai báo
-				HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+				Margin = new Thickness(10, 10, 10, 10),
+				ItemsSource = new ObservableCollection<Phong_Custom>(filteredPhong),
+				ItemTemplate = (DataTemplate)this.Resources["PhongItemTemplate"],
+				HorizontalAlignment = HorizontalAlignment.Left,
 				VerticalAlignment = System.Windows.VerticalAlignment.Top,
-				Name = $"lv{loaiPhong.Replace(" ", "")}" // Đặt tên cho ListView để dễ dàng quản lý
+				Width = spDanhSachPhong.ActualWidth,
+				Name = $"lv{loaiPhong.Replace(" ", "")}"
 			};
+
+			// Sử dụng WrapPanel cho kiểu ma trận
+			var itemsPanelTemplate = new ItemsPanelTemplate();
+			var factory = new FrameworkElementFactory(typeof(WrapPanel));
+			factory.SetValue(WrapPanel.OrientationProperty, Orientation.Horizontal);
+			factory.SetValue(WrapPanel.MaxWidthProperty, spDanhSachPhong.ActualWidth);
+			itemsPanelTemplate.VisualTree = factory;
+			listView.ItemsPanel = itemsPanelTemplate;
 
 			// Khởi tạo sự kiện cho ListView
 			listView.PreviewMouseLeftButtonUp += ListViewPhong_PreviewMouseLeftButtonUp;
@@ -168,6 +182,50 @@ namespace GUI.UserControls
 			return matchTinhTrang && matchDonDep && matchLoaiPhong;
 		}
 
+		private void SaveFilterState()
+		{
+			// Lưu trạng thái của các bộ lọc
+			lastTinhTrangSelection = spTrangThai.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked == true)?.Content.ToString();
+			lastDonDepSelection = spDonDep.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked == true)?.Content.ToString();
+			lastLoaiPhongSelection = spLoaiPhong.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked == true)?.Content.ToString();
+		}
+
+		private void RestoreFilterState()
+		{
+			// Khôi phục trạng thái của bộ lọc Tình Trạng
+			if (lastTinhTrangSelection != null)
+			{
+				var radioTinhTrang = spTrangThai.Children.OfType<RadioButton>().FirstOrDefault(r => r.Content.ToString() == lastTinhTrangSelection);
+				if (radioTinhTrang != null)
+				{
+					radioTinhTrang.IsChecked = true;
+					rb_Click(radioTinhTrang, null); // Gọi sự kiện Click để áp dụng bộ lọc
+				}
+			}
+
+			// Khôi phục trạng thái của bộ lọc Dọn Dẹp
+			if (lastDonDepSelection != null)
+			{
+				var radioDonDep = spDonDep.Children.OfType<RadioButton>().FirstOrDefault(r => r.Content.ToString() == lastDonDepSelection);
+				if (radioDonDep != null)
+				{
+					radioDonDep.IsChecked = true;
+					rb_Click(radioDonDep, null); // Gọi sự kiện Click để áp dụng bộ lọc
+				}
+			}
+
+			// Khôi phục trạng thái của bộ lọc Loại Phòng
+			if (lastLoaiPhongSelection != null)
+			{
+				var radioLoaiPhong = spLoaiPhong.Children.OfType<RadioButton>().FirstOrDefault(r => r.Content.ToString() == lastLoaiPhongSelection);
+				if (radioLoaiPhong != null)
+				{
+					radioLoaiPhong.IsChecked = true;
+					rb_Click(radioLoaiPhong, null); // Gọi sự kiện Click để áp dụng bộ lọc
+				}
+			}
+		}
+
 		private void timKiemTheomaPhong()
 		{
 			foreach (var listView in spDanhSachPhong.Children.OfType<ListView>())
@@ -221,6 +279,19 @@ namespace GUI.UserControls
 		#endregion
 
 		#region Event
+		private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+		{
+			// Lưu trạng thái bộ lọc trước khi làm mới
+			SaveFilterState();
+
+			// Làm mới danh sách phòng và loại phòng
+			spDanhSachPhong.UpdateLayout();
+			refeshLoaiPhong();
+
+			// Khôi phục lại trạng thái bộ lọc sau khi làm mới
+			RestoreFilterState();
+		}
+
 		// Sự kiện loade UC
 		private void ucPhong_Loaded(object sender, RoutedEventArgs e)
 		{
@@ -233,7 +304,6 @@ namespace GUI.UserControls
 			}
 			refeshLoaiPhong();
 		}
-
 
 		//Khi click vào radioButton
 		private void rb_Click(object sender, RoutedEventArgs e)

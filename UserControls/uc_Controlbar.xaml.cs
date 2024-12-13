@@ -55,7 +55,8 @@ namespace GUI.UserControls
                     btn_maximize.ToolTip = "Maximize";
                     controlbar.MinHeight = 0;
                 }
-            }
+				mainwindows.UpdateLayout();
+			}
         }
         private void Button_Minimize(object sender, RoutedEventArgs e)
         {
