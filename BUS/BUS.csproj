@@ -82,6 +82,7 @@
     <Compile Include="LoaiPhongBUS.cs" />
     <Compile Include="Bcrypt_HashBUS.cs" />
     <Compile Include="TaiKhoanBUS.cs" />
+    <Compile Include="ThongKeBUS.cs" />
     <Compile Include="TienNghiBUS.cs" />
   </ItemGroup>
   <ItemGroup>
