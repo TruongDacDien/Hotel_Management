@@ -131,7 +131,9 @@
     <Compile Include="Data\NhanVienDAL.cs" />
     <Compile Include="Data\PhongDAL.cs" />
     <Compile Include="Data\TaiKhoanDAL.cs" />
+    <Compile Include="Data\ThongKe_DAL.cs" />
     <Compile Include="Data\TienNghiDAL.cs" />
+    <Compile Include="DTO\CTHD.cs" />
     <Compile Include="DTO\CT_PhieuThue.cs" />
     <Compile Include="DTO\CT_SDDichVu.cs" />
     <Compile Include="DTO\CT_TienNghi.cs" />
@@ -151,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTO\TaiKhoan.cs" />
+    <Compile Include="DTO\ThongKe.cs" />
     <Compile Include="DTO\TienNghi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
