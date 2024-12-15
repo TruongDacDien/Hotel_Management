@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using BUS;
+using DAL.Data;
 using DAL.DTO;
 
 namespace GUI.View
@@ -406,6 +407,25 @@ namespace GUI.View
 			}
 
 			ctpt.SoNguoiO = soNguoi;
+		}
+
+		private void TxbCCCD_OnTextChanged(object sender, TextChangedEventArgs e)
+		{
+			var kh = new KhachHang
+			{
+				CCCD = txbCCCD.Text,
+			};
+
+			KhachHang tonTaiKhachHang = KhachHangDAL.GetInstance().kiemTraTonTaiKhachHang(kh.CCCD);
+
+			if (tonTaiKhachHang != null)
+			{
+				txbHoTen.Text = tonTaiKhachHang.TenKH;
+				txbDiaChi.Text = tonTaiKhachHang.DiaChi;
+				cbGioiTinh.Text = tonTaiKhachHang.GioiTinh;
+				txbQuocTich.Text = tonTaiKhachHang.QuocTich;
+				txbSDT.Text = tonTaiKhachHang.SDT;
+			}
 		}
 
 		#endregion
