@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using MySql.Data.MySqlClient;
 using DAL.DTO;
+using MySql.Data.MySqlClient;
 
 namespace DAL.Data
 {
@@ -10,35 +10,33 @@ namespace DAL.Data
 	{
 		private static NhanVienDAL Instance;
 
-		private NhanVienDAL() { }
+		private NhanVienDAL()
+		{
+		}
 
 		public static NhanVienDAL GetInstance()
 		{
-			if (Instance == null)
-			{
-				Instance = new NhanVienDAL();
-			}
+			if (Instance == null) Instance = new NhanVienDAL();
 			return Instance;
 		}
 
 		// Lấy danh sách nhân viên từ DB
 		public List<NhanVien> getDataNhanVien()
 		{
-			List<NhanVien> lsNV = new List<NhanVien>();
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var lsNV = new List<NhanVien>();
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "SELECT * FROM NhanVien WHERE IsDeleted = 0";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "SELECT * FROM NhanVien WHERE IsDeleted = 0";
+					var cmd = new MySqlCommand(query, conn);
 
 					conn.Open();
-					using (MySqlDataReader reader = cmd.ExecuteReader())
+					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
-						{
 							lsNV.Add(new NhanVien
 							{
 								MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
@@ -52,7 +50,6 @@ namespace DAL.Data
 								Luong = reader.GetDecimal(reader.GetOrdinal("Luong")),
 								IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
 							});
-						}
 					}
 				}
 			}
@@ -67,17 +64,17 @@ namespace DAL.Data
 		// Thêm mới nhân viên
 		public bool addDataNhanVien(NhanVien nv)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = @"
+					var query = @"
                         INSERT INTO NhanVien (HoTen, ChucVu, SDT, DiaChi, CCCD, NTNS, GioiTinh, Luong, IsDeleted)
                         VALUES (@HoTen, @ChucVu, @SDT, @DiaChi, @CCCD, @NTNS, @GioiTinh, @Luong, 0)";
 
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@HoTen", nv.HoTen);
 					cmd.Parameters.AddWithValue("@ChucVu", nv.ChucVu);
 					cmd.Parameters.AddWithValue("@SDT", nv.SDT);
@@ -90,6 +87,7 @@ namespace DAL.Data
 					conn.Open();
 					cmd.ExecuteNonQuery();
 				}
+
 				return true;
 			}
 			catch (Exception ex)
@@ -102,19 +100,19 @@ namespace DAL.Data
 		// Sửa thông tin nhân viên
 		public bool updateDataNhanVien(NhanVien nv)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = @"
+					var query = @"
                         UPDATE NhanVien
                         SET HoTen = @HoTen, ChucVu = @ChucVu, SDT = @SDT, DiaChi = @DiaChi, 
                             CCCD = @CCCD, NTNS = @NTNS, GioiTinh = @GioiTinh, Luong = @Luong
                         WHERE MaNV = @MaNV";
 
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaNV", nv.MaNV);
 					cmd.Parameters.AddWithValue("@HoTen", nv.HoTen);
 					cmd.Parameters.AddWithValue("@ChucVu", nv.ChucVu);
@@ -128,6 +126,7 @@ namespace DAL.Data
 					conn.Open();
 					cmd.ExecuteNonQuery();
 				}
+
 				return true;
 			}
 			catch (Exception ex)
@@ -140,19 +139,20 @@ namespace DAL.Data
 		// Xóa nhân viên
 		public bool deleteDataNhanVien(NhanVien nv)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "UPDATE NhanVien SET IsDeleted = 1 WHERE MaNV = @MaNV";
+					var query = "UPDATE NhanVien SET IsDeleted = 1 WHERE MaNV = @MaNV";
 
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaNV", nv.MaNV);
 					conn.Open();
 					cmd.ExecuteNonQuery();
 				}
+
 				return true;
 			}
 			catch (Exception ex)
@@ -166,21 +166,20 @@ namespace DAL.Data
 		public NhanVien kiemTraTonTaiNhanVien(string CCCD)
 		{
 			NhanVien nhanVien = null;
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "SELECT * FROM NhanVien WHERE CCCD = @CCCD";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "SELECT * FROM NhanVien WHERE CCCD = @CCCD";
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@CCCD", CCCD);
 
 					conn.Open();
-					using (MySqlDataReader reader = cmd.ExecuteReader())
+					using (var reader = cmd.ExecuteReader())
 					{
 						if (reader.Read())
-						{
 							nhanVien = new NhanVien
 							{
 								MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
@@ -194,7 +193,6 @@ namespace DAL.Data
 								Luong = reader.GetDecimal(reader.GetOrdinal("Luong")),
 								IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
 							};
-						}
 					}
 				}
 			}
@@ -202,6 +200,7 @@ namespace DAL.Data
 			{
 				Console.WriteLine(ex.Message); // Log lỗi nếu cần
 			}
+
 			return nhanVien;
 		}
 
@@ -209,21 +208,20 @@ namespace DAL.Data
 		public NhanVien layNhanVienTheoMaNV(int maNV)
 		{
 			NhanVien nhanVien = null;
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "SELECT * FROM NhanVien WHERE MaNV = @MaNV AND IsDeleted = 0";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "SELECT * FROM NhanVien WHERE MaNV = @MaNV AND IsDeleted = 0";
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaNV", maNV);
 
 					conn.Open();
-					using (MySqlDataReader reader = cmd.ExecuteReader())
+					using (var reader = cmd.ExecuteReader())
 					{
 						if (reader.Read())
-						{
 							nhanVien = new NhanVien
 							{
 								MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
@@ -236,7 +234,6 @@ namespace DAL.Data
 								GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
 								Luong = reader.GetDecimal(reader.GetOrdinal("Luong"))
 							};
-						}
 					}
 				}
 			}
@@ -251,27 +248,22 @@ namespace DAL.Data
 		// Hiển thị lại nhân viên đã xóa
 		public bool hienThiLaiNhanVien(string cCCD)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "UPDATE NhanVien SET IsDeleted = 0 WHERE CCCD = @CCCD";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "UPDATE NhanVien SET IsDeleted = 0 WHERE CCCD = @CCCD";
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@CCCD", cCCD);
 
 					conn.Open();
-					int rowsAffected = cmd.ExecuteNonQuery();
+					var rowsAffected = cmd.ExecuteNonQuery();
 
-					if (rowsAffected > 0)
-					{
-						return true;
-					}
-					else
-					{
-						return false;
-					}
+					if (rowsAffected > 0) return true;
+
+					return false;
 				}
 			}
 			catch (Exception ex)

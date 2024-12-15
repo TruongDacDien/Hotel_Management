@@ -1,29 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DAL.DTO
+﻿namespace DAL.DTO
 {
 	public class KhachHang
 	{
-		private int maKH;
-		private string tenKH;
-		private string gioiTinh;
-		private string cCCD;
-		private string sDT;
-		private string diaChi;
-		private string quocTich;
-		private bool isDeleted;
+		public int MaKH { get; set; }
 
-		public int MaKH { get => maKH; set => maKH = value; }
-		public string TenKH { get => tenKH; set => tenKH = value; }
-		public string GioiTinh { get => gioiTinh; set => gioiTinh = value; }
-		public string CCCD { get => cCCD; set => cCCD = value; }
-		public string SDT { get => sDT; set => sDT = value; }
-		public string DiaChi { get => diaChi; set => diaChi = value; }
-		public string QuocTich { get => quocTich; set => quocTich = value; }
-		public bool IsDeleted { get => isDeleted; set => isDeleted = value; }
+		public string TenKH { get; set; }
+
+		public string GioiTinh { get; set; }
+
+		public string CCCD { get; set; }
+
+		public string SDT { get; set; }
+
+		public string DiaChi { get; set; }
+
+		public string QuocTich { get; set; }
+
+		public bool IsDeleted { get; set; }
 	}
 }

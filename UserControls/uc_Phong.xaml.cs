@@ -1,68 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using GUI.View;
 using BUS;
-using DAL.Data;
 using DAL.DTO;
-using System.Collections.ObjectModel;
-using System.Windows.Forms.VisualStyles;
+using GUI.View;
 
 namespace GUI.UserControls
 {
-    /// <summary>
-    /// Interaction logic for uc_Phong.xaml
-    /// </summary>
-    public partial class uc_Phong : UserControl
-    {
+	/// <summary>
+	///     Interaction logic for uc_Phong.xaml
+	/// </summary>
+	public partial class uc_Phong : UserControl
+	{
+		private uc_Phong()
+		{
+			InitializeComponent();
+			lsTrong = new ObservableCollection<Phong_Custom>();
+			lsPhong_Custom = PhongBUS.GetInstance().getDataPhong_Custom();
+			initEvent();
+		}
+
+		public uc_Phong(int maNV) : this()
+		{
+			MaNV = maNV;
+		}
+
 		#region Khai báo biến
-		ObservableCollection<Phong_Custom> lsPhong_Custom;
-        ObservableCollection<Phong_Custom> lsTrong;
-        private int maNV;
-        public int MaNV { get => maNV; set => maNV = value; }
+
+		private ObservableCollection<Phong_Custom> lsPhong_Custom;
+		private ObservableCollection<Phong_Custom> lsTrong;
+		public int MaNV { get; set; }
+
 		private string lastTinhTrangSelection;
 		private string lastDonDepSelection;
 		private string lastLoaiPhongSelection;
+
 		#endregion
-
-		private uc_Phong()
-        {
-            InitializeComponent();
-            lsTrong = new ObservableCollection<Phong_Custom>();
-			lsPhong_Custom = PhongBUS.GetInstance().getDataPhong_Custom();
-			initEvent();
-        }
-
-        public uc_Phong(int maNV):this()
-        {
-            this.MaNV = maNV;
-        }
 
 
 		#region Method
+
 		private void ThemRadioButtonLoaiPhong(string loaiPhong)
 		{
 			// Kiểm tra xem radio button đã tồn tại chưa
 			if (spLoaiPhong.Children.OfType<RadioButton>().Any(rb => rb.Content.ToString() == loaiPhong)) return;
 			// Tạo mới radio button
-			RadioButton newRadioButton = new RadioButton
+			var newRadioButton = new RadioButton
 			{
 				Content = loaiPhong,
 				GroupName = "LoaiPhong",
 				Margin = new Thickness(3),
-				FontSize = 15,         
-				Height = 24             
+				FontSize = 15,
+				Height = 24
 			};
 			newRadioButton.Click += rb_Click; // Gắn sự kiện click
 			spLoaiPhong.Children.Add(newRadioButton);
@@ -71,7 +65,7 @@ namespace GUI.UserControls
 		private void ThemDanhSachPhong(string loaiPhong)
 		{
 			// Tạo tiêu đề cho phòng
-			TextBlock title = new TextBlock
+			var title = new TextBlock
 			{
 				Text = loaiPhong,
 				FontSize = 20,
@@ -83,13 +77,13 @@ namespace GUI.UserControls
 			var filteredPhong = lsPhong_Custom.Where(p => p.LoaiPhong == loaiPhong).ToList();
 
 			// Tạo ListView cho phòng
-			ListView listView = new ListView
+			var listView = new ListView
 			{
 				Margin = new Thickness(10, 10, 10, 10),
 				ItemsSource = new ObservableCollection<Phong_Custom>(filteredPhong),
-				ItemTemplate = (DataTemplate)this.Resources["PhongItemTemplate"],
+				ItemTemplate = (DataTemplate)Resources["PhongItemTemplate"],
 				HorizontalAlignment = HorizontalAlignment.Left,
-				VerticalAlignment = System.Windows.VerticalAlignment.Top,
+				VerticalAlignment = VerticalAlignment.Top,
 				Width = spDanhSachPhong.ActualWidth,
 				Name = $"lv{loaiPhong.Replace(" ", "")}"
 			};
@@ -98,7 +92,7 @@ namespace GUI.UserControls
 			var itemsPanelTemplate = new ItemsPanelTemplate();
 			var factory = new FrameworkElementFactory(typeof(WrapPanel));
 			factory.SetValue(WrapPanel.OrientationProperty, Orientation.Horizontal);
-			factory.SetValue(WrapPanel.MaxWidthProperty, spDanhSachPhong.ActualWidth);
+			factory.SetValue(MaxWidthProperty, spDanhSachPhong.ActualWidth);
 			itemsPanelTemplate.VisualTree = factory;
 			listView.ItemsPanel = itemsPanelTemplate;
 
@@ -123,7 +117,7 @@ namespace GUI.UserControls
 			}
 
 			// Thêm radio button "Tất cả loại phòng"
-			RadioButton rbTatCaLoaiPhong = new RadioButton
+			var rbTatCaLoaiPhong = new RadioButton
 			{
 				Content = "Tất cả loại phòng",
 				GroupName = "LoaiPhong",
@@ -141,23 +135,17 @@ namespace GUI.UserControls
 			foreach (var loaiPhong in allLoaiPhong)
 			{
 				ThemRadioButtonLoaiPhong(loaiPhong); // Tạo các radio button cho loại phòng
-				ThemDanhSachPhong(loaiPhong);       // Tạo danh sách phòng tương ứng
+				ThemDanhSachPhong(loaiPhong); // Tạo danh sách phòng tương ứng
 			}
 		}
 
 		private void initEvent()
-        {
+		{
 			// Gắn sự kiện Click cho RadioButton trong spTrangThai
-			foreach (var radioButton in spTrangThai.Children.OfType<RadioButton>())
-			{
-				radioButton.Click += rb_Click;
-			}
+			foreach (var radioButton in spTrangThai.Children.OfType<RadioButton>()) radioButton.Click += rb_Click;
 
 			// Gắn sự kiện Click cho RadioButton trong spDonDep
-			foreach (var radioButton in spDonDep.Children.OfType<RadioButton>())
-			{
-				radioButton.Click += rb_Click;
-			}
+			foreach (var radioButton in spDonDep.Children.OfType<RadioButton>()) radioButton.Click += rb_Click;
 		}
 
 		private bool PhongFilter(object obj)
@@ -170,13 +158,16 @@ namespace GUI.UserControls
 			var radioLoaiPhong = spLoaiPhong.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked == true);
 
 			// Điều kiện lọc theo Tình Trạng
-			bool matchTinhTrang = radioTinhTrang == null || radioTinhTrang.Content.ToString() == "Tất cả phòng" || ph.TinhTrang == radioTinhTrang.Content.ToString();
+			var matchTinhTrang = radioTinhTrang == null || radioTinhTrang.Content.ToString() == "Tất cả phòng" ||
+			                     ph.TinhTrang == radioTinhTrang.Content.ToString();
 
 			// Điều kiện lọc theo Dọn Dẹp
-			bool matchDonDep = radioDonDep == null || radioDonDep.Content.ToString() == "Tất cả" || ph.DonDep == radioDonDep.Content.ToString();
+			var matchDonDep = radioDonDep == null || radioDonDep.Content.ToString() == "Tất cả" ||
+			                  ph.DonDep == radioDonDep.Content.ToString();
 
 			// Điều kiện lọc theo Loại Phòng
-			bool matchLoaiPhong = radioLoaiPhong == null || radioLoaiPhong.Content.ToString() == "Tất cả loại phòng" || ph.LoaiPhong == radioLoaiPhong.Content.ToString();
+			var matchLoaiPhong = radioLoaiPhong == null || radioLoaiPhong.Content.ToString() == "Tất cả loại phòng" ||
+			                     ph.LoaiPhong == radioLoaiPhong.Content.ToString();
 
 			// Kết hợp tất cả các điều kiện
 			return matchTinhTrang && matchDonDep && matchLoaiPhong;
@@ -185,9 +176,12 @@ namespace GUI.UserControls
 		private void SaveFilterState()
 		{
 			// Lưu trạng thái của các bộ lọc
-			lastTinhTrangSelection = spTrangThai.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked == true)?.Content.ToString();
-			lastDonDepSelection = spDonDep.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked == true)?.Content.ToString();
-			lastLoaiPhongSelection = spLoaiPhong.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked == true)?.Content.ToString();
+			lastTinhTrangSelection = spTrangThai.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked == true)
+				?.Content.ToString();
+			lastDonDepSelection = spDonDep.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked == true)
+				?.Content.ToString();
+			lastLoaiPhongSelection = spLoaiPhong.Children.OfType<RadioButton>().FirstOrDefault(r => r.IsChecked == true)
+				?.Content.ToString();
 		}
 
 		private void RestoreFilterState()
@@ -195,7 +189,8 @@ namespace GUI.UserControls
 			// Khôi phục trạng thái của bộ lọc Tình Trạng
 			if (lastTinhTrangSelection != null)
 			{
-				var radioTinhTrang = spTrangThai.Children.OfType<RadioButton>().FirstOrDefault(r => r.Content.ToString() == lastTinhTrangSelection);
+				var radioTinhTrang = spTrangThai.Children.OfType<RadioButton>()
+					.FirstOrDefault(r => r.Content.ToString() == lastTinhTrangSelection);
 				if (radioTinhTrang != null)
 				{
 					radioTinhTrang.IsChecked = true;
@@ -206,7 +201,8 @@ namespace GUI.UserControls
 			// Khôi phục trạng thái của bộ lọc Dọn Dẹp
 			if (lastDonDepSelection != null)
 			{
-				var radioDonDep = spDonDep.Children.OfType<RadioButton>().FirstOrDefault(r => r.Content.ToString() == lastDonDepSelection);
+				var radioDonDep = spDonDep.Children.OfType<RadioButton>()
+					.FirstOrDefault(r => r.Content.ToString() == lastDonDepSelection);
 				if (radioDonDep != null)
 				{
 					radioDonDep.IsChecked = true;
@@ -217,7 +213,8 @@ namespace GUI.UserControls
 			// Khôi phục trạng thái của bộ lọc Loại Phòng
 			if (lastLoaiPhongSelection != null)
 			{
-				var radioLoaiPhong = spLoaiPhong.Children.OfType<RadioButton>().FirstOrDefault(r => r.Content.ToString() == lastLoaiPhongSelection);
+				var radioLoaiPhong = spLoaiPhong.Children.OfType<RadioButton>()
+					.FirstOrDefault(r => r.Content.ToString() == lastLoaiPhongSelection);
 				if (radioLoaiPhong != null)
 				{
 					radioLoaiPhong.IsChecked = true;
@@ -235,50 +232,46 @@ namespace GUI.UserControls
 				var view = CollectionViewSource.GetDefaultView(listView.ItemsSource);
 				view.Filter = filterTimKiem;
 			}
+
 			refreshListView();
 		}
 
 		private bool filterTimKiem(object obj)
-        {
-            if (String.IsNullOrEmpty(txbTimKiem.Text))
-                return true;
-            else
-                return (obj as Phong_Custom).MaPhong.Contains(txbTimKiem.Text);
-        }
+		{
+			if (string.IsNullOrEmpty(txbTimKiem.Text))
+				return true;
+			return (obj as Phong_Custom).MaPhong.Contains(txbTimKiem.Text);
+		}
 
 		private void refreshListView()
 		{
 			foreach (var listView in spDanhSachPhong.Children.OfType<ListView>())
-			{
 				CollectionViewSource.GetDefaultView(listView.ItemsSource)?.Refresh();
-			}
 		}
 
 		private void capNhatLaiDuLieuListViewTheoNgayGio()
-        {
-            DateTime dateTime = new DateTime();
-            if (!DateTime.TryParse(dtpChonNgay.Text + " " + tpGio.Text, out dateTime))
-            {
-                new DialogCustoms("Nhập đúng định dạng ngày giờ !", "Thông báo", DialogCustoms.OK).ShowDialog();
-                return;
-            }
-            if (dateTime == null)
-            {
-                new DialogCustoms("Chọn đúng định dạng tháng ngày năm!", "Ngày chọn", DialogCustoms.OK).ShowDialog();
-            }
-            else
-            {
-                lsPhong_Custom = PhongBUS.GetInstance().getDataPhongCustomTheoNgay(dateTime);
-            }
+		{
+			var dateTime = new DateTime();
+			if (!DateTime.TryParse(dtpChonNgay.Text + " " + tpGio.Text, out dateTime))
+			{
+				new DialogCustoms("Nhập đúng định dạng ngày giờ !", "Thông báo", DialogCustoms.OK).ShowDialog();
+				return;
+			}
 
-            refeshLoaiPhong();
-            rdTatCaDonDep.IsChecked = true;
-            rdTatCaTrangThai.IsChecked = true;
-        }
+			if (dateTime == null)
+				new DialogCustoms("Chọn đúng định dạng tháng ngày năm!", "Ngày chọn", DialogCustoms.OK).ShowDialog();
+			else
+				lsPhong_Custom = PhongBUS.GetInstance().getDataPhongCustomTheoNgay(dateTime);
+
+			refeshLoaiPhong();
+			rdTatCaDonDep.IsChecked = true;
+			rdTatCaTrangThai.IsChecked = true;
+		}
 
 		#endregion
 
 		#region Event
+
 		private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
 		{
 			// Lưu trạng thái bộ lọc trước khi làm mới
@@ -302,6 +295,7 @@ namespace GUI.UserControls
 				new DialogCustoms("Không có dữ liệu phòng để hiển thị!", "Thông báo", DialogCustoms.OK).Show();
 				return;
 			}
+
 			refeshLoaiPhong();
 		}
 
@@ -323,41 +317,39 @@ namespace GUI.UserControls
 		//Khi click vào 1 item trong LV
 		private void ListViewPhong_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
-			ListView lv = sender as ListView;
-			Phong_Custom phong = lv.SelectedItem as Phong_Custom;
+			var lv = sender as ListView;
+			var phong = lv.SelectedItem as Phong_Custom;
 			if (phong != null)
 			{
-				ChiTietPhong ct = new ChiTietPhong(maNV);
+				var ct = new ChiTietPhong(MaNV);
 				ct.truyenData(phong);
-				if (ct.ShowDialog() == true)
-				{
-					capNhatLaiDuLieuListViewTheoNgayGio();
-				}
+				if (ct.ShowDialog() == true) capNhatLaiDuLieuListViewTheoNgayGio();
 				lv.UnselectAll();
 			}
 		}
 
 		//Tìm kiếm theo mã phòng
 		private void click_EnterSearch(object sender, RoutedEventArgs e)
-        {
-            timKiemTheomaPhong();
-        }
+		{
+			timKiemTheomaPhong();
+		}
 
-        private void txbTimKiem_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            timKiemTheomaPhong();
-        }
+		private void txbTimKiem_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			timKiemTheomaPhong();
+		}
 
-        // Filter theo ngày tháng năm
-        private void tpGio_SelectedTimeChanged(object sender, RoutedPropertyChangedEventArgs<DateTime?> e)
-        {
-            capNhatLaiDuLieuListViewTheoNgayGio();
-        }
-        
-        private void selectedDateChang_DatePicker(object sender, SelectionChangedEventArgs e)
-        {
-            capNhatLaiDuLieuListViewTheoNgayGio();
-        }
-        #endregion
-    }
+		// Filter theo ngày tháng năm
+		private void tpGio_SelectedTimeChanged(object sender, RoutedPropertyChangedEventArgs<DateTime?> e)
+		{
+			capNhatLaiDuLieuListViewTheoNgayGio();
+		}
+
+		private void selectedDateChang_DatePicker(object sender, SelectionChangedEventArgs e)
+		{
+			capNhatLaiDuLieuListViewTheoNgayGio();
+		}
+
+		#endregion
+	}
 }

@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using BCrypt.Net;
-
-namespace BUS
+﻿namespace BUS
 {
 	public class Bcrypt_HashBUS
 	{
@@ -18,10 +10,7 @@ namespace BUS
 
 		public static Bcrypt_HashBUS GetInstance()
 		{
-			if (Instance == null)
-			{
-				Instance = new Bcrypt_HashBUS();
-			}
+			if (Instance == null) Instance = new Bcrypt_HashBUS();
 			return Instance;
 		}
 
@@ -29,7 +18,7 @@ namespace BUS
 		public string HashMatKhau(string pass)
 		{
 			// Tự động thêm salt và mã hóa
-			string hashedPassword = BCrypt.Net.BCrypt.HashPassword(pass);
+			var hashedPassword = BCrypt.Net.BCrypt.HashPassword(pass);
 			return hashedPassword;
 		}
 

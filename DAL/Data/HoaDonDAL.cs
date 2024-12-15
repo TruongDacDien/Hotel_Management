@@ -1,8 +1,8 @@
-﻿using DAL.DTO;
-using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using DAL.DTO;
+using MySql.Data.MySqlClient;
 
 namespace DAL.Data
 {
@@ -10,28 +10,27 @@ namespace DAL.Data
 	{
 		private static HoaDonDAL Instance;
 
-		private HoaDonDAL() { }
+		private HoaDonDAL()
+		{
+		}
 
 		public static HoaDonDAL GetInstance()
 		{
-			if (Instance == null)
-			{
-				Instance = new HoaDonDAL();
-			}
+			if (Instance == null) Instance = new HoaDonDAL();
 			return Instance;
 		}
 
 		// Lấy tất cả các hóa đơn
 		public List<HoaDon> LayDuLieuHoaDon()
 		{
-			List<HoaDon> lstHoaDon = new List<HoaDon>();
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var lstHoaDon = new List<HoaDon>();
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = @"
+					var query = @"
 					SELECT 
 						hd.MaHD, hd.MaNV, hd.MaCTPT, hd.NgayLap, hd.TongTien,
 						nv.MaNV, nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, 
@@ -41,43 +40,49 @@ namespace DAL.Data
 					FROM HoaDon hd, NhanVien nv, CT_PhieuThue ctpt
 					WHERE hd.MaNV = nv.MaNV AND hd.MaCTPT = ctpt.MaCTPT";
 
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
-					using (MySqlDataReader reader = cmd.ExecuteReader())
+					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
-							HoaDon hoaDon = new HoaDon
+							var hoaDon = new HoaDon
 							{
 								MaHD = reader.GetInt32(reader.GetOrdinal("MaHD")),
 								MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
-								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT"))
+									? (int?)null
+									: reader.GetInt32(reader.GetOrdinal("MaCTPT")),
 								NgayLap = reader.GetDateTime(reader.GetOrdinal("NgayLap")),
 								TongTien = reader.GetDecimal(reader.GetOrdinal("TongTien")),
-								NhanVien = reader.IsDBNull(reader.GetOrdinal("MaNV")) ? null : new NhanVien
-								{
-									MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
-									HoTen = reader.GetString(reader.GetOrdinal("HoTen")),
-									ChucVu = reader.GetString(reader.GetOrdinal("ChucVu")),
-									SDT = reader.GetString(reader.GetOrdinal("SDT")),
-									DiaChi = reader.GetString(reader.GetOrdinal("DiaChi")),
-									CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
-									NTNS = reader.GetDateTime(reader.GetOrdinal("NTNS")),
-									GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
-									Luong = reader.GetDecimal(reader.GetOrdinal("Luong"))
-								},
-								CT_PhieuThue = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? null : new CT_PhieuThue
-								{
-									MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
-									MaPhieuThue = reader.GetInt32(reader.GetOrdinal("MaPhieuThue")),
-									SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
-									NgayBD = reader.GetDateTime(reader.GetOrdinal("NgayBD")),
-									NgayKT = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
-									SoNguoiO = reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
-									TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue")),
-									TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong"))
-								}
+								NhanVien = reader.IsDBNull(reader.GetOrdinal("MaNV"))
+									? null
+									: new NhanVien
+									{
+										MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
+										HoTen = reader.GetString(reader.GetOrdinal("HoTen")),
+										ChucVu = reader.GetString(reader.GetOrdinal("ChucVu")),
+										SDT = reader.GetString(reader.GetOrdinal("SDT")),
+										DiaChi = reader.GetString(reader.GetOrdinal("DiaChi")),
+										CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
+										NTNS = reader.GetDateTime(reader.GetOrdinal("NTNS")),
+										GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
+										Luong = reader.GetDecimal(reader.GetOrdinal("Luong"))
+									},
+								CT_PhieuThue = reader.IsDBNull(reader.GetOrdinal("MaCTPT"))
+									? null
+									: new CT_PhieuThue
+									{
+										MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+										MaPhieuThue = reader.GetInt32(reader.GetOrdinal("MaPhieuThue")),
+										SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
+										NgayBD = reader.GetDateTime(reader.GetOrdinal("NgayBD")),
+										NgayKT = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
+										SoNguoiO = reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
+										TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue")),
+										TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong"))
+									}
 							};
 
 							lstHoaDon.Add(hoaDon);
@@ -93,89 +98,20 @@ namespace DAL.Data
 			return lstHoaDon;
 		}
 
-		// Lấy thông tin hóa đơn theo mã hóa đơn
-		public HoaDon layHoaDonTheoMaHoaDon(int mahd)
-		{
-			HoaDon hoaDon = null;
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
-
-			try
-			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
-				{
-					string query = @"
-					SELECT 
-						hd.MaHD, hd.MaNV, hd.MaCTPT, hd.NgayLap, hd.TongTien,
-						nv.MaNV, nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, 
-						nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong,
-						ctpt.MaCTPT, ctpt.MaPhieuThue, ctpt.SoPhong, ctpt.NgayBD, 
-						ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong
-					FROM HoaDon hd, NhanVien nv, CT_PhieuThue ctpt
-					WHERE hd.MaNV = nv.MaNV AND hd.MaCTPT = ctpt.MaCTPT";
-
-					MySqlCommand cmd = new MySqlCommand(query, conn);
-					conn.Open();
-
-					using (MySqlDataReader reader = cmd.ExecuteReader())
-					{
-						while (reader.Read())
-						{
-							hoaDon = new HoaDon
-							{
-								MaHD = reader.GetInt32(reader.GetOrdinal("MaHD")),
-								MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
-								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("MaCTPT")),
-								NgayLap = reader.GetDateTime(reader.GetOrdinal("NgayLap")),
-								TongTien = reader.GetDecimal(reader.GetOrdinal("TongTien")),
-								NhanVien = reader.IsDBNull(reader.GetOrdinal("MaNV")) ? null : new NhanVien
-								{
-									MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
-									HoTen = reader.GetString(reader.GetOrdinal("HoTen")),
-									ChucVu = reader.GetString(reader.GetOrdinal("ChucVu")),
-									SDT = reader.GetString(reader.GetOrdinal("SDT")),
-									DiaChi = reader.GetString(reader.GetOrdinal("DiaChi")),
-									CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
-									NTNS = reader.GetDateTime(reader.GetOrdinal("NTNS")),
-									GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
-									Luong = reader.GetDecimal(reader.GetOrdinal("Luong"))
-								},
-								CT_PhieuThue = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? null : new CT_PhieuThue
-								{
-									MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
-									MaPhieuThue = reader.GetInt32(reader.GetOrdinal("MaPhieuThue")),
-									SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
-									NgayBD = reader.GetDateTime(reader.GetOrdinal("NgayBD")),
-									NgayKT = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
-									SoNguoiO = reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
-									TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue")),
-									TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong"))
-								}
-							};
-						}
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine("Lỗi: " + ex.Message);
-			}
-			return hoaDon;
-		}
-
 		// Thêm hóa đơn mới
 		public bool themHoaDon(HoaDon hd, out string error)
 		{
 			error = string.Empty;
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = @"
+					var query = @"
                         INSERT INTO HoaDon (MaCTPT, MaNV, NgayLap, TongTien)
                         VALUES (@MaCTPT, @MaNV ,@NgayLap, @TongTien)";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var cmd = new MySqlCommand(query, conn);
 
 					cmd.Parameters.AddWithValue("@MaCTPT", hd.MaCTPT);
 					cmd.Parameters.AddWithValue("@MaNV", hd.MaNV);
@@ -185,6 +121,7 @@ namespace DAL.Data
 					conn.Open();
 					cmd.ExecuteNonQuery();
 				}
+
 				return true;
 			}
 			catch (Exception ex)
@@ -196,23 +133,20 @@ namespace DAL.Data
 
 		public int layMaHDMoiNhat()
 		{
-			int maHD = -1; // Giá trị mặc định nếu không tìm thấy
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var maHD = -1; // Giá trị mặc định nếu không tìm thấy
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "SELECT MAX(MaHD) AS MaHD FROM HoaDon";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "SELECT MAX(MaHD) AS MaHD FROM HoaDon";
+					var cmd = new MySqlCommand(query, conn);
 
 					conn.Open();
-					object result = cmd.ExecuteScalar();
+					var result = cmd.ExecuteScalar();
 
-					if (result != null && result != DBNull.Value)
-					{
-						maHD = Convert.ToInt32(result);
-					}
+					if (result != null && result != DBNull.Value) maHD = Convert.ToInt32(result);
 				}
 			}
 			catch (Exception ex)

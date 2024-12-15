@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using MySql.Data.MySqlClient;
 using DAL.DTO;
+using MySql.Data.MySqlClient;
 
 namespace DAL.Data
 {
@@ -10,50 +10,47 @@ namespace DAL.Data
 	{
 		private static DichVuDAL Instance;
 
-		private DichVuDAL() { }
+		private DichVuDAL()
+		{
+		}
 
 		public static DichVuDAL GetInstance()
 		{
-			if (Instance == null)
-			{
-				Instance = new DichVuDAL();
-			}
+			if (Instance == null) Instance = new DichVuDAL();
 			return Instance;
 		}
 
 		// Lấy danh sách dịch vụ (Custom)
 		public List<DichVu> getDataDichVu_Custom()
 		{
-			List<DichVu> lsNDVCT = new List<DichVu>();
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var lsNDVCT = new List<DichVu>();
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = @"
+					var query = @"
                         SELECT 
                             dv.MaDV,dv.MaLoaiDV, dv.TenDV, dv.Gia, ldv.TenLoaiDV AS LoaiDV
                         FROM DichVu dv
                         INNER JOIN LoaiDV ldv ON dv.MaLoaiDV = ldv.MaLoaiDV
 						WHERE dv.IsDeleted = 0";
 
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
-					using (MySqlDataReader reader = cmd.ExecuteReader())
+					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
-						{
 							lsNDVCT.Add(new DichVu
-                            {
+							{
 								MaDV = reader.GetInt32(reader.GetOrdinal("MaDV")),
 								MaLoaiDV = reader.GetInt32(reader.GetOrdinal("MaLoaiDV")),
 								TenDV = reader.GetString(reader.GetOrdinal("TenDV")),
 								Gia = reader.GetDecimal(reader.GetOrdinal("Gia")),
 								TenLoaiDV = reader.GetString(reader.GetOrdinal("LoaiDV"))
 							});
-						}
 					}
 				}
 			}
@@ -61,39 +58,38 @@ namespace DAL.Data
 			{
 				Console.WriteLine(ex.Message); // Log lỗi nếu cần
 			}
+
 			return lsNDVCT;
 		}
 
 		// Lấy danh sách tất cả dịch vụ
 		public List<DichVu> getDataDichVu()
 		{
-			List<DichVu> lsDichVu = new List<DichVu>();
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var lsDichVu = new List<DichVu>();
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = @"SELECT dv.MaDV, dv.TenDV, ldv.MaLoaiDV, dv.Gia, ldv.TenLoaiDV
+					var query = @"SELECT dv.MaDV, dv.TenDV, ldv.MaLoaiDV, dv.Gia, ldv.TenLoaiDV
 									FROM DichVu dv
 									JOIN LoaiDV ldv ON dv.MaLoaiDV = ldv.MaLoaiDV
 									WHERE dv.IsDeleted = 0";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
-					using (MySqlDataReader reader = cmd.ExecuteReader())
+					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
-						{
 							lsDichVu.Add(new DichVu
 							{
 								MaDV = reader.GetInt32(reader.GetOrdinal("MaDV")),
 								TenDV = reader.GetString(reader.GetOrdinal("TenDV")),
-                                MaLoaiDV = reader.GetInt32(reader.GetOrdinal("MaLoaiDV")),
-								TenLoaiDV=reader.GetString(reader.GetOrdinal("TenLoaiDV")),
+								MaLoaiDV = reader.GetInt32(reader.GetOrdinal("MaLoaiDV")),
+								TenLoaiDV = reader.GetString(reader.GetOrdinal("TenLoaiDV")),
 								Gia = reader.GetDecimal(reader.GetOrdinal("Gia"))
 							});
-						}
 					}
 				}
 			}
@@ -101,25 +97,27 @@ namespace DAL.Data
 			{
 				Console.WriteLine(ex.Message); // Log lỗi nếu cần
 			}
+
 			return lsDichVu;
 		}
 
 		// Thêm dịch vụ
 		public bool addDichVu(DichVu dv)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "INSERT INTO DichVu (TenDV, MaLoaiDV, Gia, IsDeleted) VALUES (@TenDV, @MaLoaiDV, @Gia, 0)";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query =
+						"INSERT INTO DichVu (TenDV, MaLoaiDV, Gia, IsDeleted) VALUES (@TenDV, @MaLoaiDV, @Gia, 0)";
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenDV", dv.TenDV);
 					cmd.Parameters.AddWithValue("@MaLoaiDV", dv.MaLoaiDV);
 					cmd.Parameters.AddWithValue("@Gia", dv.Gia);
 
 					conn.Open();
-					int rowsAffected = cmd.ExecuteNonQuery();
+					var rowsAffected = cmd.ExecuteNonQuery();
 					return rowsAffected > 0;
 				}
 			}
@@ -133,21 +131,21 @@ namespace DAL.Data
 		// Cập nhật dịch vụ
 		public bool capNhatDichVu(DichVu dv)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
-            Console.WriteLine($"MaDV: {dv.MaDV}, TenDV: {dv.TenDV}, MaLoaiDV: {dv.MaLoaiDV}, Gia: {dv.Gia}");
-            try
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			Console.WriteLine($"MaDV: {dv.MaDV}, TenDV: {dv.TenDV}, MaLoaiDV: {dv.MaLoaiDV}, Gia: {dv.Gia}");
+			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "UPDATE DichVu SET TenDV = @TenDV, MaLoaiDV = @MaLoaiDV, Gia = @Gia WHERE MaDV = @MaDV";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "UPDATE DichVu SET TenDV = @TenDV, MaLoaiDV = @MaLoaiDV, Gia = @Gia WHERE MaDV = @MaDV";
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaDV", dv.MaDV);
 					cmd.Parameters.AddWithValue("@TenDV", dv.TenDV);
 					cmd.Parameters.AddWithValue("@MaLoaiDV", dv.MaLoaiDV);
 					cmd.Parameters.AddWithValue("@Gia", Convert.ToDecimal(dv.Gia));
 
 					conn.Open();
-					int rowsAffected = cmd.ExecuteNonQuery();
+					var rowsAffected = cmd.ExecuteNonQuery();
 					return rowsAffected > 0;
 				}
 			}
@@ -161,17 +159,17 @@ namespace DAL.Data
 		// Xóa dịch vụ
 		public bool xoaDichVu(DichVu dv)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "UPDATE DichVu SET IsDeleted = 1 WHERE MaDV = @MaDV";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "UPDATE DichVu SET IsDeleted = 1 WHERE MaDV = @MaDV";
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaDV", dv.MaDV);
 
 					conn.Open();
-					int rowsAffected = cmd.ExecuteNonQuery();
+					var rowsAffected = cmd.ExecuteNonQuery();
 					return rowsAffected > 0;
 				}
 			}
@@ -185,17 +183,17 @@ namespace DAL.Data
 		// Kiểm tra dịch vụ có tên trùng không
 		public bool KiemTraTrungTen(DichVu dv)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "SELECT COUNT(*) FROM DichVu WHERE TenDV = @TenDV";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "SELECT COUNT(*) FROM DichVu WHERE TenDV = @TenDV";
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenDV", dv.TenDV);
 
 					conn.Open();
-					int count = Convert.ToInt32(cmd.ExecuteScalar());
+					var count = Convert.ToInt32(cmd.ExecuteScalar());
 					return count > 0; // Trả về true nếu tên dịch vụ đã tồn tại
 				}
 			}
@@ -209,27 +207,22 @@ namespace DAL.Data
 		// Hiển thị lại dịch vụ đã xóa
 		public bool hienThiLaiDichVu(string tenDichVu)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "UPDATE DichVu SET IsDeleted = 0 WHERE TenDV = @TenDV";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "UPDATE DichVu SET IsDeleted = 0 WHERE TenDV = @TenDV";
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenDV", tenDichVu);
 
 					conn.Open();
-					int rowsAffected = cmd.ExecuteNonQuery();
+					var rowsAffected = cmd.ExecuteNonQuery();
 
-					if (rowsAffected > 0)
-					{
-						return true;
-					}
-					else
-					{
-						return false;
-					}
+					if (rowsAffected > 0) return true;
+
+					return false;
 				}
 			}
 			catch (Exception ex)

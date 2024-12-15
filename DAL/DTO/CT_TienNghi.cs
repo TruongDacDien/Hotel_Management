@@ -1,25 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DAL.DTO
+﻿namespace DAL.DTO
 {
 	public class CT_TienNghi
 	{
-		private int? maCTTN;
-		private int maTN;
-		private string soPhong;
-		private int sL;
-		private string tenTN;
-		private bool isDeleted;
+		public int? MaCTTN { get; set; }
 
-		public int? MaCTTN { get => maCTTN; set => maCTTN = value; }
-		public int MaTN { get => maTN; set => maTN = value; }
-		public string SoPhong { get => soPhong; set => soPhong = value; }
-		public int SL { get => sL; set => sL = value; }
-		public string TenTN { get => tenTN; set => tenTN = value; }
-		public bool IsDeleted { get => isDeleted; set => isDeleted = value; }
+		public int MaTN { get; set; }
+
+		public string SoPhong { get; set; }
+
+		public int SL { get; set; }
+
+		public string TenTN { get; set; }
+
+		public bool IsDeleted { get; set; }
 	}
 }
