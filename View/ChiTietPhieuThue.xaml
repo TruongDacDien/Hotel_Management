@@ -3,11 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GUI.View"
         mc:Ignorable="d"
         Title="ChiTietPhieuThue" Height="500" Width="950"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        
+
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -17,53 +16,58 @@
         Background="White"
         FontFamily="{DynamicResource MaterialDesignFont}"
         WindowStyle="None"
-        AllowsTransparency="True" 
+        AllowsTransparency="True"
         WindowStartupLocation="CenterScreen">
     <Window.Clip>
-        <RectangleGeometry Rect="0,0,950,500" RadiusX="10" RadiusY="10">
-        </RectangleGeometry>
+        <RectangleGeometry Rect="0,0,950,500" RadiusX="10" RadiusY="10" />
     </Window.Clip>
     <Border BorderThickness="1" BorderBrush="#FF807D7D" CornerRadius="10">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="63"></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition Height="69"></RowDefinition>
+                <RowDefinition Height="63" />
+                <RowDefinition />
+                <RowDefinition Height="69" />
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
-                <TextBlock x:Name="txblTieuDe" Text="Chi Tiết Phiếu Thuê " FontSize="30" Foreground="#00A3FF" FontWeight="Bold" 
-                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock x:Name="txblTieuDe" Text="Chi Tiết Phiếu Thuê " FontSize="30" Foreground="#00A3FF"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Grid>
             <!--#region Main-->
             <Grid Grid.Row="1">
-                <Grid Width="874" Height="368" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#F2F1F1">
+                <Grid Width="874" Height="368" HorizontalAlignment="Center" VerticalAlignment="Center"
+                      Background="#F2F1F1">
                     <Grid.Clip>
-                        <RectangleGeometry Rect="0,0,874,368" RadiusX="10" RadiusY="10"/>
+                        <RectangleGeometry Rect="0,0,874,368" RadiusX="10" RadiusY="10" />
                     </Grid.Clip>
 
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="86"></RowDefinition>
-                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="86" />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <!--0-->
                     <Grid Grid.Row="0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <materialDesign:PackIcon Kind="AccountBox" Width="25" Height="25"/>
-                            <TextBlock x:Name="txblTenKH"  FontSize="15" VerticalAlignment="Center" Margin="10 0 0 0"></TextBlock>
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="AccountBox" Width="25" Height="25" />
+                            <TextBlock x:Name="txblTenKH" FontSize="15" VerticalAlignment="Center" Margin="10 0 0 0" />
                         </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <materialDesign:PackIcon Kind="CalendarRange" Width="25" Height="25"/>
-                            <TextBlock x:Name="txblNgayLapHD"  FontSize="15" VerticalAlignment="Center" Margin="10 0 0 0"></TextBlock>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="CalendarRange" Width="25" Height="25" />
+                            <TextBlock x:Name="txblNgayLapHD" FontSize="15" VerticalAlignment="Center"
+                                       Margin="10 0 0 0" />
                         </StackPanel>
-                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <materialDesign:PackIcon Kind="AccountHardHat" Width="25" Height="25"/>
-                            <TextBlock x:Name="txblTenNV"  FontSize="15" VerticalAlignment="Center" Margin="10 0 0 0"></TextBlock>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="AccountHardHat" Width="25" Height="25" />
+                            <TextBlock x:Name="txblTenNV" FontSize="15" VerticalAlignment="Center" Margin="10 0 0 0" />
                         </StackPanel>
                     </Grid>
                     <!--1-->
@@ -72,12 +76,11 @@
                         <Grid Grid.Column="0">
                             <Grid Width="690" Height="230" Background="White" VerticalAlignment="Top" Margin="0 30 0 0">
                                 <Grid.Clip>
-                                    <RectangleGeometry Rect="0,0,690,230" RadiusX="10" RadiusY="10"/>
+                                    <RectangleGeometry Rect="0,0,690,230" RadiusX="10" RadiusY="10" />
                                 </Grid.Clip>
                                 <ListView x:Name="lvCTPT" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
                                     <ListView.Resources>
-                                        <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">10</sys:Double>
                                     </ListView.Resources>
 
                                     <ListView.View>
@@ -89,16 +92,20 @@
                                                     <Setter Property="FontWeight" Value="Bold" />
                                                 </Style>
                                             </GridView.ColumnHeaderContainerStyle>
-                                            <GridViewColumn  Header="Số phòng"  Width="100" DisplayMemberBinding="{Binding SoPhong}" />
-                                            <GridViewColumn Header="Ngày bắt đầu" Width="230" DisplayMemberBinding="{Binding NgayBD}"  />
-                                            <GridViewColumn Header="Ngày kết thúc" Width="230" DisplayMemberBinding="{Binding NgayKT}"  />
-                                            <GridViewColumn Header="Số người" Width="130" DisplayMemberBinding="{Binding SoNguoiO}"  />
+                                            <GridViewColumn Header="Số phòng" Width="100"
+                                                            DisplayMemberBinding="{Binding SoPhong}" />
+                                            <GridViewColumn Header="Ngày bắt đầu" Width="230"
+                                                            DisplayMemberBinding="{Binding NgayBD}" />
+                                            <GridViewColumn Header="Ngày kết thúc" Width="230"
+                                                            DisplayMemberBinding="{Binding NgayKT}" />
+                                            <GridViewColumn Header="Số người" Width="130"
+                                                            DisplayMemberBinding="{Binding SoNguoiO}" />
                                         </GridView>
                                     </ListView.View>
 
                                 </ListView>
                             </Grid>
-                            
+
                         </Grid>
 
                     </Grid>
@@ -108,9 +115,9 @@
 
             <Grid Grid.Row="2">
                 <Button Width="130" Height="37" Background="#9D9999" Content="Thoát"
-                        HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 90 0" Click="click_Thoat"   >
+                        HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 90 0" Click="click_Thoat">
                     <Button.Clip>
-                        <RectangleGeometry Rect="0,0,130,37" RadiusX="10" RadiusY="10"/>
+                        <RectangleGeometry Rect="0,0,130,37" RadiusX="10" RadiusY="10" />
                     </Button.Clip>
                 </Button>
             </Grid>

@@ -1,10 +1,8 @@
-﻿using DAL.DTO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using DAL.DTO;
 using MySql.Data.MySqlClient;
-using System.Windows.Documents;
-using System.Windows;
 
 namespace DAL.Data
 {
@@ -12,7 +10,9 @@ namespace DAL.Data
 	{
 		private static CT_TienNghiDAL instance;
 
-		private CT_TienNghiDAL() { }
+		private CT_TienNghiDAL()
+		{
+		}
 
 		public static CT_TienNghiDAL Instance
 		{
@@ -26,26 +26,26 @@ namespace DAL.Data
 		// Lấy danh sách các chi tiết tiện nghi
 		public List<CT_TienNghi> getData()
 		{
-			List<CT_TienNghi> listCTTienNghi = new List<CT_TienNghi>();
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var listCTTienNghi = new List<CT_TienNghi>();
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = @"
+					var query = @"
 					SELECT CT.MaCTTN, CT.SoPhong, CT.SL, TN.TenTN, CT.MaTN, CT.IsDeleted
 					FROM CT_TienNghi CT
 					JOIN TienNghi TN ON CT.MaTN = TN.MaTN
 					WHERE CT.IsDeleted = 0";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
-					using (MySqlDataReader reader = cmd.ExecuteReader())
+					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
-							CT_TienNghi ctTienNghi = new CT_TienNghi
+							var ctTienNghi = new CT_TienNghi
 							{
 								MaCTTN = reader.GetInt32(reader.GetOrdinal("MaCTTN")),
 								MaTN = reader.GetInt32(reader.GetOrdinal("MaTN")),
@@ -63,29 +63,30 @@ namespace DAL.Data
 			{
 				Console.WriteLine(ex.Message); // Xử lý lỗi nếu cần
 			}
+
 			return listCTTienNghi;
 		}
 
 		// Thêm một chi tiết tiện nghi mới
 		public bool addCTTienNghi(CT_TienNghi chiTietTN)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = @"
+					var query = @"
 					INSERT INTO CT_TienNghi (MaTN, SoPhong, SL, TenTN, IsDeleted)
 					SELECT @MaTN, @SoPhong, @SL, tn.TenTN, 0
 					FROM TienNghi tn
 					WHERE tn.MaTN = @MaTN";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
 					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
 					cmd.Parameters.AddWithValue("@SL", chiTietTN.SL);
 
 					conn.Open();
-					int rowsAffected = cmd.ExecuteNonQuery();
+					var rowsAffected = cmd.ExecuteNonQuery();
 
 					return rowsAffected > 0;
 				}
@@ -101,17 +102,17 @@ namespace DAL.Data
 		// Xóa chi tiết tiện nghi
 		public bool xoaCTTienNghi(CT_TienNghi chiTietTN)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "UPDATE CT_TienNghi SET IsDeleted = 1 WHERE MaCTTN = @MaCTTN";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "UPDATE CT_TienNghi SET IsDeleted = 1 WHERE MaCTTN = @MaCTTN";
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaCTTN", chiTietTN.MaCTTN);
 
 					conn.Open();
-					int rowsAffected = cmd.ExecuteNonQuery();
+					var rowsAffected = cmd.ExecuteNonQuery();
 
 					return rowsAffected > 0;
 				}
@@ -126,13 +127,14 @@ namespace DAL.Data
 		// Cập nhật chi tiết tiện nghi
 		public bool capnhatCTTienNghi(CT_TienNghi chiTietTN)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				Console.WriteLine(chiTietTN.MaCTTN + " " + chiTietTN.MaTN + " "+ chiTietTN.SoPhong+ " " + chiTietTN.SL+ " " + chiTietTN.TenTN );
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				Console.WriteLine(chiTietTN.MaCTTN + " " + chiTietTN.MaTN + " " + chiTietTN.SoPhong + " " +
+				                  chiTietTN.SL + " " + chiTietTN.TenTN);
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = @"
+					var query = @"
 					UPDATE CT_TienNghi
 					SET 
 						MaTN = @MaTN,
@@ -140,8 +142,8 @@ namespace DAL.Data
 						SL = @SL,
 						TenTN = @TenTN
 					WHERE MaCTTN = @MaCTTN";
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@MaCTTN", chiTietTN.MaCTTN);
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaCTTN", chiTietTN.MaCTTN);
 					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
 					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
 					cmd.Parameters.AddWithValue("@SL", chiTietTN.SL);
@@ -149,12 +151,11 @@ namespace DAL.Data
 
 					conn.Open();
 
-					int rowsAffected = cmd.ExecuteNonQuery();
+					var rowsAffected = cmd.ExecuteNonQuery();
 
 					Console.WriteLine($"Rows affected: {rowsAffected}");
 
 					return rowsAffected > 0;
-					
 				}
 			}
 			catch (Exception ex)
@@ -169,18 +170,18 @@ namespace DAL.Data
 		// Kiểm tra chi tiết tiện nghi có tồn tại hay không
 		public bool KiemTraTonTai(CT_TienNghi chiTietTN)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "SELECT COUNT(1) FROM CT_TienNghi WHERE MaTN = @MaTN AND SoPhong = @SoPhong";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "SELECT COUNT(1) FROM CT_TienNghi WHERE MaTN = @MaTN AND SoPhong = @SoPhong";
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
 					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
-                   
-                    conn.Open();
-					int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+					conn.Open();
+					var count = Convert.ToInt32(cmd.ExecuteScalar());
 
 					return count > 0;
 				}
@@ -195,28 +196,23 @@ namespace DAL.Data
 		// Hiển thị lại chi tiết tiện nghi đã xóa
 		public bool hienThiLaiCT_TienNghi(int maTN, string soPhong)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "UPDATE CT_TienNghi SET IsDeleted = 0 WHERE MaTN = @MaTN AND SoPhong = @SoPhong";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "UPDATE CT_TienNghi SET IsDeleted = 0 WHERE MaTN = @MaTN AND SoPhong = @SoPhong";
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaTN", maTN);
 					cmd.Parameters.AddWithValue("@SoPhong", soPhong);
 
 					conn.Open();
-					int rowsAffected = cmd.ExecuteNonQuery();
+					var rowsAffected = cmd.ExecuteNonQuery();
 
-					if (rowsAffected > 0)
-					{
-						return true;
-					}
-					else
-					{
-						return false;
-					}
+					if (rowsAffected > 0) return true;
+
+					return false;
 				}
 			}
 			catch (Exception ex)

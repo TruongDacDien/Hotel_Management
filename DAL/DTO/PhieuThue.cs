@@ -1,24 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.DTO
 {
 	public class PhieuThue
 	{
-		private int maPhieuThue;
-		private int maKH;
-		private DateTime ngayLapPhieu;
-		private int maNV;
-		private bool isDeleted;
+		public int MaPhieuThue { get; set; }
 
-		public int MaPhieuThue { get => maPhieuThue; set => maPhieuThue = value; }
-		public int MaKH { get => maKH; set => maKH = value; }
-		public DateTime NgayLapPhieu { get => ngayLapPhieu; set => ngayLapPhieu = value; }
-		public int MaNV { get => maNV; set => maNV = value; }
-		public bool IsDeleted { get => isDeleted; set => isDeleted = value; }
+		public int MaKH { get; set; }
+
+		public DateTime NgayLapPhieu { get; set; }
+
+		public int MaNV { get; set; }
+
+		public bool IsDeleted { get; set; }
 	}
 }

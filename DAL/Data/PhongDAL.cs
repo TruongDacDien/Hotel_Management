@@ -1,38 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using MySql.Data.MySqlClient;
-using DAL.DTO;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using DAL.DTO;
+using MySql.Data.MySqlClient;
 
 namespace DAL.Data
 {
-    public class PhongDAL
-    {
-        private static PhongDAL Instance;
+	public class PhongDAL
+	{
+		private static PhongDAL Instance;
 
-        private PhongDAL() { }
+		private PhongDAL()
+		{
+		}
 
-        public static PhongDAL GetInstance()
-        {
-            if (Instance == null)
-            {
-                Instance = new PhongDAL();
-            }
-            return Instance;
-        }
+		public static PhongDAL GetInstance()
+		{
+			if (Instance == null) Instance = new PhongDAL();
+			return Instance;
+		}
 
-        // Lấy dữ liệu phòng theo ngày
-        public ObservableCollection<Phong_Custom> getDataPhongTheoNgay(DateTime? ngayChon)
-        {
-            ObservableCollection<Phong_Custom> ls = new ObservableCollection<Phong_Custom>();
-            string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+		// Lấy dữ liệu phòng theo ngày
+		public ObservableCollection<Phong_Custom> getDataPhongTheoNgay(DateTime? ngayChon)
+		{
+			var ls = new ObservableCollection<Phong_Custom>();
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
-            try
-            {
-                using (MySqlConnection conn = new MySqlConnection(connectionString))
-                {
-					string query = @"SELECT ct.MaCTPT,
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = @"SELECT ct.MaCTPT,
                                     COALESCE(kh.TenKH, '') AS TenKH,
                                     p.SoPhong AS MaPhong,
                                     p.DonDep AS DonDep,
@@ -59,50 +58,54 @@ namespace DAL.Data
                                     LEFT JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
                                     WHERE p.IsDeleted = 0";
 
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@ngayChon", ngayChon);
 
 					conn.Open();
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            ls.Add(new Phong_Custom
-                            {
-                                MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? 0 : reader.GetInt32(reader.GetOrdinal("MaCTPT")),
-                                TenKH = reader.GetString(reader.GetOrdinal("TenKH")),
-                                MaPhong = reader.GetString(reader.GetOrdinal("MaPhong")),
-                                DonDep = reader.GetString(reader.GetOrdinal("DonDep")),
-                                TinhTrang = reader.GetString(reader.GetOrdinal("TinhTrang")),
-                                LoaiPhong = reader.GetString(reader.GetOrdinal("LoaiPhong")),
-                                NgayDen = reader.IsDBNull(reader.GetOrdinal("NgayDen")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("NgayDen")),
-                                SoNgayO = reader.GetInt32(reader.GetOrdinal("SoNgayO")),
-                                SoGio = reader.GetInt32(reader.GetOrdinal("SoGio")),
-                                NgayDi = reader.IsDBNull(reader.GetOrdinal("NgayDi")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("NgayDi")),
-                                SoNguoi = reader.GetInt32(reader.GetOrdinal("SoNguoi"))
-                            });
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message); // Log lỗi nếu cần
-            }
+					using (var reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+							ls.Add(new Phong_Custom
+							{
+								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT"))
+									? 0
+									: reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+								TenKH = reader.GetString(reader.GetOrdinal("TenKH")),
+								MaPhong = reader.GetString(reader.GetOrdinal("MaPhong")),
+								DonDep = reader.GetString(reader.GetOrdinal("DonDep")),
+								TinhTrang = reader.GetString(reader.GetOrdinal("TinhTrang")),
+								LoaiPhong = reader.GetString(reader.GetOrdinal("LoaiPhong")),
+								NgayDen = reader.IsDBNull(reader.GetOrdinal("NgayDen"))
+									? (DateTime?)null
+									: reader.GetDateTime(reader.GetOrdinal("NgayDen")),
+								SoNgayO = reader.GetInt32(reader.GetOrdinal("SoNgayO")),
+								SoGio = reader.GetInt32(reader.GetOrdinal("SoGio")),
+								NgayDi = reader.IsDBNull(reader.GetOrdinal("NgayDi"))
+									? (DateTime?)null
+									: reader.GetDateTime(reader.GetOrdinal("NgayDi")),
+								SoNguoi = reader.GetInt32(reader.GetOrdinal("SoNguoi"))
+							});
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+			}
 
-            return ls;
-        }
+			return ls;
+		}
 
 		// Lấy dữ liệu phong_custom 
 		public ObservableCollection<Phong_Custom> getDataPhong_Custom()
 		{
-			ObservableCollection<Phong_Custom> ls = new ObservableCollection<Phong_Custom>();
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var ls = new ObservableCollection<Phong_Custom>();
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = @"SELECT ct.MaCTPT,
+					var query = @"SELECT ct.MaCTPT,
                                     COALESCE(kh.TenKH, '') AS TenKH,
                                     p.SoPhong AS MaPhong,
                                     p.DonDep AS DonDep,
@@ -126,27 +129,31 @@ namespace DAL.Data
                                     LEFT JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
                                     WHERE p.IsDeleted = 0";
 
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var cmd = new MySqlCommand(query, conn);
 					conn.Open();
-					using (MySqlDataReader reader = cmd.ExecuteReader())
+					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
-						{
 							ls.Add(new Phong_Custom
 							{
-								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? 0 : reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT"))
+									? 0
+									: reader.GetInt32(reader.GetOrdinal("MaCTPT")),
 								TenKH = reader.GetString(reader.GetOrdinal("TenKH")),
 								MaPhong = reader.GetString(reader.GetOrdinal("MaPhong")),
 								DonDep = reader.GetString(reader.GetOrdinal("DonDep")),
 								TinhTrang = reader.GetString(reader.GetOrdinal("TinhTrang")),
 								LoaiPhong = reader.GetString(reader.GetOrdinal("LoaiPhong")),
-								NgayDen = reader.IsDBNull(reader.GetOrdinal("NgayDen")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("NgayDen")),
+								NgayDen = reader.IsDBNull(reader.GetOrdinal("NgayDen"))
+									? (DateTime?)null
+									: reader.GetDateTime(reader.GetOrdinal("NgayDen")),
 								SoNgayO = reader.GetInt32(reader.GetOrdinal("SoNgayO")),
 								SoGio = reader.GetInt32(reader.GetOrdinal("SoGio")),
-								NgayDi = reader.IsDBNull(reader.GetOrdinal("NgayDi")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("NgayDi")),
+								NgayDi = reader.IsDBNull(reader.GetOrdinal("NgayDi"))
+									? (DateTime?)null
+									: reader.GetDateTime(reader.GetOrdinal("NgayDi")),
 								SoNguoi = reader.GetInt32(reader.GetOrdinal("SoNguoi"))
 							});
-						}
 					}
 				}
 			}
@@ -154,82 +161,83 @@ namespace DAL.Data
 			{
 				Console.WriteLine(ex.Message); // Log lỗi nếu cần
 			}
+
 			return ls;
 		}
 
 		// Cập nhật tình trạng phòng
 		public bool suaTinhTrangPhong(string maPhong, string text, out string error)
-        {
-            error = string.Empty;
-            string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+		{
+			error = string.Empty;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
-            try
-            {
-                using (MySqlConnection conn = new MySqlConnection(connectionString))
-                {
-                    string query = "UPDATE Phong SET DonDep = @DonDep WHERE SoPhong = @MaPhong";
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@DonDep", text);
-                    cmd.Parameters.AddWithValue("@MaPhong", maPhong);
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = "UPDATE Phong SET DonDep = @DonDep WHERE SoPhong = @MaPhong";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@DonDep", text);
+					cmd.Parameters.AddWithValue("@MaPhong", maPhong);
 
-                    conn.Open();
-                    int rowsAffected = cmd.ExecuteNonQuery();
+					conn.Open();
+					var rowsAffected = cmd.ExecuteNonQuery();
 
-                    if (rowsAffected == 0)
-                    {
-                        error = "Không tồn tại phòng có số phòng: " + maPhong;
-                        return false;
-                    }
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                error = ex.Message;
-                return false;
-            }
-        }
+					if (rowsAffected == 0)
+					{
+						error = "Không tồn tại phòng có số phòng: " + maPhong;
+						return false;
+					}
+				}
 
-        // Lấy giá tiền của phòng theo mã phòng
-        public decimal layGiaTienTheoMaPhong(string maphong, bool isday)
-        {
-            string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+				return true;
+			}
+			catch (Exception ex)
+			{
+				error = ex.Message;
+				return false;
+			}
+		}
 
-            using (MySqlConnection conn = new MySqlConnection(connectionString))
-            {
-                string query = "SELECT LoaiPhong.GiaNgay, LoaiPhong.GiaGio FROM Phong p " +
-                               "INNER JOIN LoaiPhong ON p.MaLoaiPhong = LoaiPhong.MaLoaiPhong " +
-                               "WHERE p.SoPhong = @MaPhong";
-                MySqlCommand cmd = new MySqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@MaPhong", maphong);
+		// Lấy giá tiền của phòng theo mã phòng
+		public decimal layGiaTienTheoMaPhong(string maphong, bool isday)
+		{
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
-                conn.Open();
-                using (MySqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        if (isday)
-                            return reader.GetDecimal(reader.GetOrdinal("GiaNgay"));
-                        else
-                            return reader.GetDecimal(reader.GetOrdinal("GiaGio"));
-                    }
-                }
-            }
+			using (var conn = new MySqlConnection(connectionString))
+			{
+				var query = "SELECT LoaiPhong.GiaNgay, LoaiPhong.GiaGio FROM Phong p " +
+				            "INNER JOIN LoaiPhong ON p.MaLoaiPhong = LoaiPhong.MaLoaiPhong " +
+				            "WHERE p.SoPhong = @MaPhong";
+				var cmd = new MySqlCommand(query, conn);
+				cmd.Parameters.AddWithValue("@MaPhong", maphong);
 
-            return 0; // Default giá tiền
-        }
+				conn.Open();
+				using (var reader = cmd.ExecuteReader())
+				{
+					if (reader.Read())
+					{
+						if (isday)
+							return reader.GetDecimal(reader.GetOrdinal("GiaNgay"));
+						return reader.GetDecimal(reader.GetOrdinal("GiaGio"));
+					}
+				}
+			}
 
-        // Lấy danh sách phòng trống
-        public List<PhongTrong> getPhongTrong(DateTime? ngayBD, DateTime? ngayKT)
-        {
-            List<PhongTrong> lsPTrong = new List<PhongTrong>();
-            string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			return 0; // Default giá tiền
+		}
 
-            try
-            {
-                using (MySqlConnection conn = new MySqlConnection(connectionString))
-                {
-                    string query = @"
+		// Lấy danh sách phòng trống
+		public List<PhongTrong> getPhongTrong(DateTime? ngayBD, DateTime? ngayKT)
+		{
+			var lsPTrong = new List<PhongTrong>();
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = @"
                         SELECT p.SoPhong, lp.TenLoaiPhong
                         FROM Phong p
                         JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
@@ -240,121 +248,120 @@ namespace DAL.Data
                             WHERE ((ct.NgayBD <= @NgayKT AND ct.NgayKT >= @NgayBD)) AND ct.TinhTrangThue != 'Đã thanh toán'
                         )";
 
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@NgayBD", ngayBD);
-                    cmd.Parameters.AddWithValue("@NgayKT", ngayKT);
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@NgayBD", ngayBD);
+					cmd.Parameters.AddWithValue("@NgayKT", ngayKT);
 
-                    conn.Open();
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            lsPTrong.Add(new PhongTrong
-                            {
-                                SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
-                                TenLoaiPhong = reader.GetString(reader.GetOrdinal("TenLoaiPhong"))
-                            });
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message); // Log lỗi nếu cần
-            }
+					conn.Open();
+					using (var reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+							lsPTrong.Add(new PhongTrong
+							{
+								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
+								TenLoaiPhong = reader.GetString(reader.GetOrdinal("TenLoaiPhong"))
+							});
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+			}
 
-            return lsPTrong;
-        }
+			return lsPTrong;
+		}
 
-        // Thêm mới phòng
-        public bool addDataPhong(Phong phong)
-        {
-            string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
-            try
-            {
-                using (MySqlConnection conn = new MySqlConnection(connectionString))
-                {
+		// Thêm mới phòng
+		public bool addDataPhong(Phong phong)
+		{
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query =
+						"INSERT INTO Phong (SoPhong, MaLoaiPhong, DonDep, IsDeleted) VALUES (@SoPhong, @MaLoaiPhong, @DonDep, 0)";
 
-                    string query = "INSERT INTO Phong (SoPhong, MaLoaiPhong, DonDep, IsDeleted) VALUES (@SoPhong, @MaLoaiPhong, @DonDep, 0)";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
+					cmd.Parameters.AddWithValue("@MaLoaiPhong", phong.MaLoaiPhong);
+					cmd.Parameters.AddWithValue("@DonDep", phong.DonDep);
+					conn.Open();
+					cmd.ExecuteNonQuery();
+				}
 
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
-                    cmd.Parameters.AddWithValue("@MaLoaiPhong", phong.MaLoaiPhong);
-                    cmd.Parameters.AddWithValue("@DonDep", phong.DonDep);
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message); // Log error if needed
-                return false;
-            }
-        }
+				return true;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log error if needed
+				return false;
+			}
+		}
 
-        // Cập nhật phòng
-        public bool capNhatPhong(Phong phong)
-        {
-            string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
-            try
-            {
-                using (MySqlConnection conn = new MySqlConnection(connectionString))
-                {
-                    
-                    string query = "UPDATE Phong SET MaLoaiPhong = @MaLoaiPhong, DonDep = @DonDep WHERE SoPhong = @SoPhong";
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@MaLoaiPhong", phong.MaLoaiPhong);
-                    cmd.Parameters.AddWithValue("@DonDep", phong.DonDep);
-                    cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
-                    conn.Open();
-                    int rowsAffected = cmd.ExecuteNonQuery();
+		// Cập nhật phòng
+		public bool capNhatPhong(Phong phong)
+		{
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query =
+						"UPDATE Phong SET MaLoaiPhong = @MaLoaiPhong, DonDep = @DonDep WHERE SoPhong = @SoPhong";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaLoaiPhong", phong.MaLoaiPhong);
+					cmd.Parameters.AddWithValue("@DonDep", phong.DonDep);
+					cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
+					conn.Open();
+					var rowsAffected = cmd.ExecuteNonQuery();
 
-                    return rowsAffected > 0;
-                }
-               
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message); // Log error if needed
-                return false;
-            }
-        }
+					return rowsAffected > 0;
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log error if needed
+				return false;
+			}
+		}
 
-        // Xóa phòng
-        public bool xoaThongTinPhong(Phong phong)
-        {
-            string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
-            try
-            {
-                using (MySqlConnection conn = new MySqlConnection(connectionString))
-                {
-                    string query = "UPDATE Phong SET IsDeleted = 1 WHERE SoPhong = @SoPhong";
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message); // Log error if needed
-                return false;
-            }
-        }
+		// Xóa phòng
+		public bool xoaThongTinPhong(Phong phong)
+		{
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = "UPDATE Phong SET IsDeleted = 1 WHERE SoPhong = @SoPhong";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
+					conn.Open();
+					cmd.ExecuteNonQuery();
+				}
 
-        // Lấy danh sách phòng
-        public List<Phong> getDataPhong()
-        {
-            List<Phong> lstPhong = new List<Phong>();
-            string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+				return true;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log error if needed
+				return false;
+			}
+		}
 
-            try
-            {
-                using (MySqlConnection conn = new MySqlConnection(connectionString))
-                {
-                    string query = @"
+		// Lấy danh sách phòng
+		public List<Phong> getDataPhong()
+		{
+			var lstPhong = new List<Phong>();
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = @"
                                     SELECT 
                                         p.SoPhong, 
                                         p.MaLoaiPhong, 
@@ -363,57 +370,53 @@ namespace DAL.Data
                                     FROM Phong p
                                     INNER JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
                                     WHERE p.IsDeleted = 0";
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    conn.Open();
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            lstPhong.Add(new Phong
-                            {
-                                SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
-                                MaLoaiPhong = reader.GetInt32(reader.GetOrdinal("MaLoaiPhong")),
-                                DonDep = reader.GetString(reader.GetOrdinal("DonDep")),
-                                LoaiPhong = reader.GetString(reader.GetOrdinal("LoaiPhong")) // Lấy tên loại phòng
-                            });
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Lỗi khi lấy danh sách phòng: " + ex.Message); // Log lỗi nếu cần
-            }
+					var cmd = new MySqlCommand(query, conn);
+					conn.Open();
+					using (var reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+							lstPhong.Add(new Phong
+							{
+								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
+								MaLoaiPhong = reader.GetInt32(reader.GetOrdinal("MaLoaiPhong")),
+								DonDep = reader.GetString(reader.GetOrdinal("DonDep")),
+								LoaiPhong = reader.GetString(reader.GetOrdinal("LoaiPhong")) // Lấy tên loại phòng
+							});
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Lỗi khi lấy danh sách phòng: " + ex.Message); // Log lỗi nếu cần
+			}
 
-            return lstPhong;
-        }
+			return lstPhong;
+		}
 
 		// Hiển thị lại phòng đã xóa
 		public bool hienThiLaiPhong(string soPhong)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "UPDATE Phong SET IsDeleted = 0 WHERE SoPhong = @SoPhong";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "UPDATE Phong SET IsDeleted = 0 WHERE SoPhong = @SoPhong";
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@SoPhong", soPhong);
 
 					conn.Open();
-					int rowsAffected = cmd.ExecuteNonQuery();
+					var rowsAffected = cmd.ExecuteNonQuery();
 
 					if (rowsAffected > 0)
 					{
 						Console.WriteLine($"Đã khôi phục phòng: {soPhong}");
 						return true;
 					}
-					else
-					{
-						Console.WriteLine($"Không tìm thấy loại phòng với tên: {soPhong}");
-						return false;
-					}
+
+					Console.WriteLine($"Không tìm thấy loại phòng với tên: {soPhong}");
+					return false;
 				}
 			}
 			catch (Exception ex)
