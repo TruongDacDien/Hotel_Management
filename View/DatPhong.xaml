@@ -58,7 +58,7 @@
                               Margin="65 27 0 0">
                             <materialDesign:PackIcon Kind="CardAccountDetailsOutline" Height="25" Width="25" />
                             <TextBox x:Name="txbCCCD" MaxLength="12" Margin="30 0 0 0"
-                                     materialDesign:HintAssist.Hint="Nhập CCCD" />
+                                     materialDesign:HintAssist.Hint="Nhập CCCD" TextChanged="TxbCCCD_OnTextChanged"/>
                         </Grid>
 
                         <Grid Height="25" Width="213" VerticalAlignment="Top" HorizontalAlignment="Left"
@@ -143,10 +143,10 @@
                         <!--Lisview Phòng Trống-->
                         <TextBlock Text="Danh sách phòng trống" FontSize="20" Foreground="#00A3FF"
                                    Margin="12 187 0 0" />
-                        <Grid Background="#FFFCFC" Height="172" Width="230" Margin="12 0  0 24"
+                        <Grid Background="#FFFCFC" Height="172" Width="250" Margin="12 0  0 24"
                               HorizontalAlignment="Left" VerticalAlignment="Bottom">
                             <Grid.Clip>
-                                <RectangleGeometry Rect="0,0,230,172" RadiusX="10" RadiusY="10" />
+                                <RectangleGeometry Rect="0,0,250,172" RadiusX="10" RadiusY="10" />
                             </Grid.Clip>
                             <ListView x:Name="lvPhongTrong" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                                 <ListView.Resources>
@@ -160,11 +160,11 @@
                                                 <Setter Property="FontWeight" Value="Bold" />
                                             </Style>
                                         </GridView.ColumnHeaderContainerStyle>
-                                        <GridViewColumn Header="Số phòng" Width="65"
+                                        <GridViewColumn Header="Số phòng" Width="70"
                                                         DisplayMemberBinding="{Binding Path = SoPhong }" />
-                                        <GridViewColumn Header="Loại phòng" Width="100"
+                                        <GridViewColumn Header="Loại phòng" Width="110"
                                                         DisplayMemberBinding="{Binding  Path= TenLoaiPhong }" />
-                                        <GridViewColumn Width="54" Header="Thêm">
+                                        <GridViewColumn Width="70" Header="Thêm">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <Button Width="25" Height="25" BorderThickness="0" Padding="0"
