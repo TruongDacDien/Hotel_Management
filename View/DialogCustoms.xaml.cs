@@ -1,68 +1,77 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Media;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace GUI.View
 {
-    /// <summary>
-    /// Interaction logic for DialogCustoms.xaml
-    /// </summary>
-    public partial class DialogCustoms : Window
-    {
-        public static int YesNo = 1;
-        public static int OK = 0;
-        public DialogCustoms()
-        {
-            InitializeComponent();
-        }
-        public DialogCustoms(string mess, string title,int mode ):this()
-        {
-            try
-            {
-                this.Title = title;
-                txblMess.Text = mess;
-                if (mode == YesNo)
-                {
-                    btnOK.Visibility = Visibility.Hidden;
-                }
-                else
-                {
-                    btnYes.Visibility = Visibility.Hidden;
-                    btnNo.Visibility = Visibility.Hidden;
-                }
-            }
-            catch (Exception ex)
-            {
+	/// <summary>
+	///     Interaction logic for DialogCustoms.xaml
+	/// </summary>
+	public partial class DialogCustoms : Window
+	{
+		public static int YesNo = 1;
+		public static int OK = 0;
 
-                Console.WriteLine("Lỗi DialogCustom :"+ex.Message);
-            }
-            
-        }
-        private void btnNo_Click(object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = false;
-            this.Close();
-        }
+		public DialogCustoms()
+		{
+			InitializeComponent();
+			PlaySound(); // Phát âm thanh khi cửa sổ được khởi tạo
+		}
 
-        private void btnOK_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
+		public DialogCustoms(string mess, string title, int mode) : this()
+		{
+			try
+			{
+				Title = title;
+				txblMess.Text = mess;
 
-        private void btnYes_Click(object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = true;
-            this.Close();
-        }
-    }
+				if (mode == YesNo)
+				{
+					btnOK.Visibility = Visibility.Hidden;
+				}
+				else
+				{
+					btnYes.Visibility = Visibility.Hidden;
+					btnNo.Visibility = Visibility.Hidden;
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Lỗi DialogCustom :" + ex.Message);
+			}
+		}
+
+		private void btnNo_Click(object sender, RoutedEventArgs e)
+		{
+			DialogResult = false;
+			Close();
+		}
+
+		private void btnOK_Click(object sender, RoutedEventArgs e)
+		{
+			Close();
+		}
+
+		private void btnYes_Click(object sender, RoutedEventArgs e)
+		{
+			DialogResult = true;
+			Close();
+		}
+
+		private void PlaySound()
+		{
+			try
+			{
+				var resourceStream = Application
+					.GetResourceStream(new Uri("pack://application:,,,/Res/notification_sound.wav"))?.Stream;
+				// Tạo SoundPlayer với stream và phát âm thanh
+				var soundPlayer = new SoundPlayer(resourceStream);
+				soundPlayer.Play();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Lỗi phát âm thanh: " + ex.Message);
+			}
+		}
+	}
 }

@@ -1,67 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using DAL.DTO;
 using BUS;
+using DAL.DTO;
+using MaterialDesignThemes.Wpf;
+
 namespace GUI.View
 {
 	/// <summary>
-	/// Interaction logic for ChiTietPhong.xaml
+	///     Interaction logic for ChiTietPhong.xaml
 	/// </summary>
 	public partial class ChiTietPhong : Window
 	{
-
 		public delegate void truyenDataPhong(Phong_Custom phong);
-		public truyenDataPhong truyenData;
 
-		ObservableCollection<DichVu_DaChon> obDichVu;
-		private Phong_Custom phong_CTPhong;
-		private int? maCTPhieuThue;
-		private bool kiemTraSuaDoiTinhTrangDonDep;
 		private bool kiemTraNhanPhong;
-		private int maNV;
-		public int MaNV { get => maNV; set => maNV = value; }
+		private bool kiemTraSuaDoiTinhTrangDonDep;
+		private int? maCTPhieuThue;
+
+		private ObservableCollection<DichVu_DaChon> obDichVu;
+		private Phong_Custom phong_CTPhong;
+		public truyenDataPhong truyenData;
 
 		public ChiTietPhong()
 		{
 			InitializeComponent();
-			truyenData = new truyenDataPhong(setDataPhongCustom);
+			truyenData = setDataPhongCustom;
 			kiemTraSuaDoiTinhTrangDonDep = false;
 			kiemTraNhanPhong = false;
 		}
 
 		public ChiTietPhong(int maNV) : this()
 		{
-			this.MaNV = maNV;
+			MaNV = maNV;
 		}
+
+		public int MaNV { get; set; }
+
 		#region method
-		void setDataPhongCustom(Phong_Custom phong)
+
+		private void setDataPhongCustom(Phong_Custom phong)
 		{
 			//Nhận dữ liệu từ form cha và gán giá trị lên form con
 			phong_CTPhong = phong;
-			txblTieuDe.Text = "Thông tin chi tiết phòng "+ phong.MaPhong;
+			txblTieuDe.Text = "Thông tin chi tiết phòng " + phong.MaPhong;
 			txblTenKH.Text = phong.TenKH;
-			if (phong.IsDay == true)
+			if (phong.IsDay)
 			{
-				icDayorHour.Kind = MaterialDesignThemes.Wpf.PackIconKind.CalendarToday;
-				txblSoNgay.Text = phong.SoNgayO.ToString() + "  ngày";
+				icDayorHour.Kind = PackIconKind.CalendarToday;
+				txblSoNgay.Text = phong.SoNgayO + "  ngày";
 			}
 			else
 			{
-				icDayorHour.Kind = MaterialDesignThemes.Wpf.PackIconKind.AlarmCheck;
-				txblSoNgay.Text = phong.SoGio.ToString() + "  giờ";
+				icDayorHour.Kind = PackIconKind.AlarmCheck;
+				txblSoNgay.Text = phong.SoGio + "  giờ";
 			}
+
 			txblSoNguoi.Text = phong.SoNguoi.ToString();
 			txblNgayDen.Text = phong.NgayDen.ToString();
 			cbTinhTrang.Text = phong.TinhTrang;
@@ -71,30 +66,26 @@ namespace GUI.View
 			maCTPhieuThue = phong.MaCTPT;
 			//Lấy chi tiết sử dụng dịch vụ của phòng đó nếu có
 			if (maCTPhieuThue != null)
-			{
-				obDichVu = new ObservableCollection<DichVu_DaChon>(CTSDDV_BUS.GetInstance().getCTSDDVtheoMaCTPT(maCTPhieuThue));
-			}
+				obDichVu = new ObservableCollection<DichVu_DaChon>(CTSDDV_BUS.GetInstance()
+					.getCTSDDVtheoMaCTPT(maCTPhieuThue));
 			else
-			{
 				obDichVu = new ObservableCollection<DichVu_DaChon>();
-			}
 
 			lvSuDungDV.ItemsSource = obDichVu;
+		}
 
-		}
-		void nhanData(ObservableCollection<DichVu_DaChon> obDVCT)
+		private void nhanData(ObservableCollection<DichVu_DaChon> obDVCT)
 		{
-			foreach (var item in obDVCT)
-			{
-				obDichVu.Add(item);
-			}
+			foreach (var item in obDVCT) obDichVu.Add(item);
 		}
+
 		#endregion
 
 		#region event
+
 		private void click_Thoat(object sender, RoutedEventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 
@@ -106,65 +97,58 @@ namespace GUI.View
 
 		private void click_ThanhToan(object sender, RoutedEventArgs e)
 		{
-			this.DialogResult = true;
-			this.Visibility = Visibility.Hidden;
-			XuatHoaDon hoaDon = new XuatHoaDon(MaNV, phong_CTPhong, obDichVu);
+			DialogResult = true;
+			Visibility = Visibility.Hidden;
+			var hoaDon = new XuatHoaDon(MaNV, phong_CTPhong, obDichVu);
 			hoaDon.ShowDialog();
-			this.Close();
+			Close();
 		}
 
 		private void click_ThemDV(object sender, RoutedEventArgs e)
 		{
-			CTP_ThemDV cTP_ThemDV = new CTP_ThemDV(maCTPhieuThue);
-			cTP_ThemDV.truyenData = new CTP_ThemDV.Delegate_CTPDV(nhanData);
+			var cTP_ThemDV = new CTP_ThemDV(maCTPhieuThue);
+			cTP_ThemDV.truyenData = nhanData;
 			cTP_ThemDV.ShowDialog();
 		}
+
 		private void cbDonDep_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			kiemTraSuaDoiTinhTrangDonDep = true;
 		}
+
 		private void click_Luu(object sender, RoutedEventArgs e)
 		{
 			if (kiemTraSuaDoiTinhTrangDonDep)
 			{
-
-				string error = string.Empty;
+				var error = string.Empty;
 				if (!PhongBUS.GetInstance().suaTinhTrangDonDep(phong_CTPhong.MaPhong, cbDonDep.Text, out error))
 				{
 					new DialogCustoms("Lưu thất bại !\n Lỗi:" + error, "Thông báo", DialogCustoms.OK).ShowDialog();
 					return;
 				}
-				else
-				{
-					this.DialogResult = true;
-				}
-				this.Close();
+
+				DialogResult = true;
+				Close();
 			}
+
 			if (kiemTraNhanPhong)
 			{
-				string error = string.Empty;
-				if (!CT_PhieuThueBUS.GetInstance().suaTinhTrangThuePhong(phong_CTPhong.MaCTPT, "Phòng đang thuê", out error))
+				var error = string.Empty;
+				if (!CT_PhieuThueBUS.GetInstance()
+					    .suaTinhTrangThuePhong(phong_CTPhong.MaCTPT, "Phòng đang thuê", out error))
 				{
 					new DialogCustoms("Lưu thất bại !\n Lỗi:" + error, "Thông báo", DialogCustoms.OK).ShowDialog();
 					return;
 				}
-				else
-				{
-					CT_PhieuThueBUS.GetInstance().capNhatNgayBD(phong_CTPhong.MaCTPT, DateTime.Now, out error);
-					this.DialogResult = true;
-				}
-				this.Close();
+
+				CT_PhieuThueBUS.GetInstance().capNhatNgayBD(phong_CTPhong.MaCTPT, DateTime.Now, out error);
+				DialogResult = true;
+				Close();
 			}
-			if (!kiemTraSuaDoiTinhTrangDonDep && !kiemTraNhanPhong)
-			{
-				this.Close();
-			}
+
+			if (!kiemTraSuaDoiTinhTrangDonDep && !kiemTraNhanPhong) Close();
 		}
 
-
-
 		#endregion
-
-
 	}
 }

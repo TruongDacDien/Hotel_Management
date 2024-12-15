@@ -1,32 +1,22 @@
-﻿using BUS;
-using DAL.DTO;
-using GUI.View;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using BUS;
+using DAL.DTO;
+using GUI.View;
 
 namespace GUI.UserControls
 {
 	/// <summary>
-	/// Interaction logic for uc_QuanLyTaiKhoan.xaml
+	///     Interaction logic for uc_QuanLyTaiKhoan.xaml
 	/// </summary>
 	public partial class uc_QuanLyTaiKhoan : UserControl
 	{
-		ObservableCollection<TaiKhoan> list;
+		private ObservableCollection<TaiKhoan> list;
 		private CollectionView view;
-		
+
 		public uc_QuanLyTaiKhoan()
 		{
 			InitializeComponent();
@@ -43,13 +33,12 @@ namespace GUI.UserControls
 
 		private bool TaiKhoanFilter(object obj)
 		{
-			if (String.IsNullOrEmpty(txtFilter.Text))
+			if (string.IsNullOrEmpty(txtFilter.Text))
 				return true;
-			else
-				return (obj as TaiKhoan).Username.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
+			return (obj as TaiKhoan).Username.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
 		}
 
-		void nhanData(TaiKhoan taiKhoan)
+		private void nhanData(TaiKhoan taiKhoan)
 		{
 			if (!TaiKhoanBUS.GetInstance().kiemTraTrungUsername(taiKhoan.Username))
 			{
@@ -69,7 +58,7 @@ namespace GUI.UserControls
 			}
 		}
 
-		void capNhatData(TaiKhoan taiKhoan)
+		private void capNhatData(TaiKhoan taiKhoan)
 		{
 			if (TaiKhoanBUS.GetInstance().capNhatTaiKhoan(taiKhoan))
 			{
@@ -85,9 +74,10 @@ namespace GUI.UserControls
 
 		private void btnXoa_Click(object sender, RoutedEventArgs e)
 		{
-			TaiKhoan taiKhoan = (sender as Button).DataContext as TaiKhoan;
+			var taiKhoan = (sender as Button).DataContext as TaiKhoan;
 
-			var thongbao = new DialogCustoms("Bạn có thật sự muốn xóa " + taiKhoan.Username, "Thông báo", DialogCustoms.YesNo);
+			var thongbao = new DialogCustoms("Bạn có thật sự muốn xóa " + taiKhoan.Username, "Thông báo",
+				DialogCustoms.YesNo);
 
 			if (thongbao.ShowDialog() == true)
 			{
@@ -99,17 +89,17 @@ namespace GUI.UserControls
 
 		private void btnThem_Click(object sender, RoutedEventArgs e)
 		{
-			Them_SuaTaiKhoan ThemTaiKhoan = new Them_SuaTaiKhoan();
-			ThemTaiKhoan.truyenTaiKhoan = new Them_SuaTaiKhoan.truyenData(nhanData);
+			var ThemTaiKhoan = new Them_SuaTaiKhoan();
+			ThemTaiKhoan.truyenTaiKhoan = nhanData;
 			ThemTaiKhoan.ShowDialog();
 		}
 
 		private void btnCapNhat_Click(object sender, RoutedEventArgs e)
 		{
-			TaiKhoan taiKhoan = (sender as Button).DataContext as TaiKhoan;
-			Them_SuaTaiKhoan CapNhatTaiKhoan = new Them_SuaTaiKhoan(true, taiKhoan);
-			CapNhatTaiKhoan.suaTaiKhoan = new Them_SuaTaiKhoan.suaData(capNhatData);
-            CapNhatTaiKhoan.ShowDialog();
+			var taiKhoan = (sender as Button).DataContext as TaiKhoan;
+			var CapNhatTaiKhoan = new Them_SuaTaiKhoan(true, taiKhoan);
+			CapNhatTaiKhoan.suaTaiKhoan = capNhatData;
+			CapNhatTaiKhoan.ShowDialog();
 		}
 	}
 }

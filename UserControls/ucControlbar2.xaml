@@ -1,10 +1,9 @@
 ﻿<UserControl x:Class="GUI.UserControls.ucControlbar2"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:GUI.UserControls"
-             mc:Ignorable="d" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
              x:Name="controlbar2"
              Tag="Title"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -14,18 +13,18 @@
              TextOptions.TextFormattingMode="Ideal"
              TextOptions.TextRenderingMode="Auto"
              Background="Transparent"
-             FontFamily="{DynamicResource MaterialDesignFont}"  MinHeight="0">
+             FontFamily="{DynamicResource MaterialDesignFont}" MinHeight="0">
     <Grid>
         <materialDesign:ColorZone x:Name="backGroum"
-            Background="White"
-            Padding="2"
-            CornerRadius="10 10 0 0"
-            Margin="0 2 0 0">
+                                  Background="White"
+                                  Padding="2"
+                                  CornerRadius="10 10 0 0"
+                                  Margin="0 2 0 0">
             <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown">
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition Width="110"></ColumnDefinition>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="110" />
                 </Grid.ColumnDefinitions>
 
                 <!-- Tiêu đề cửa sổ -->
@@ -35,7 +34,7 @@
                            Text="{Binding Tag , ElementName = controlbar2}" />
 
                 <!-- Các nút điều khiển cửa sổ -->
-                <StackPanel Orientation="Horizontal" 
+                <StackPanel Orientation="Horizontal"
                             Width="Auto"
                             Grid.Column="1"
                             Background="Transparent"
@@ -50,11 +49,11 @@
                         Click="Button_Close"
                         Style="{StaticResource MaterialDesignFloatingActionButton}"
                         ToolTip="Close">
-                        <TextBlock Text="&#xE8BB;" 
-                                   FontFamily="Segoe MDL2 Assets" 
-                                   FontSize="12" 
-                                   VerticalAlignment="Center" 
-                                   HorizontalAlignment="Center" 
+                        <TextBlock Text="&#xE8BB;"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
                                    Foreground="White" />
                     </Button>
 
@@ -67,11 +66,11 @@
                         Click="Button_Minimize"
                         Style="{StaticResource MaterialDesignFloatingActionButton}"
                         ToolTip="Minimize">
-                        <TextBlock Text="&#xE921;" 
-                                   FontFamily="Segoe MDL2 Assets" 
-                                   FontSize="12" 
-                                   VerticalAlignment="Center" 
-                                   HorizontalAlignment="Center" 
+                        <TextBlock Text="&#xE921;"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
                                    Foreground="White" />
                     </Button>
                 </StackPanel>

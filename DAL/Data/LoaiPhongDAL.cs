@@ -1,7 +1,7 @@
-﻿using DAL.DTO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using DAL.DTO;
 using MySql.Data.MySqlClient;
 
 namespace DAL.Data
@@ -10,7 +10,9 @@ namespace DAL.Data
 	{
 		private static LoaiPhongDAL instance;
 
-		private LoaiPhongDAL() { }
+		private LoaiPhongDAL()
+		{
+		}
 
 		public static LoaiPhongDAL Instance
 		{
@@ -24,21 +26,20 @@ namespace DAL.Data
 		// Lấy tất cả loại phòng
 		public List<LoaiPhong> getDataLoaiPhong()
 		{
-			List<LoaiPhong> loaiPhongs = new List<LoaiPhong>();
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var loaiPhongs = new List<LoaiPhong>();
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "SELECT * FROM LoaiPhong WHERE IsDeleted = 0";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "SELECT * FROM LoaiPhong WHERE IsDeleted = 0";
+					var cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
-					using (MySqlDataReader reader = cmd.ExecuteReader())
+					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
-						{
 							loaiPhongs.Add(new LoaiPhong
 							{
 								MaLoaiPhong = reader.GetInt32(reader.GetOrdinal("MaLoaiPhong")),
@@ -47,7 +48,6 @@ namespace DAL.Data
 								GiaNgay = reader.GetDecimal(reader.GetOrdinal("GiaNgay")),
 								GiaGio = reader.GetDecimal(reader.GetOrdinal("GiaGio"))
 							});
-						}
 					}
 				}
 			}
@@ -55,23 +55,24 @@ namespace DAL.Data
 			{
 				Console.WriteLine(ex.Message); // Log lỗi nếu cần
 			}
+
 			return loaiPhongs;
 		}
 
 		// Thêm loại phòng mới
 		public bool addLoaiPhong(LoaiPhong loaiPhong)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = @"
+					var query = @"
                         INSERT INTO LoaiPhong (TenLoaiPhong, SoNguoiToiDa, GiaNgay, GiaGio, IsDeleted)
                         VALUES (@TenLoaiPhong, @SoNguoiToiDa, @GiaNgay, @GiaGio, 0)";
 
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenLoaiPhong", loaiPhong.TenLoaiPhong);
 					cmd.Parameters.AddWithValue("@SoNguoiToiDa", loaiPhong.SoNguoiToiDa);
 					cmd.Parameters.AddWithValue("@GiaNgay", loaiPhong.GiaNgay);
@@ -80,6 +81,7 @@ namespace DAL.Data
 					conn.Open();
 					cmd.ExecuteNonQuery();
 				}
+
 				return true;
 			}
 			catch (Exception ex)
@@ -92,19 +94,20 @@ namespace DAL.Data
 		// Xóa loại phòng
 		public bool xoaLoaiPhong(LoaiPhong loaiPhong)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "UPDATE LoaiPhong SET IsDeleted = 1 WHERE MaLoaiPhong = @MaLoaiPhong";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "UPDATE LoaiPhong SET IsDeleted = 1 WHERE MaLoaiPhong = @MaLoaiPhong";
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaLoaiPhong", loaiPhong.MaLoaiPhong);
 
 					conn.Open();
 					cmd.ExecuteNonQuery();
 				}
+
 				return true;
 			}
 			catch (Exception ex)
@@ -117,18 +120,18 @@ namespace DAL.Data
 		// Cập nhật loại phòng
 		public bool capnhatLoaiPhong(LoaiPhong loaiPhong)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = @"
+					var query = @"
                         UPDATE LoaiPhong 
                         SET TenLoaiPhong = @TenLoaiPhong, SoNguoiToiDa = @SoNguoiToiDa, GiaNgay = @GiaNgay, GiaGio = @GiaGio
                         WHERE MaLoaiPhong = @MaLoaiPhong";
 
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenLoaiPhong", loaiPhong.TenLoaiPhong);
 					cmd.Parameters.AddWithValue("@SoNguoiToiDa", loaiPhong.SoNguoiToiDa);
 					cmd.Parameters.AddWithValue("@GiaNgay", loaiPhong.GiaNgay);
@@ -138,6 +141,7 @@ namespace DAL.Data
 					conn.Open();
 					cmd.ExecuteNonQuery();
 				}
+
 				return true;
 			}
 			catch (Exception ex)
@@ -150,58 +154,54 @@ namespace DAL.Data
 		// Kiểm tra tên loại phòng có trùng không
 		public bool KiemTraTenLoaiPhong(LoaiPhong loaiPhong)
 		{
-			bool isExist = false;
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var isExist = false;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "SELECT COUNT(*) FROM LoaiPhong WHERE TenLoaiPhong = @TenLoaiPhong";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "SELECT COUNT(*) FROM LoaiPhong WHERE TenLoaiPhong = @TenLoaiPhong";
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenLoaiPhong", loaiPhong.TenLoaiPhong);
 
 					conn.Open();
-					int count = Convert.ToInt32(cmd.ExecuteScalar());
-					if (count > 0)
-					{
-						isExist = true;
-					}
+					var count = Convert.ToInt32(cmd.ExecuteScalar());
+					if (count > 0) isExist = true;
 				}
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.Message); // Log lỗi nếu cần
 			}
+
 			return isExist;
 		}
 
 		// Hiển thị lại loại phòng đã xóa
 		public bool hienThiLaiLoaiPhong(string tenLoaiPhong)
 		{
-			string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
 			try
 			{
-				using (MySqlConnection conn = new MySqlConnection(connectionString))
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					string query = "UPDATE LoaiPhong SET IsDeleted = 0 WHERE TenLoaiPhong = @TenLoaiPhong";
-					MySqlCommand cmd = new MySqlCommand(query, conn);
+					var query = "UPDATE LoaiPhong SET IsDeleted = 0 WHERE TenLoaiPhong = @TenLoaiPhong";
+					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenLoaiPhong", tenLoaiPhong);
 
 					conn.Open();
-					int rowsAffected = cmd.ExecuteNonQuery();
+					var rowsAffected = cmd.ExecuteNonQuery();
 
 					if (rowsAffected > 0)
 					{
 						Console.WriteLine($"Đã khôi phục loại phòng: {tenLoaiPhong}");
 						return true;
 					}
-					else
-					{
-						Console.WriteLine($"Không tìm thấy loại phòng với tên: {tenLoaiPhong}");
-						return false;
-					}
+
+					Console.WriteLine($"Không tìm thấy loại phòng với tên: {tenLoaiPhong}");
+					return false;
 				}
 			}
 			catch (Exception ex)

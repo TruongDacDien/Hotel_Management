@@ -1,42 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using BUS;
 using DAL.DTO;
-using DAL;
-using System.Text.RegularExpressions;
 
 namespace GUI.View
 {
 	/// <summary>
-	/// Interaction logic for CTP_ThemDV.xaml
+	///     Interaction logic for CTP_ThemDV.xaml
 	/// </summary>
 	public partial class CTP_ThemDV : Window
 	{
 		public delegate void Delegate_CTPDV(ObservableCollection<DichVu_DaChon> obDVCT);
+
+		private readonly int? maCTPhieuThue;
+		private List<DichVu> lsCache;
+
+		private ObservableCollection<DichVu> lsdichVu_Customs;
+		private ObservableCollection<DichVu_DaChon> lsDichVu_DaChon;
+		private List<LoaiDV> lsLoaiDV;
 		public Delegate_CTPDV truyenData;
 
-		ObservableCollection<DichVu> lsdichVu_Customs;
-		ObservableCollection<DichVu_DaChon> lsDichVu_DaChon;
-		List<LoaiDV> lsLoaiDV;
-		List<DichVu> lsCache;
-
-		private int? maCTPhieuThue;
 		public CTP_ThemDV()
 		{
 			InitializeComponent();
 		}
+
 		public CTP_ThemDV(int? mactpt) : this()
 		{
 			maCTPhieuThue = mactpt;
@@ -60,35 +54,34 @@ namespace GUI.View
 
 		private void click_Them(object sender, RoutedEventArgs e)
 		{
-            DichVu dvct = (sender as Button).DataContext as DichVu;
-			lsDichVu_DaChon.Add(new DichVu_DaChon() { ThanhTien = dvct.Gia, TenDV = dvct.TenDV, SoLuong = 1, MaDV = dvct.MaDV, Gia = dvct.Gia });
+			var dvct = (sender as Button).DataContext as DichVu;
+			lsDichVu_DaChon.Add(new DichVu_DaChon
+				{ ThanhTien = dvct.Gia, TenDV = dvct.TenDV, SoLuong = 1, MaDV = dvct.MaDV, Gia = dvct.Gia });
 			lsCache.Add(dvct);
 			lsdichVu_Customs.Remove(dvct);
-
 		}
 
 		private void click_Xoa(object sender, RoutedEventArgs e)
 		{
-			DichVu_DaChon dvdachon = (sender as Button).DataContext as DichVu_DaChon;
-            DichVu dichVu_Custom = (lsCache.Where(p => p.MaDV.Equals(dvdachon.MaDV))).FirstOrDefault();
+			var dvdachon = (sender as Button).DataContext as DichVu_DaChon;
+			var dichVu_Custom = lsCache.Where(p => p.MaDV.Equals(dvdachon.MaDV)).FirstOrDefault();
 			lsdichVu_Customs.Add(dichVu_Custom);
 			lsDichVu_DaChon.Remove(dvdachon);
-
 		}
 
 		private void click_Thoat(object sender, RoutedEventArgs e)
 		{
-			Window wd = Window.GetWindow(sender as Button);
+			var wd = GetWindow(sender as Button);
 			wd.Close();
 		}
 
 		private void click_Luu(object sender, RoutedEventArgs e)
 		{
-			string error = string.Empty;
-			int dem = 0;
+			var error = string.Empty;
+			var dem = 0;
 			foreach (var item in lsDichVu_DaChon)
 			{
-				CT_SDDichVu ct = new CT_SDDichVu()
+				var ct = new CT_SDDichVu
 				{
 					MaCTPT = maCTPhieuThue,
 					MaDV = item.MaDV,
@@ -97,90 +90,91 @@ namespace GUI.View
 				};
 
 				if (CTSDDV_BUS.GetInstance().addDataCTSDDC(ct, out error))
-				{
 					dem++;
-				}
 				else
-				{
 					new DialogCustoms("Lỗi: " + error, "Thông báo", DialogCustoms.OK).ShowDialog();
-				}
 			}
+
 			if (dem == lsDichVu_DaChon.Count)
 			{
 				new DialogCustoms("Thêm dịch vụ sử dụng thành công !", "Thông báo", DialogCustoms.OK).ShowDialog();
-				if (truyenData != null)
-				{
-					truyenData(lsDichVu_DaChon);
-				}
+				if (truyenData != null) truyenData(lsDichVu_DaChon);
 			}
 
-			this.Close();
+			Close();
 		}
 
 		private void txbSoLuong_LostFocus(object sender, RoutedEventArgs e)
 		{
-			TextBox txb = sender as TextBox;
-			DichVu_DaChon dvdc = (sender as TextBox).DataContext as DichVu_DaChon;
-			int soLuong = 1;
+			var txb = sender as TextBox;
+			var dvdc = (sender as TextBox).DataContext as DichVu_DaChon;
+			var soLuong = 1;
 			if (!int.TryParse(txb.Text, out soLuong))
 			{
 				new DialogCustoms("Lỗi: Nhập số lượng kiểu số nguyên!", "Thông báo", DialogCustoms.OK).ShowDialog();
 				return;
 			}
+
 			dvdc.SoLuong = soLuong;
 			dvdc.ThanhTien = dvdc.Gia * soLuong;
 		}
+
 		private void txbSoLuong_KeyUp(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Enter)
 			{
-				TextBox txb = sender as TextBox;
-				DichVu_DaChon dvdc = (sender as TextBox).DataContext as DichVu_DaChon;
-				int soLuong = 1;
+				var txb = sender as TextBox;
+				var dvdc = (sender as TextBox).DataContext as DichVu_DaChon;
+				var soLuong = 1;
 				if (!int.TryParse(txb.Text, out soLuong))
 				{
 					new DialogCustoms("Lỗi: Nhập số lượng kiểu số nguyên!", "Thông báo", DialogCustoms.OK).ShowDialog();
 					return;
 				}
+
 				dvdc.SoLuong = soLuong;
 				dvdc.ThanhTien = dvdc.Gia * soLuong;
 			}
 		}
+
 		private void txbTimKiem_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			CollectionView viewDV = (CollectionView)CollectionViewSource.GetDefaultView(lvDanhSachDV.ItemsSource);
+			var viewDV = (CollectionView)CollectionViewSource.GetDefaultView(lvDanhSachDV.ItemsSource);
 			viewDV.Filter = filterTimKiem;
 		}
 
 		private void cbTimKiemLoaiDV_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			CollectionView viewDV = (CollectionView)CollectionViewSource.GetDefaultView(lvDanhSachDV.ItemsSource);
+			var viewDV = (CollectionView)CollectionViewSource.GetDefaultView(lvDanhSachDV.ItemsSource);
 			viewDV.Filter = filterTimKiemLoaiDV;
 		}
+
 		#region method
+
 		private bool filterTimKiem(object obj)
 		{
-			if (String.IsNullOrEmpty(txbTimKiem.Text))
+			if (string.IsNullOrEmpty(txbTimKiem.Text))
 				return true;
-			else
-			{
-				string objTenDV = RemoveVietnameseTone((obj as DichVu).TenDV);
-				string timkiem = RemoveVietnameseTone(txbTimKiem.Text);
-				return objTenDV.Contains(timkiem);
-			}
+			var objTenDV = RemoveVietnameseTone((obj as DichVu).TenDV);
+			var timkiem = RemoveVietnameseTone(txbTimKiem.Text);
+			return objTenDV.Contains(timkiem);
 		}
+
 		private bool filterTimKiemLoaiDV(object obj)
 		{
 			var dichVu = obj as DichVu;
 			var selectedLoaiDV = cbTimKiemLoaiDV.SelectedItem as LoaiDV;
-			if (selectedLoaiDV == null || selectedLoaiDV.TenLoaiDV == "Tất cả") // Nếu không chọn loại dịch vụ hoặc chọn "Tất cả", hiển thị tất cả
-				return true;		
-			return dichVu.MaLoaiDV == selectedLoaiDV.MaLoaiDV; // So sánh MaLoaiDV của DichVu với MaLoaiDV của loại dịch vụ được chọn
+			if (selectedLoaiDV == null ||
+			    selectedLoaiDV.TenLoaiDV == "Tất cả") // Nếu không chọn loại dịch vụ hoặc chọn "Tất cả", hiển thị tất cả
+				return true;
+			return
+				dichVu.MaLoaiDV ==
+				selectedLoaiDV.MaLoaiDV; // So sánh MaLoaiDV của DichVu với MaLoaiDV của loại dịch vụ được chọn
 		}
 
 		public string RemoveVietnameseTone(string text)
 		{
-			string result = text.ToLower();
+			var result = text.ToLower();
 			result = Regex.Replace(result, "à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ|/g", "a");
 			result = Regex.Replace(result, "è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ|/g", "e");
 			result = Regex.Replace(result, "ì|í|ị|ỉ|ĩ|/g", "i");
@@ -192,7 +186,5 @@ namespace GUI.View
 		}
 
 		#endregion
-
-
 	}
 }

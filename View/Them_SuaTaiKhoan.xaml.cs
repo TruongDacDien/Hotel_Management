@@ -1,44 +1,37 @@
-﻿using BUS;
-using DAL.Data;
-using DAL.DTO;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using BUS;
+using DAL.Data;
+using DAL.DTO;
 
 namespace GUI.View
 {
 	/// <summary>
-	/// Interaction logic for Them_SuaTaiKhoan.xaml
+	///     Interaction logic for Them_SuaTaiKhoan.xaml
 	/// </summary>
 	public partial class Them_SuaTaiKhoan : Window
 	{
-        public delegate void truyenData(TaiKhoan taiKhoan);
-        public delegate void suaData(TaiKhoan taiKhoan);
+		public delegate void suaData(TaiKhoan taiKhoan);
+
+		public delegate void truyenData(TaiKhoan taiKhoan);
+
+		private readonly bool isEditing;
+
+		private readonly ObservableCollection<NhanVien> list;
+		public suaData suaTaiKhoan;
 
 
-        public truyenData truyenTaiKhoan;
-        public suaData suaTaiKhoan;
-		private bool isEditing;
+		public truyenData truyenTaiKhoan;
 
-        ObservableCollection<NhanVien> list;
-        public Them_SuaTaiKhoan()
+		public Them_SuaTaiKhoan()
 		{
 			InitializeComponent();
 
-            list = new ObservableCollection<NhanVien>(NhanVienBUS.GetInstance().getDataNhanVien());
-            cmbMaNV.ItemsSource = list;
-            cmbMaNV.DisplayMemberPath = "DisplayInfo";
+			list = new ObservableCollection<NhanVien>(NhanVienBUS.GetInstance().getDataNhanVien());
+			cmbMaNV.ItemsSource = list;
+			cmbMaNV.DisplayMemberPath = "DisplayInfo";
 			cmbMaNV.SelectedValuePath = "MaNV";
 		}
 
@@ -51,7 +44,7 @@ namespace GUI.View
 			{
 				txtUsername.Text = taiKhoan.Username;
 				cmbCapDo.Text = taiKhoan.CapDoQuyen.ToString();
-				cmbMaNV.Text = taiKhoan.NhanVien.DisplayInfo.ToString();
+				cmbMaNV.Text = taiKhoan.NhanVien.DisplayInfo;
 				txbTitle.Text = "Sửa thông tin tài khoản " + taiKhoan.Username;
 			}
 			else
@@ -61,11 +54,13 @@ namespace GUI.View
 		}
 
 		#region Method
+
 		private bool KiemTra()
 		{
 			if (string.IsNullOrWhiteSpace(txtUsername.Text) || txtUsername.Text.Any(ch => !char.IsLetterOrDigit(ch)))
 			{
-				new DialogCustoms("Vui lòng nhập tên tài khoản và không chứa ký tự đặc biệt", "Thông báo", DialogCustoms.OK).Show();
+				new DialogCustoms("Vui lòng nhập tên tài khoản và không chứa ký tự đặc biệt", "Thông báo",
+					DialogCustoms.OK).Show();
 				return false;
 			}
 
@@ -74,92 +69,78 @@ namespace GUI.View
 				new DialogCustoms("Vui lòng nhập cấp độ", "Thông báo", DialogCustoms.OK).Show();
 				return false;
 			}
+
 			if (string.IsNullOrWhiteSpace(cmbMaNV.Text))
 			{
 				new DialogCustoms("Vui lòng chọn mã nhân viên", "Thông báo", DialogCustoms.OK).Show();
 				return false;
 			}
+
 			return true;
 		}
+
 		#endregion
 
 		#region Event
+
 		private void btnHuy_Click(object sender, RoutedEventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void btnCapNhat_Click(object sender, RoutedEventArgs e)
 		{
-			if (!KiemTra())
+			if (!KiemTra()) return;
+
+			if (isEditing)
 			{
-				return;
+				var pass = string.Empty;
+				if (string.IsNullOrWhiteSpace(txtPassword.Text))
+					pass = TaiKhoanDAL.GetInstance().layTaiKhoanTheoUsername(txtUsername.Text).Password;
+				else
+					pass = Bcrypt_HashBUS.GetInstance().HashMatKhau(txtPassword.Text);
+				var taiKhoan = new TaiKhoan
+				{
+					Username = txtUsername.Text,
+					Password = pass,
+					CapDoQuyen = int.Parse(cmbCapDo.Text),
+					MaNV = int.Parse(cmbMaNV.SelectedValue.ToString())
+				};
+
+				if (suaTaiKhoan != null) suaTaiKhoan(taiKhoan);
 			}
 			else
 			{
-				if (isEditing)
-				{
-					string pass = string.Empty;
-					if (string.IsNullOrWhiteSpace(txtPassword.Text))
-					{
-						pass = TaiKhoanDAL.GetInstance().layTaiKhoanTheoUsername(txtUsername.Text).Password;
-					}
-					else
-					{
-						pass = Bcrypt_HashBUS.GetInstance().HashMatKhau(txtPassword.Text);
-					}	
-					TaiKhoan taiKhoan = new TaiKhoan()
-					{
-						Username = txtUsername.Text,
-						Password = pass,
-						CapDoQuyen = int.Parse(cmbCapDo.Text),
-						MaNV = int.Parse(cmbMaNV.SelectedValue.ToString())
-					};
-
-					if (suaTaiKhoan != null)
-					{
-						suaTaiKhoan(taiKhoan);
-					}
-				}
-				else 
-				{
-					btnThem_Click(sender, e);
-				}
+				btnThem_Click(sender, e);
 			}
 
-			Window wd = Window.GetWindow(sender as Button);
+			var wd = GetWindow(sender as Button);
 			wd.Close();
 		}
 
 		private void btnThem_Click(object sender, RoutedEventArgs e)
 		{
-			if (!KiemTra())
+			if (!KiemTra()) return;
+
+			if (string.IsNullOrWhiteSpace(txtPassword.Text))
 			{
+				new DialogCustoms("Vui lòng nhập mật khẩu", "Thông báo", DialogCustoms.OK).Show();
 				return;
 			}
-			else
+
+			var pass = Bcrypt_HashBUS.GetInstance().HashMatKhau(txtPassword.Text);
+			var taiKhoan = new TaiKhoan
 			{
-				if (string.IsNullOrWhiteSpace(txtPassword.Text))
-				{
-					new DialogCustoms("Vui lòng nhập mật khẩu", "Thông báo", DialogCustoms.OK).Show();
-					return;
-				}
-				string pass = Bcrypt_HashBUS.GetInstance().HashMatKhau(txtPassword.Text);
-                TaiKhoan taiKhoan = new TaiKhoan()
-				{
-					Username = txtUsername.Text,
-					Password = pass,
-                    CapDoQuyen = int.Parse(cmbCapDo.Text),
-                    MaNV = int.Parse(cmbMaNV.SelectedValue.ToString())
-				};
-                if (truyenTaiKhoan != null)
-				{
-					truyenTaiKhoan(taiKhoan);
-				}
-			}
-			Window wd = Window.GetWindow(sender as Button);
+				Username = txtUsername.Text,
+				Password = pass,
+				CapDoQuyen = int.Parse(cmbCapDo.Text),
+				MaNV = int.Parse(cmbMaNV.SelectedValue.ToString())
+			};
+			if (truyenTaiKhoan != null) truyenTaiKhoan(taiKhoan);
+			var wd = GetWindow(sender as Button);
 			wd.Close();
 		}
+
 		#endregion
 	}
 }
