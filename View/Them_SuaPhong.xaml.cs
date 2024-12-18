@@ -24,7 +24,7 @@ namespace GUI.View
 		public Them_SuaPhong()
 		{
 			InitializeComponent();
-			LP = new List<LoaiPhong>(LoaiPhongBUS.Instance.getDataLoaiPhong());
+			LP = new List<LoaiPhong>(LoaiPhongBUS.GetInstance().getDataLoaiPhong());
 			cmbLoaiPhong.ItemsSource = LP;
 			cmbLoaiPhong.DisplayMemberPath = "TenLoaiPhong";
 			cmbLoaiPhong.SelectedValuePath = "MaLoaiPhong";

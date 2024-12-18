@@ -12,43 +12,40 @@ namespace BUS
 		{
 		}
 
-		public static LoaiDichVuBUS Instance
+		public static LoaiDichVuBUS GetInstance()
 		{
-			get
-			{
-				if (instance == null) instance = new LoaiDichVuBUS();
-				return instance;
-			}
+			if (instance == null) instance = new LoaiDichVuBUS();
+			return instance;
 		}
 
 		public List<LoaiDV> getDataLoaiDV()
 		{
-			return LoaiDichVuDAL.Instance.getData();
+			return LoaiDichVuDAL.GetInstance().getData();
 		}
 
 		public bool addLoaiDV(LoaiDV loaiDV)
 		{
-			return LoaiDichVuDAL.Instance.addDataLoaiDV(loaiDV);
+			return LoaiDichVuDAL.GetInstance().addDataLoaiDV(loaiDV);
 		}
 
 		public bool xoaLoaiDV(LoaiDV loaiDV)
 		{
-			return LoaiDichVuDAL.Instance.xoaLoaiDV(loaiDV);
+			return LoaiDichVuDAL.GetInstance().xoaLoaiDV(loaiDV);
 		}
 
 		public bool capNhatDataLoaiDV(LoaiDV loaiDV)
 		{
-			return LoaiDichVuDAL.Instance.capnhatLoaiDV(loaiDV);
+			return LoaiDichVuDAL.GetInstance().capnhatLoaiDV(loaiDV);
 		}
 
 		public bool KiemTraTenLoaiDV(LoaiDV loaiDV)
 		{
-			return LoaiDichVuDAL.Instance.KiemTraTenLoaiDichVu(loaiDV);
+			return LoaiDichVuDAL.GetInstance().KiemTraTenLoaiDichVu(loaiDV);
 		}
 
 		public bool hienThiLaiLoaiDV(string tenLoaiDV)
 		{
-			return LoaiDichVuDAL.Instance.hienThiLaiLoaiDV(tenLoaiDV);
+			return LoaiDichVuDAL.GetInstance().hienThiLaiLoaiDV(tenLoaiDV);
 		}
 	}
 }

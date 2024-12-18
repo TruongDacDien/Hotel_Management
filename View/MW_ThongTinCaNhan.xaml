@@ -1,5 +1,5 @@
-﻿<Window x:Class="GUI.View.Them_SuaNhanVien"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<Window x:Class="GUI.View.MW_ThongTinCaNhan"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -29,7 +29,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                <TextBlock Text="Thêm nhân viên" FontSize="30" Foreground="#00A3FF" FontWeight="Bold"
+                <TextBlock Text="Thông tin cá nhân" FontSize="30" Foreground="#00A3FF" FontWeight="Bold"
                            HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="txbTitle" />
             </Grid>
 
@@ -74,7 +74,7 @@
                             <materialDesign:PackIcon Kind="Counter" Height="25" Width="25" VerticalAlignment="Center" />
                             <TextBox x:Name="txbLuong" Margin="30 0 0 0" Padding="0"
                                      materialDesign:HintAssist.Hint="Nhập lương"
-                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
 
                         </Grid>
                     </StackPanel>
@@ -98,8 +98,6 @@
                                       Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                       materialDesign:HintAssist.Hint="Giới tính"
                                       Height="25" Padding="5" Width="180">
-                                <ComboBoxItem Content="Nam" />
-                                <ComboBoxItem Content="Nữ" />
                             </ComboBox>
                         </Grid>
                         <Grid Height="30" Width="213" VerticalAlignment="Top" HorizontalAlignment="Left"
@@ -125,32 +123,13 @@
 
             </Grid>
             <Grid Grid.Row="2">
-                <Button Width="89" Height="36" Background="#478C10" Content="Cập nhật" Click="click_Sua"
+                <Button Width="89" Height="36" Background="#478C10" Content="Cập nhật" Click="click_CapNhat"
                         HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 0 212 20">
                     <Button.Clip>
                         <RectangleGeometry Rect="0,0,89,36" RadiusX="10" RadiusY="10" />
                     </Button.Clip>
 
                 </Button>
-                <Button Width="89" Height="36" Background="#478C10" Content="Thêm" Click="click_ThemNV"
-                        Foreground="White"
-                        HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 0 212 20">
-                    <Button.Clip>
-                        <RectangleGeometry Rect="0,0,89,36" RadiusX="10" RadiusY="10" />
-                    </Button.Clip>
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Visibility" Value="Hidden" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Text, ElementName=txbTitle }"
-                                             Value="Thêm nhân viên">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
                 <Button Width="89" Height="36" Background="#9D9999" Content="Hủy"
                         HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 0 80 20" Click="click_Huy">
                     <Button.Clip>
@@ -160,5 +139,4 @@
             </Grid>
         </Grid>
     </Border>
-
 </Window>

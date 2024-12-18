@@ -97,13 +97,13 @@
                         </Grid>
                         <Grid Grid.Column="2">
                             <!--Chưa có gì hết-->
-                            <!--materialDesign:PopupBox Margin=" 0 0 40 0" HorizontalAlignment="Right">
+                            <materialDesign:PopupBox Margin=" 0 0 40 0" HorizontalAlignment="Right">
                                 <ListBox>
-                                    <ListBoxItem Content="Thông tin cá nhân" />
-                                    <ListBoxItem Content="Thông tin tài khoản" />
-                                    <ListBoxItem Content="Đăng xuất" />
+                                    <ListBoxItem Content="Thông tin cá nhân" MouseLeftButtonUp="ListBoxItem_Click"/>
+                                    <ListBoxItem Content="Thông tin tài khoản" MouseLeftButtonUp="ListBoxItem_Click"/>
+                                    <ListBoxItem Content="Đăng xuất" MouseLeftButtonUp="ListBoxItem_Click"/>
                                 </ListBox>
-                            </materialDesign:PopupBox-->
+                            </materialDesign:PopupBox>
                         </Grid>
 
                     </Grid>
@@ -140,14 +140,6 @@
                 <!--Khu vực header listView Menu-->
                 <Grid Grid.Row="0" Height="170">
                     <Grid Background="#FF142C2F">
-                        <Button x:Name="btnDangXuat" Width="80" Height="30" HorizontalAlignment="Left" Padding="0"
-                                Foreground="DarkKhaki"
-                                VerticalAlignment="Top" FontSize="11" BorderThickness="0" Background="Transparent"
-                                BorderBrush="White"
-                                Click="btnDangXuat_Click">
-                            <TextBlock Text="Đăng xuất" Foreground="#FFE4EAF3" />
-                        </Button>
-
                         <Ellipse x:Name="imgAvatar" Width="130" Height="130" VerticalAlignment="Top" Margin="0 10 0 0">
                             <Ellipse.Fill>
                                 <ImageBrush ImageSource="/GUI;component/Res/image.png" />
@@ -158,7 +150,7 @@
                                 <RectangleGeometry Rect="0,0,130,130" RadiusX="65" RadiusY="65" />
                             </Grid.Clip>
                             <TextBlock x:Name="txblAvatarBinding" />
-                            <Button x:Name="btnThayAnh" VerticalAlignment="Bottom" Background="White" Opacity="0.6"
+                            <!--Button x:Name="btnThayAnh" VerticalAlignment="Bottom" Background="White" Opacity="0.6"
                                     BorderThickness="0" Height="30" Click="click_ThayDoiAnh">
                                 <Button.Style>
                                     <Style TargetType="Button">
@@ -178,7 +170,7 @@
                                 </Button.Style>
                                 <materialDesign:PackIcon Opacity="0.8" Kind="CameraImage" Foreground="Blue" Width="20"
                                                          Height="20" />
-                            </Button>
+                            </Button-->
 
                         </Grid>
 

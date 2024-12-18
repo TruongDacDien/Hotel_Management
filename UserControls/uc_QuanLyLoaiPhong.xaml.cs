@@ -32,7 +32,7 @@ namespace GUI.UserControls
 
 		private void TaiDanhSach()
 		{
-			listLP = new ObservableCollection<LoaiPhong>(LoaiPhongBUS.Instance.getDataLoaiPhong());
+			listLP = new ObservableCollection<LoaiPhong>(LoaiPhongBUS.GetInstance().getDataLoaiPhong());
 			lsvLoaiPhong.ItemsSource = listLP;
 			view = (CollectionView)CollectionViewSource.GetDefaultView(listLP);
 			view.Filter = LoaiPhongFilter;
@@ -47,9 +47,9 @@ namespace GUI.UserControls
 
 		private void nhanData(LoaiPhong loaiPhong)
 		{
-			if (!LoaiPhongBUS.Instance.KiemTraTrungTen(loaiPhong))
+			if (!LoaiPhongBUS.GetInstance().KiemTraTrungTen(loaiPhong))
 			{
-				if (LoaiPhongBUS.Instance.addLoaiPhong(loaiPhong))
+				if (LoaiPhongBUS.GetInstance().addLoaiPhong(loaiPhong))
 				{
 					new DialogCustoms("Thêm thành công", "Thông báo", DialogCustoms.OK).Show();
 					TaiDanhSach();
@@ -57,7 +57,7 @@ namespace GUI.UserControls
 			}
 			else
 			{
-				if (LoaiPhongBUS.Instance.hienThiLaiLoaiPhong(loaiPhong.TenLoaiPhong))
+				if (LoaiPhongBUS.GetInstance().hienThiLaiLoaiPhong(loaiPhong.TenLoaiPhong))
 				{
 					new DialogCustoms("Tên loại phòng đã tồn tại trong hệ thống\nĐã cập nhật lại danh sách",
 						"Thông báo", DialogCustoms.OK).Show();
@@ -68,7 +68,7 @@ namespace GUI.UserControls
 
 		private void capNhatData(LoaiPhong loaiPhong)
 		{
-			if (LoaiPhongBUS.Instance.capNhatDataLoaiPhong(loaiPhong))
+			if (LoaiPhongBUS.GetInstance().capNhatDataLoaiPhong(loaiPhong))
 			{
 				new DialogCustoms("Cập nhật thành công", "Thông báo", DialogCustoms.OK).Show();
 				TaiDanhSach();
@@ -100,7 +100,7 @@ namespace GUI.UserControls
 			if (thongbao.ShowDialog() == true)
 			{
 				new DialogCustoms("Xoá thành công", "Thông báo", DialogCustoms.OK).Show();
-				LoaiPhongBUS.Instance.xoaLoaiPhong(phong);
+				LoaiPhongBUS.GetInstance().xoaLoaiPhong(phong);
 				TaiDanhSach();
 			}
 		}

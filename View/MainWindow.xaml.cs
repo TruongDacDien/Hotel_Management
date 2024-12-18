@@ -35,66 +35,6 @@ namespace GUI.View
 			MaxWidth = SystemParameters.MaximizedPrimaryScreenWidth;
 		}
 
-		private void click_ThayDoiAnh(object sender, RoutedEventArgs e)
-		{
-			var openFile = new OpenFileDialog
-			{
-				Filter = "Pictures files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)|*.jpg; *.jpeg; *.jpe; *.jfif; *.png",
-				FilterIndex = 1,
-				RestoreDirectory = true
-			};
-
-			if (openFile.ShowDialog() == true)
-				try
-				{
-					// Đọc file ảnh đã chọn
-					var sourceFile = openFile.FileName;
-
-					// Hiển thị ảnh lên giao diện
-					var bitmap = new BitmapImage();
-					bitmap.BeginInit();
-					bitmap.UriSource = new Uri(sourceFile, UriKind.Absolute);
-					bitmap.CacheOption = BitmapCacheOption.OnLoad;
-					bitmap.EndInit();
-					var imageBrush = new ImageBrush(bitmap);
-					imgAvatar.Fill = imageBrush;
-
-					// Chuyển đổi ảnh thành mảng byte
-					byte[] avatarBytes;
-					using (var fs = new FileStream(sourceFile, FileMode.Open, FileAccess.Read))
-					{
-						using (var ms = new MemoryStream())
-						{
-							fs.CopyTo(ms);
-							avatarBytes = ms.ToArray();
-						}
-					}
-
-					// Cập nhật avatar vào cơ sở dữ liệu
-					string error;
-					if (!TaiKhoanBUS.GetInstance().capNhatAvatar(taiKhoan.Username, avatarBytes, out error))
-						new DialogCustoms($"Thay đổi ảnh đại diện thất bại!\nLỗi: {error}", "Thông báo",
-							DialogCustoms.OK).ShowDialog();
-					else
-						new DialogCustoms("Thay đổi ảnh đại diện thành công!", "Thông báo", DialogCustoms.OK)
-							.ShowDialog();
-				}
-				catch (Exception ex)
-				{
-					new DialogCustoms($"Lỗi: {ex.Message}", "Thông báo", DialogCustoms.OK).ShowDialog();
-				}
-		}
-
-		private void btnDangXuat_Click(object sender, RoutedEventArgs e)
-		{
-			var dialog = new DialogCustoms("Bạn có muốn đăng xuất ?", "Thông báo", DialogCustoms.YesNo);
-			if (dialog.ShowDialog() == true)
-			{
-				new DangNhap().Show();
-				Close();
-			}
-		}
-
 		#region uc_view
 
 		private uc_Home Home;
@@ -119,6 +59,13 @@ namespace GUI.View
 		public List<ItemMenuMainWindow> listMenu { get; set; }
 		private string title_Main;
 		private int minHeight_ucControlbar;
+
+		public class ItemMenuMainWindow
+		{
+			public string name { get; set; }
+			public string foreColor { get; set; }
+			public string kind_Icon { get; set; }
+		}
 
 		public string Title_Main
 		{
@@ -359,14 +306,39 @@ namespace GUI.View
 			}
 		}
 
+		private void ListBoxItem_Click(object sender, MouseButtonEventArgs e)
+		{
+			ListBoxItem clickedItem = sender as ListBoxItem;
+			if (clickedItem != null)
+			{
+				string itemContent = clickedItem.Content.ToString();
+
+				switch (itemContent)
+				{
+					case "Thông tin cá nhân":
+						MW_ThongTinCaNhan thongTinCaNhan = new MW_ThongTinCaNhan(MaNV);
+						thongTinCaNhan.ShowDialog();
+						load_Windows(sender, e);
+						break;
+					case "Thông tin tài khoản":
+						MW_ThongTinTaiKhoan thongTinTaiKhoan = new MW_ThongTinTaiKhoan(taiKhoan);
+						thongTinTaiKhoan.ShowDialog();
+						load_Windows(sender, e);
+						break;
+					case "Đăng xuất":
+						var dialog = new DialogCustoms("Bạn có muốn đăng xuất ?", "Thông báo", DialogCustoms.YesNo);
+						if (dialog.ShowDialog() == true)
+						{
+							new DangNhap().Show();
+							Close();
+						}
+						break;
+					default:
+						break;
+				}
+			}
+		}
+
 		#endregion
-	}
-
-
-	public class ItemMenuMainWindow
-	{
-		public string name { get; set; }
-		public string foreColor { get; set; }
-		public string kind_Icon { get; set; }
 	}
 }

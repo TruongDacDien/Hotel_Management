@@ -106,7 +106,7 @@
                             <TextBox Name="txtGia"
                                      materialDesign:HintAssist.Hint="Giá dịch vụ"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox  }"
-                                     VerticalAlignment="Center" Width="200" />
+                                     VerticalAlignment="Center" Width="200"/>
                         </Grid>
 
 

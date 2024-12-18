@@ -42,7 +42,7 @@ namespace GUI.View
 			lsDichVu_DaChon = new ObservableCollection<DichVu_DaChon>();
 			lsCache = new List<DichVu>();
 			lsLoaiDV = new List<LoaiDV>();
-			lsLoaiDV = LoaiDichVuBUS.Instance.getDataLoaiDV();
+			lsLoaiDV = LoaiDichVuBUS.GetInstance().getDataLoaiDV();
 			lsLoaiDV.Insert(0, new LoaiDV { TenLoaiDV = "Tất cả", MaLoaiDV = 0 });
 			cbTimKiemLoaiDV.SelectedIndex = 0;
 			lvDanhSachDV.ItemsSource = lsdichVu_Customs;

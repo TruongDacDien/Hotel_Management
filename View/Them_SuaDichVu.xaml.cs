@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using BUS;
@@ -20,7 +21,6 @@ namespace GUI.View
 		private readonly string maDV;
 		private List<LoaiDV> loaiDV;
 		public SuaDuLieu sua;
-
 		public TryenDuLieu truyen;
 
 		public Them_SuaDichVu()
@@ -53,7 +53,7 @@ namespace GUI.View
 
 		private void TaiDanhSach()
 		{
-			loaiDV = new List<LoaiDV>(LoaiDichVuBUS.Instance.getDataLoaiDV());
+			loaiDV = new List<LoaiDV>(LoaiDichVuBUS.GetInstance().getDataLoaiDV());
 			Console.WriteLine($"Số lượng loại DV: {loaiDV.Count}");
 
 			cmbMaLoai.ItemsSource = loaiDV;
