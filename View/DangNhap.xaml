@@ -53,23 +53,25 @@
                 <materialDesign:PackIcon Kind="Lock" HorizontalAlignment="Left" VerticalAlignment="Top"
                                          Height="19" Width="19"
                                          Margin="20,160,0,0" />
-                <TextBox Margin="55 107 0 0" Height="26" Width="130" x:Name="txbTenDangNhap"
+                <TextBox Margin="55 107 0 0" Height="26" Width="130" x:Name="txtUsername"
                          HorizontalAlignment="Left" VerticalAlignment="Top"
                          materialDesign:HintAssist.Hint="Tên đăng nhập" />
 
-                <PasswordBox materialDesign:HintAssist.Hint="Mật khẩu" x:Name="txbMatKhau"
-                             HorizontalAlignment="Left" VerticalAlignment="Top"
-                             Margin="55,154,0,0" Height="26" Width="130"
-                             materialDesign:TextFieldAssist.HasClearButton="True"
-                             KeyDown="txbMatKhau_KeyDown" />
+                <PasswordBox materialDesign:HintAssist.Hint="Mật khẩu" x:Name="txtPasswordHidden"
+                        HorizontalAlignment="Left" VerticalAlignment="Top"
+                        Margin="55,154,0,0" Height="26" Width="130" Cursor="Hand"
+                        KeyDown="txbMatKhau_KeyDown" />
+                <TextBox materialDesign:HintAssist.Hint="Mật khẩu" Name="txtPasswordVisible"
+                        HorizontalAlignment="Left" VerticalAlignment="Top"
+                        Margin="55,154,0,0" Height="26" Width="130" Visibility="Collapsed"/>
 
+                <materialDesign:PackIcon  x:Name="iconEye" Kind="EyeOffOutline" HorizontalAlignment="Left" VerticalAlignment="Top"
+                         Height="19" Width="19"
+                         Margin="200,160,0,0" MouseLeftButtonUp="Hide_MouseLeftButtonUp"/>
                 <TextBlock Foreground="#0056FC"
                            HorizontalAlignment="Left" VerticalAlignment="Top"
                            Margin="119 200 0 0">
-                    <Hyperlink NavigateUri="https://www.facebook.com/profile.php?id=61556372040526"
-                               RequestNavigate="Hyperlink_RequestNavigate">
-                        Quên mật khẩu?
-                    </Hyperlink>
+                    <Hyperlink Click="Hyperlink_Click">Quên mật khẩu?</Hyperlink>
                 </TextBlock>
 
                 <Button Height="28" Width="107" Background="#0056FC"

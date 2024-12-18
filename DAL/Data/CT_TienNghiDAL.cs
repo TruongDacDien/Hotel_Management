@@ -14,13 +14,10 @@ namespace DAL.Data
 		{
 		}
 
-		public static CT_TienNghiDAL Instance
+		public static CT_TienNghiDAL GetInstance()
 		{
-			get
-			{
-				if (instance == null) instance = new CT_TienNghiDAL();
-				return instance;
-			}
+			if (instance == null) instance = new CT_TienNghiDAL();
+			return instance;
 		}
 
 		// Lấy danh sách các chi tiết tiện nghi

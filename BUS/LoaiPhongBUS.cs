@@ -12,43 +12,40 @@ namespace BUS
 		{
 		}
 
-		public static LoaiPhongBUS Instance
+		public static LoaiPhongBUS GetInstance()
 		{
-			get
-			{
-				if (instance == null) instance = new LoaiPhongBUS();
-				return instance;
-			}
+			if (instance == null) instance = new LoaiPhongBUS();
+			return instance;
 		}
 
 		public List<LoaiPhong> getDataLoaiPhong()
 		{
-			return LoaiPhongDAL.Instance.getDataLoaiPhong();
+			return LoaiPhongDAL.GetInstance().getDataLoaiPhong();
 		}
 
 		public bool addLoaiPhong(LoaiPhong loaiPhong)
 		{
-			return LoaiPhongDAL.Instance.addLoaiPhong(loaiPhong);
+			return LoaiPhongDAL.GetInstance().addLoaiPhong(loaiPhong);
 		}
 
 		public bool xoaLoaiPhong(LoaiPhong loaiPhong)
 		{
-			return LoaiPhongDAL.Instance.xoaLoaiPhong(loaiPhong);
+			return LoaiPhongDAL.GetInstance().xoaLoaiPhong(loaiPhong);
 		}
 
 		public bool capNhatDataLoaiPhong(LoaiPhong loaiPhong)
 		{
-			return LoaiPhongDAL.Instance.capnhatLoaiPhong(loaiPhong);
+			return LoaiPhongDAL.GetInstance().capnhatLoaiPhong(loaiPhong);
 		}
 
 		public bool KiemTraTrungTen(LoaiPhong loaiPhong)
 		{
-			return LoaiPhongDAL.Instance.KiemTraTenLoaiPhong(loaiPhong);
+			return LoaiPhongDAL.GetInstance().KiemTraTenLoaiPhong(loaiPhong);
 		}
 
 		public bool hienThiLaiLoaiPhong(string tenLoaiPhong)
 		{
-			return LoaiPhongDAL.Instance.hienThiLaiLoaiPhong(tenLoaiPhong);
+			return LoaiPhongDAL.GetInstance().hienThiLaiLoaiPhong(tenLoaiPhong);
 		}
 	}
 }

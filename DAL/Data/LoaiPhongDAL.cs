@@ -14,13 +14,10 @@ namespace DAL.Data
 		{
 		}
 
-		public static LoaiPhongDAL Instance
+		public static LoaiPhongDAL GetInstance()
 		{
-			get
-			{
-				if (instance == null) instance = new LoaiPhongDAL();
-				return instance;
-			}
+			if (instance == null) instance = new LoaiPhongDAL();
+			return instance;
 		}
 
 		// Lấy tất cả loại phòng

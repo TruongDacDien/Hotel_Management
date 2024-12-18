@@ -14,13 +14,10 @@ namespace DAL.Data
 		{
 		}
 
-		public static TienNghiDAL Instance
+		public static TienNghiDAL GetInstance()
 		{
-			get
-			{
-				if (instance == null) instance = new TienNghiDAL();
-				return instance;
-			}
+			if (instance == null) instance = new TienNghiDAL();
+			return instance;
 		}
 
 		// Lấy tất cả dữ liệu tiện nghi từ cơ sở dữ liệu

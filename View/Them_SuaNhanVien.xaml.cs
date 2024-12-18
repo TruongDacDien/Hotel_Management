@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using DAL.DTO;
@@ -11,7 +12,6 @@ namespace GUI.View
 
 		private string maNV;
 		public CRUD suaNhanVien;
-
 		public CRUD themNhanVien;
 		public CRUD truyenNhanVien;
 
@@ -29,8 +29,7 @@ namespace GUI.View
 			txbChucVu.Text = nv.ChucVu;
 			txbDiaChi.Text = nv.DiaChi;
 
-			txbLuong.Text = nv.Luong % 1 == 0 ? ((int)nv.Luong).ToString() : nv.Luong.ToString();
-			//txbLuong.Text = nv.Luong.ToString();
+			txbLuong.Text = string.Format("{0:0,0 VND}", nv.Luong);
 			txbSDT.Text = nv.SDT;
 			cbGioiTinh.Text = nv.GioiTinh;
 			dtNTNS.Text = nv.NTNS.ToString();
@@ -202,7 +201,6 @@ namespace GUI.View
 				Close();
 			}
 		}
-
 		#endregion
 	}
 }

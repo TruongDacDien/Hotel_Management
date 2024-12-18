@@ -69,12 +69,12 @@
                                      materialDesign:HintAssist.Hint="Nhập họ căn cước công dân"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
                         </Grid>
-                        <Grid Height="25" Width="213" VerticalAlignment="Top" HorizontalAlignment="Left"
+                        <Grid Height="30" Width="213" VerticalAlignment="Top" HorizontalAlignment="Left"
                               Margin="40 40 0 0">
                             <materialDesign:PackIcon Kind="Counter" Height="25" Width="25" VerticalAlignment="Center" />
                             <TextBox x:Name="txbLuong" Margin="30 0 0 0" Padding="0"
                                      materialDesign:HintAssist.Hint="Nhập lương"
-                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
 
                         </Grid>
                     </StackPanel>
@@ -110,7 +110,7 @@
                                      materialDesign:HintAssist.Hint="Nhập địa chỉ"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
                         </Grid>
-                        <Grid Height="25" Width="213" VerticalAlignment="Top" HorizontalAlignment="Left"
+                        <Grid Height="30" Width="213" VerticalAlignment="Top" HorizontalAlignment="Left"
                               Margin="40 40 0 0">
                             <materialDesign:PackIcon Kind="AccountHardHat" Height="25" Width="25"
                                                      VerticalAlignment="Center" />

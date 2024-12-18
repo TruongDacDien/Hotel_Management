@@ -43,12 +43,9 @@ namespace BUS
 		}
 
 		//lấy nhân viên theo mã  nhân viên
-		public string layNhanVienTheoMaNV(int maNV)
+		public NhanVien layNhanVienTheoMaNV(int maNV)
 		{
-			var nv = NhanVienDAL.GetInstance().layNhanVienTheoMaNV(maNV);
-			if (nv != null)
-				return nv.HoTen;
-			return "Uknow";
+			return NhanVienDAL.GetInstance().layNhanVienTheoMaNV(maNV);
 		}
 
 		public int kiemTraTonTaiNhanVien(string cccd)

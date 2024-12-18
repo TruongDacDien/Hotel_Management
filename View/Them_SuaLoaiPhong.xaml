@@ -107,7 +107,7 @@
                             <TextBox Width="150" Name="txtGiaNgay"
                                      materialDesign:HintAssist.Hint="Nhập giá ngày"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                     VerticalAlignment="Center" />
+                                     VerticalAlignment="Center"/>
 
                         </Grid>
 
@@ -127,7 +127,7 @@
                             <TextBox Width="150" Name="txtGiaGio"
                                      materialDesign:HintAssist.Hint="Nhập giá giờ"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                     VerticalAlignment="Center" />
+                                     VerticalAlignment="Center"/>
 
                         </Grid>
 

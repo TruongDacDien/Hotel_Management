@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using DAL.DTO;
 
@@ -15,8 +16,6 @@ namespace GUI.View
 
 		private readonly string maLoaiPhong;
 		public suaData suaLoaiPhong;
-
-
 		public truyenData truyenLoaiPhong;
 
 		public Them_SuaLoaiPhong()
@@ -138,7 +137,6 @@ namespace GUI.View
 			var wd = GetWindow(sender as Button);
 			wd.Close();
 		}
-
 		#endregion
 	}
 }
