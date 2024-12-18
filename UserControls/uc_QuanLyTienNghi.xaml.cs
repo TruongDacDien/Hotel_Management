@@ -25,7 +25,7 @@ namespace GUI.UserControls
 
 		private void TaiDanhSach()
 		{
-			list = new ObservableCollection<TienNghi>(TienNghiBUS.Instance.getDataTienNghi());
+			list = new ObservableCollection<TienNghi>(TienNghiBUS.GetInstance().getDataTienNghi());
 			lsvTienNghi.ItemsSource = list;
 			view = (CollectionView)CollectionViewSource.GetDefaultView(lsvTienNghi.ItemsSource);
 			view.Filter = TienNghiFilter;
@@ -58,7 +58,7 @@ namespace GUI.UserControls
 			if (thongbao.ShowDialog() == true)
 			{
 				new DialogCustoms("Xoá thành công", "Thông báo", DialogCustoms.OK).Show();
-				TienNghiBUS.Instance.xoaTienNghi(tn);
+				TienNghiBUS.GetInstance().xoaTienNghi(tn);
 				TaiDanhSach();
 			}
 		}
@@ -72,9 +72,9 @@ namespace GUI.UserControls
 
 		private void nhanData(TienNghi tn)
 		{
-			if (!TienNghiBUS.Instance.KiemTraTenTienNghi(tn))
+			if (!TienNghiBUS.GetInstance().KiemTraTenTienNghi(tn))
 			{
-				if (TienNghiBUS.Instance.addTienNghi(tn))
+				if (TienNghiBUS.GetInstance().addTienNghi(tn))
 				{
 					new DialogCustoms("Thêm thành công", "Thông báo", DialogCustoms.OK).ShowDialog();
 					TaiDanhSach();
@@ -82,7 +82,7 @@ namespace GUI.UserControls
 			}
 			else
 			{
-				if (TienNghiBUS.Instance.hienThiLaiTienNghi(tn.TenTN))
+				if (TienNghiBUS.GetInstance().hienThiLaiTienNghi(tn.TenTN))
 				{
 					new DialogCustoms("Tên tiện nghi đã tồn tại trong hệ thống\n Đã cập nhật lại danh sách",
 						"Thông báo", DialogCustoms.OK).ShowDialog();
@@ -93,9 +93,9 @@ namespace GUI.UserControls
 
 		private void capNhatData(TienNghi tn)
 		{
-			if (!TienNghiBUS.Instance.KiemTraTenTienNghi(tn))
+			if (!TienNghiBUS.GetInstance().KiemTraTenTienNghi(tn))
 			{
-				if (TienNghiBUS.Instance.capNhatTienNghi(tn))
+				if (TienNghiBUS.GetInstance().capNhatTienNghi(tn))
 				{
 					new DialogCustoms("Cập nhật thành công", "Thông báo", DialogCustoms.OK).ShowDialog();
 					TaiDanhSach();

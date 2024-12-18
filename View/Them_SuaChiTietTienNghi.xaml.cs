@@ -58,7 +58,7 @@ namespace GUI.View
 
 		private void TaiDanhSach()
 		{
-			TienNghis = new List<TienNghi>(TienNghiBUS.Instance.getDataTienNghi());
+			TienNghis = new List<TienNghi>(TienNghiBUS.GetInstance().getDataTienNghi());
 			cmbSoPhong.ItemsSource = PhongBUS.GetInstance().getDataPhong();
 			cmbTienNghi.ItemsSource = TienNghis;
 			cmbSoPhong.DisplayMemberPath = "SoPhong";

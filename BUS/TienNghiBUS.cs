@@ -12,43 +12,40 @@ namespace BUS
 		{
 		}
 
-		public static TienNghiBUS Instance
+		public static TienNghiBUS GetInstance()
 		{
-			get
-			{
-				if (instance == null) instance = new TienNghiBUS();
-				return instance;
-			}
+			if (instance == null) instance = new TienNghiBUS();
+			return instance;
 		}
 
 		public List<TienNghi> getDataTienNghi()
 		{
-			return TienNghiDAL.Instance.getData();
+			return TienNghiDAL.GetInstance().getData();
 		}
 
 		public bool addTienNghi(TienNghi tn)
 		{
-			return TienNghiDAL.Instance.addTienNghi(tn);
+			return TienNghiDAL.GetInstance().addTienNghi(tn);
 		}
 
 		public bool xoaTienNghi(TienNghi tn)
 		{
-			return TienNghiDAL.Instance.xoaTienNghi(tn);
+			return TienNghiDAL.GetInstance().xoaTienNghi(tn);
 		}
 
 		public bool capNhatTienNghi(TienNghi tn)
 		{
-			return TienNghiDAL.Instance.capnhatTienNghi(tn);
+			return TienNghiDAL.GetInstance().capnhatTienNghi(tn);
 		}
 
 		public bool KiemTraTenTienNghi(TienNghi tn)
 		{
-			return TienNghiDAL.Instance.KiemTraTenTienNghi(tn);
+			return TienNghiDAL.GetInstance().KiemTraTenTienNghi(tn);
 		}
 
 		public bool hienThiLaiTienNghi(string tenTN)
 		{
-			return TienNghiDAL.Instance.hienThiLaiTienNghi(tenTN);
+			return TienNghiDAL.GetInstance().hienThiLaiTienNghi(tenTN);
 		}
 	}
 }

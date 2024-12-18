@@ -48,7 +48,7 @@ namespace GUI.UserControls
 			if (ThongBao.ShowDialog() == true)
 			{
 				new DialogCustoms("Xóa thành công", "Thông báo", DialogCustoms.OK).Show();
-				LoaiDichVuBUS.Instance.xoaLoaiDV(loaiDV);
+				LoaiDichVuBUS.GetInstance().xoaLoaiDV(loaiDV);
 				TaiDanhSach();
 			}
 		}
@@ -66,7 +66,7 @@ namespace GUI.UserControls
 
 		private void TaiDanhSach()
 		{
-			list = new ObservableCollection<LoaiDV>(LoaiDichVuBUS.Instance.getDataLoaiDV());
+			list = new ObservableCollection<LoaiDV>(LoaiDichVuBUS.GetInstance().getDataLoaiDV());
 			lsvLoaiDV.ItemsSource = list;
 			view = (CollectionView)CollectionViewSource.GetDefaultView(list);
 			view.Filter = LoaiDVFilter;
@@ -74,9 +74,9 @@ namespace GUI.UserControls
 
 		private void nhanData(LoaiDV loaiDV)
 		{
-			if (!LoaiDichVuBUS.Instance.KiemTraTenLoaiDV(loaiDV))
+			if (!LoaiDichVuBUS.GetInstance().KiemTraTenLoaiDV(loaiDV))
 			{
-				if (LoaiDichVuBUS.Instance.addLoaiDV(loaiDV))
+				if (LoaiDichVuBUS.GetInstance().addLoaiDV(loaiDV))
 				{
 					new DialogCustoms("Thêm thành công", "Thông báo", DialogCustoms.OK).Show();
 					TaiDanhSach();
@@ -84,7 +84,7 @@ namespace GUI.UserControls
 			}
 			else
 			{
-				if (LoaiDichVuBUS.Instance.hienThiLaiLoaiDV(loaiDV.TenLoaiDV))
+				if (LoaiDichVuBUS.GetInstance().hienThiLaiLoaiDV(loaiDV.TenLoaiDV))
 				{
 					new DialogCustoms("Tên loại dịch vụ đã tồn tại", "Thông báo", DialogCustoms.OK).Show();
 					TaiDanhSach();
@@ -94,9 +94,9 @@ namespace GUI.UserControls
 
 		private void capNhatData(LoaiDV loaiDV)
 		{
-			if (!LoaiDichVuBUS.Instance.KiemTraTenLoaiDV(loaiDV))
+			if (!LoaiDichVuBUS.GetInstance().KiemTraTenLoaiDV(loaiDV))
 			{
-				if (LoaiDichVuBUS.Instance.capNhatDataLoaiDV(loaiDV))
+				if (LoaiDichVuBUS.GetInstance().capNhatDataLoaiDV(loaiDV))
 				{
 					new DialogCustoms("Cập nhật thành công", "Thông báo", DialogCustoms.OK).Show();
 					TaiDanhSach();

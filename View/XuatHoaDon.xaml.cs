@@ -57,7 +57,7 @@ namespace GUI.View
 
 				txbTenKH.Text = "Khách hàng: " + Phong.TenKH;
 				txbSoNguoi.Text = Phong.SoNguoi.ToString();
-				txbNhanVien.Text = NhanVienBUS.GetInstance().layNhanVienTheoMaNV(MaNV);
+				txbNhanVien.Text = NhanVienBUS.GetInstance().layNhanVienTheoMaNV(MaNV).HoTen;
 				txbNgayLapHD.Text = ngayKT.ToString();
 				txbTongTien.Text = string.Format("{0:0,0 VND}", (tienDV ?? 0) + tienPhong);
 

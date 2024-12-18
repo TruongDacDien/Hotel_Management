@@ -12,43 +12,40 @@ namespace BUS
 		{
 		}
 
-		public static CT_TienNghiBUS Instance
+		public static CT_TienNghiBUS GetInstance()
 		{
-			get
-			{
-				if (instance == null) instance = new CT_TienNghiBUS();
-				return instance;
-			}
+			if (instance == null) instance = new CT_TienNghiBUS();
+			return instance;
 		}
 
 		public List<CT_TienNghi> getData()
 		{
-			return CT_TienNghiDAL.Instance.getData();
+			return CT_TienNghiDAL.GetInstance().getData();
 		}
 
 		public bool addCTTienNghi(CT_TienNghi chiTietTN)
 		{
-			return CT_TienNghiDAL.Instance.addCTTienNghi(chiTietTN);
+			return CT_TienNghiDAL.GetInstance().addCTTienNghi(chiTietTN);
 		}
 
 		public bool xoaCTTienNghi(CT_TienNghi chiTietTN)
 		{
-			return CT_TienNghiDAL.Instance.xoaCTTienNghi(chiTietTN);
+			return CT_TienNghiDAL.GetInstance().xoaCTTienNghi(chiTietTN);
 		}
 
 		public bool capNhatCTTienNghi(CT_TienNghi chiTietTN)
 		{
-			return CT_TienNghiDAL.Instance.capnhatCTTienNghi(chiTietTN);
+			return CT_TienNghiDAL.GetInstance().capnhatCTTienNghi(chiTietTN);
 		}
 
 		public bool KiemTraTonTai(CT_TienNghi chiTietTN)
 		{
-			return CT_TienNghiDAL.Instance.KiemTraTonTai(chiTietTN);
+			return CT_TienNghiDAL.GetInstance().KiemTraTonTai(chiTietTN);
 		}
 
 		public bool hienThiLaiCT_TienNghi(int maTN, string soPhong)
 		{
-			return CT_TienNghiDAL.Instance.hienThiLaiCT_TienNghi(maTN, soPhong);
+			return CT_TienNghiDAL.GetInstance().hienThiLaiCT_TienNghi(maTN, soPhong);
 		}
 	}
 }

@@ -219,6 +219,12 @@
     <Compile Include="View\DialogCustoms.xaml.cs">
       <DependentUpon>DialogCustoms.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\MW_ThongTinCaNhan.xaml.cs">
+      <DependentUpon>MW_ThongTinCaNhan.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MW_ThongTinTaiKhoan.xaml.cs">
+      <DependentUpon>MW_ThongTinTaiKhoan.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Them_SuaChiTietTienNghi.xaml.cs">
       <DependentUpon>Them_SuaChiTietTienNghi.xaml</DependentUpon>
     </Compile>
@@ -348,6 +354,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\DatPhong.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MW_ThongTinCaNhan.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MW_ThongTinTaiKhoan.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

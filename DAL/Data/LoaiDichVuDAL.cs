@@ -14,13 +14,10 @@ namespace DAL.Data
 		{
 		}
 
-		public static LoaiDichVuDAL Instance
+		public static LoaiDichVuDAL GetInstance()
 		{
-			get
-			{
-				if (instance == null) instance = new LoaiDichVuDAL();
-				return instance;
-			}
+			if (instance == null) instance = new LoaiDichVuDAL();
+			return instance;
 		}
 
 		// Lấy tất cả loại dịch vụ

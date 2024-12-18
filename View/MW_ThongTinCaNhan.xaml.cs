@@ -1,39 +1,51 @@
-﻿using System;
+﻿using BUS;
+using DAL.DTO;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using DAL.DTO;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace GUI.View
 {
-	public partial class Them_SuaNhanVien : Window
+	/// <summary>
+	/// Interaction logic for MW_ThongTinCaNhan.xaml
+	/// </summary>
+	public partial class MW_ThongTinCaNhan : Window
 	{
-		public delegate void CRUD(NhanVien nv);
+		private  NhanVien nhanVien;
+		public NhanVien NhanVien { get => nhanVien; set => nhanVien = value; }
 
-		private string maNV;
-		public CRUD suaNhanVien;
-		public CRUD themNhanVien;
-		public CRUD truyenNhanVien;
-
-		public Them_SuaNhanVien()
+		public MW_ThongTinCaNhan()
 		{
 			InitializeComponent();
-			truyenNhanVien = nhanData;
+			txbLuong.IsReadOnly = true;
+			txbChucVu.IsReadOnly = true;
 		}
 
-		public void nhanData(NhanVien nv)
+		public MW_ThongTinCaNhan(int maNV): this()
 		{
-			txbTitle.Text = "Sửa nhân viên";
-			txbHoTenNV.Text = nv.HoTen;
-			txbCCCD.Text = nv.CCCD;
-			txbChucVu.Text = nv.ChucVu;
-			txbDiaChi.Text = nv.DiaChi;
-
-			txbLuong.Text = string.Format("{0:0,0 VND}", nv.Luong);
-			txbSDT.Text = nv.SDT;
-			cbGioiTinh.Text = nv.GioiTinh;
-			dtNTNS.Text = nv.NTNS.ToString();
-			maNV = nv.MaNV.ToString();
+			this.NhanVien = NhanVienBUS.GetInstance().layNhanVienTheoMaNV(maNV);
+			if (this.NhanVien != null)
+			{
+				txbHoTenNV.Text = this.NhanVien.HoTen;
+				txbCCCD.Text = this.NhanVien.CCCD;
+				txbChucVu.Text = this.NhanVien.ChucVu;
+				txbDiaChi.Text = this.NhanVien.DiaChi;
+				cbGioiTinh.ItemsSource = new List<string> { "Nam", "Nữ" };
+				cbGioiTinh.SelectedValue = this.NhanVien.GioiTinh ?? "Nam";
+				txbLuong.Text = string.Format("{0:0,0 VND}", this.NhanVien.Luong);
+				dtNTNS.SelectedDate = this.NhanVien.NTNS;
+				txbSDT.Text = this.NhanVien.SDT;
+			}	
 		}
 
 		private bool kiemTraDayDuThongTin()
@@ -152,55 +164,33 @@ namespace GUI.View
 			return true;
 		}
 
-		#region event
+		private void click_CapNhat(object sender, RoutedEventArgs e)
+		{
+			if (kiemTraDayDuThongTin())
+			{
+				var nhanVien = new NhanVien
+				{
+					MaNV = this.NhanVien.MaNV,
+					HoTen = txbHoTenNV.Text,
+					CCCD = txbCCCD.Text,
+					ChucVu = txbChucVu.Text,
+					DiaChi = txbDiaChi.Text,
+					GioiTinh = cbGioiTinh.Text,
+					Luong = decimal.Parse(txbLuong.Text),
+					NTNS = DateTime.Parse(dtNTNS.SelectedDate.ToString()),
+					SDT = txbSDT.Text
+				};
+				if (NhanVienBUS.GetInstance().updateNhanVien(nhanVien))
+				{
+					new DialogCustoms("Cập nhật thông tin cá nhân thành công!", "Thông báo", DialogCustoms.OK).ShowDialog();
+				}
+			}
+			Close();
+		}
 
 		private void click_Huy(object sender, RoutedEventArgs e)
 		{
-			var wd = GetWindow(sender as Button);
-			wd.Close();
+			Close();
 		}
-
-		private void click_ThemNV(object sender, RoutedEventArgs e)
-		{
-			if (kiemTraDayDuThongTin())
-			{
-				var nhanVien = new NhanVien
-				{
-					HoTen = txbHoTenNV.Text,
-					CCCD = txbCCCD.Text,
-					ChucVu = txbChucVu.Text,
-					DiaChi = txbDiaChi.Text,
-					GioiTinh = cbGioiTinh.Text,
-					Luong = decimal.Parse(txbLuong.Text),
-					NTNS = DateTime.Parse(dtNTNS.SelectedDate.ToString()),
-					SDT = txbSDT.Text
-				};
-				if (themNhanVien != null) themNhanVien(nhanVien);
-				Close();
-			}
-		}
-
-		private void click_Sua(object sender, RoutedEventArgs e)
-		{
-			if (kiemTraDayDuThongTin())
-			{
-				var nhanVien = new NhanVien
-				{
-					MaNV = int.Parse(maNV),
-					HoTen = txbHoTenNV.Text,
-					CCCD = txbCCCD.Text,
-					ChucVu = txbChucVu.Text,
-					DiaChi = txbDiaChi.Text,
-					GioiTinh = cbGioiTinh.Text,
-					Luong = decimal.Parse(txbLuong.Text),
-					NTNS = DateTime.Parse(dtNTNS.SelectedDate.ToString()),
-					SDT = txbSDT.Text
-				};
-
-				if (suaNhanVien != null) suaNhanVien(nhanVien);
-				Close();
-			}
-		}
-		#endregion
 	}
 }
