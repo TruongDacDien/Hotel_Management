@@ -53,7 +53,7 @@
         </Grid>
 
         <Grid Grid.Row="1">
-            <Grid HorizontalAlignment="Center" Background="#F2F1F1" Width="700" Height="500">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Background="#F2F1F1" Width="700" Height="500">
 
                 <Grid.Clip>
                     <RectangleGeometry Rect="0,0,700,500" RadiusX="10" RadiusY="10" />

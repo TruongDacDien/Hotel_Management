@@ -134,14 +134,14 @@ namespace GUI.View
 				txtPasswordVisible.Text = txtPasswordHidden.Password;
 				txtPasswordHidden.Visibility = Visibility.Collapsed;
 				txtPasswordVisible.Visibility = Visibility.Visible;
-				iconEye.Kind = MaterialDesignThemes.Wpf.PackIconKind.EyeOutline;
+				iconEye.Kind = MaterialDesignThemes.Wpf.PackIconKind.Eye;
 			}
 			else
 			{
 				txtPasswordHidden.Password = txtPasswordVisible.Text;
 				txtPasswordVisible.Visibility = Visibility.Collapsed;
 				txtPasswordHidden.Visibility = Visibility.Visible;
-				iconEye.Kind = MaterialDesignThemes.Wpf.PackIconKind.EyeOffOutline;
+				iconEye.Kind = MaterialDesignThemes.Wpf.PackIconKind.EyeOff;
 			}
 		}
 	}

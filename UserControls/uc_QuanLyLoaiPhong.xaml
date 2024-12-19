@@ -60,7 +60,7 @@
         <Grid Grid.Row="1">
 
 
-            <Grid HorizontalAlignment="Center" Width="800" Height="500" VerticalAlignment="Top" Background="#F2F1F1"
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="800" Height="500" Background="#F2F1F1"
                   Margin="0 20 0 0 ">
 
                 <Grid.Clip>

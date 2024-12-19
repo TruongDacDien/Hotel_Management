@@ -17,7 +17,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60" />
-            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <!--Các button-->
         <Grid Grid.Row="0">
@@ -79,7 +79,7 @@
 
         <!--Listview hiển thị-->
         <Grid Grid.Row="1">
-            <Grid Width="1220" Height="500" Background="#F2F1F1">
+            <Grid Width="1220" Height="500" Background="#F2F1F1" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Grid.Clip>
                     <RectangleGeometry Rect="0,0,1220,500" RadiusX="10" RadiusY="10" />
                 </Grid.Clip>

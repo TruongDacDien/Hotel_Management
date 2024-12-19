@@ -42,7 +42,9 @@ namespace GUI.View
 				txbDiaChi.Text = this.NhanVien.DiaChi;
 				cbGioiTinh.ItemsSource = new List<string> { "Nam", "Nữ" };
 				cbGioiTinh.SelectedValue = this.NhanVien.GioiTinh ?? "Nam";
-				txbLuong.Text = string.Format("{0:0,0 VND}", this.NhanVien.Luong);
+				txbLuong.Text = this.NhanVien.Luong % 1 == 0
+				? ((int)this.NhanVien.Luong).ToString()
+				: this.NhanVien.Luong.ToString();
 				dtNTNS.SelectedDate = this.NhanVien.NTNS;
 				txbSDT.Text = this.NhanVien.SDT;
 			}	

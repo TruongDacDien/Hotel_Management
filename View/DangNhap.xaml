@@ -65,9 +65,9 @@
                         HorizontalAlignment="Left" VerticalAlignment="Top"
                         Margin="55,154,0,0" Height="26" Width="130" Visibility="Collapsed"/>
 
-                <materialDesign:PackIcon  x:Name="iconEye" Kind="EyeOffOutline" HorizontalAlignment="Left" VerticalAlignment="Top"
+                <materialDesign:PackIcon  x:Name="iconEye" Kind="EyeOff" HorizontalAlignment="Left" VerticalAlignment="Top"
                          Height="19" Width="19"
-                         Margin="200,160,0,0" MouseLeftButtonUp="Hide_MouseLeftButtonUp"/>
+                         Margin="195,160,0,0" MouseDown="Hide_MouseLeftButtonUp"/>
                 <TextBlock Foreground="#0056FC"
                            HorizontalAlignment="Left" VerticalAlignment="Top"
                            Margin="119 200 0 0">

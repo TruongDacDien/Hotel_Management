@@ -57,7 +57,7 @@
 
         <!-- ListView hiển thị -->
         <Grid Grid.Row="1" Margin="0 20 0 0">
-            <Grid Width="740" Height="500" Background="#F2F1F1">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="740" Height="500" Background="#F2F1F1">
                 <Grid.Clip>
                     <RectangleGeometry Rect="0,0,740,500" RadiusX="10" RadiusY="10" />
                 </Grid.Clip>
