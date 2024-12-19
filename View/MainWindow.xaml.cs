@@ -195,43 +195,36 @@ namespace GUI.View
 			Home = new uc_Home();
 			contenDisplayMain.Content = Home;
 			txbHoTenNV.Text = taiKhoan.NhanVien.HoTen;
-
-			if (taiKhoan.Avatar == null || taiKhoan.Avatar.Length == 0)
-				try
-				{
-					// Sử dụng đúng đường dẫn cho ảnh mặc định
-					var uri = new Uri("pack://application:,,,/GUI;component/Res/mountains.jpg", UriKind.Absolute);
-					var imageBrush = new ImageBrush(new BitmapImage(uri));
-					imgAvatar.Fill = imageBrush;
-				}
-				catch (Exception ex)
-				{
-					new DialogCustoms("Không thể tải ảnh mặc định: " + ex.Message, "Thông báo", DialogCustoms.OK)
-						.ShowDialog();
-				}
-			else
-				// Hiển thị ảnh từ mảng byte
-				try
-				{
-					using (var ms = new MemoryStream(taiKhoan.Avatar))
-					{
-						var bitmapImage = new BitmapImage();
-						bitmapImage.BeginInit();
-						bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-						bitmapImage.StreamSource = ms;
-						bitmapImage.EndInit();
-						bitmapImage.Freeze();
-						var imageBrush = new ImageBrush(bitmapImage);
-						imgAvatar.Fill = imageBrush;
-					}
-				}
-				catch (Exception ex)
-				{
-					new DialogCustoms("Không thể tải ảnh của nhân viên " + taiKhoan.NhanVien.HoTen + ": " + ex.Message,
-						"Thông báo", DialogCustoms.OK).ShowDialog();
-				}
-
+			LoadAvatar();
 			initListViewMenu();
+		}
+
+		private void LoadAvatar()
+		{
+			try
+			{
+				if (taiKhoan.Avatar == null || taiKhoan.Avatar.Length == 0)
+				{
+					// Ảnh mặc định
+					var uri = new Uri("pack://application:,,,/GUI;component/Res/mountains.jpg", UriKind.Absolute);
+					imgAvatar.Fill = new ImageBrush(new BitmapImage(uri));
+				}
+				else
+				{
+					// Hiển thị ảnh từ byte[]
+					var ms = new MemoryStream(taiKhoan.Avatar);
+					var bitmap = new BitmapImage();
+					bitmap.BeginInit();
+					bitmap.CacheOption = BitmapCacheOption.OnLoad;
+					bitmap.StreamSource = ms;
+					bitmap.EndInit();
+					imgAvatar.Fill = new ImageBrush(bitmap);
+				}
+			}
+			catch (Exception ex)
+			{
+				new DialogCustoms($"Không thể tải ảnh đại diện: {ex.Message}", "Lỗi", DialogCustoms.OK).ShowDialog();
+			}
 		}
 
 		private void lisviewMenu_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -318,12 +311,11 @@ namespace GUI.View
 					case "Thông tin cá nhân":
 						MW_ThongTinCaNhan thongTinCaNhan = new MW_ThongTinCaNhan(MaNV);
 						thongTinCaNhan.ShowDialog();
-						load_Windows(sender, e);
 						break;
 					case "Thông tin tài khoản":
 						MW_ThongTinTaiKhoan thongTinTaiKhoan = new MW_ThongTinTaiKhoan(taiKhoan);
 						thongTinTaiKhoan.ShowDialog();
-						load_Windows(sender, e);
+						LoadAvatar();
 						break;
 					case "Đăng xuất":
 						var dialog = new DialogCustoms("Bạn có muốn đăng xuất ?", "Thông báo", DialogCustoms.YesNo);

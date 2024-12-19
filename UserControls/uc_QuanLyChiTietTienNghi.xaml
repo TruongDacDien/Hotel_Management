@@ -57,7 +57,7 @@
         </Grid>
 
         <Grid Grid.Row="1">
-            <Grid HorizontalAlignment="Center" Width="900" Height="500" Background="#F2F1F1">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="900" Height="500" Background="#F2F1F1">
                 <Grid.Clip>
                     <RectangleGeometry Rect="0,0,900,500" RadiusX="10" RadiusY="10" />
                 </Grid.Clip>
