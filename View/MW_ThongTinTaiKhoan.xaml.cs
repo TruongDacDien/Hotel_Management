@@ -37,7 +37,9 @@ namespace GUI.View
 		{
 			TaiKhoan = taiKhoan;
 			LoadAvatar();
+			AvatarBytes = TaiKhoan.Avatar;
 			txtUsername.Text = TaiKhoan.Username;
+			txtUsername.IsReadOnly = true;
 			txtPasswordHidden.Password = string.Empty;
 			txtPasswordVisible.Text = string.Empty;
 		}
@@ -193,14 +195,14 @@ namespace GUI.View
 				txtPasswordVisible.Text = txtPasswordHidden.Password;
 				txtPasswordHidden.Visibility = Visibility.Collapsed;
 				txtPasswordVisible.Visibility = Visibility.Visible;
-				iconEye.Kind = MaterialDesignThemes.Wpf.PackIconKind.EyeOutline;
+				iconEye.Kind = MaterialDesignThemes.Wpf.PackIconKind.Eye;
 			}
 			else
 			{
 				txtPasswordHidden.Password = txtPasswordVisible.Text;
 				txtPasswordVisible.Visibility = Visibility.Collapsed;
 				txtPasswordHidden.Visibility = Visibility.Visible;
-				iconEye.Kind = MaterialDesignThemes.Wpf.PackIconKind.EyeOffOutline;
+				iconEye.Kind = MaterialDesignThemes.Wpf.PackIconKind.EyeOff;
 			}
 		}
 		#endregion

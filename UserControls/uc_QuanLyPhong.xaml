@@ -78,7 +78,7 @@
                 </DataTemplate>
             </Grid.Resources>
 
-            <Grid HorizontalAlignment="Center" Background="#F2F1F1" Width="800" Height="500">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Background="#F2F1F1" Width="800" Height="500">
 
                 <Grid.Clip>
                     <RectangleGeometry Rect="0,0,800,500" RadiusX="10" RadiusY="10" />

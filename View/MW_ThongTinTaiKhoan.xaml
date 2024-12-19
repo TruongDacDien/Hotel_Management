@@ -121,7 +121,7 @@ BorderThickness="0" Height="50" Click="click_ThayDoiAnh">
                                  VerticalAlignment="Center" HorizontalAlignment="Right"/>
                         </Grid>
                         <Grid Grid.Column="3">
-                            <materialDesign:PackIcon x:Name="iconEye" Kind="EyeOffOutline" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" Margin="0 30 0 0" MouseLeftButtonUp="Hide_MouseLeftButtonUp"/>
+                            <materialDesign:PackIcon x:Name="iconEye" Kind="EyeOff" HorizontalAlignment="Right" VerticalAlignment="Center" Width="25" Height="25" Margin="0 30 0 0" MouseDown="Hide_MouseLeftButtonUp"/>
                         </Grid>
                     </Grid>
                 </Grid>
