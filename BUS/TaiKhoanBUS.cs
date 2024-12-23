@@ -52,6 +52,11 @@ namespace BUS
 			return TaiKhoanDAL.GetInstance().kiemTraTrungUsername(username);
 		}
 
+		public bool kiemTraTrungEmail(string email)
+		{
+			return TaiKhoanDAL.GetInstance().kiemTraTrungEmail(email);
+		}
+
 		public bool xoaTaiKhoan(TaiKhoan taiKhoan)
 		{
 			return TaiKhoanDAL.GetInstance().xoaTaiKhoan(taiKhoan);

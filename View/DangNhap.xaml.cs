@@ -25,10 +25,23 @@ namespace GUI.View
 		{
 			InitializeComponent();
 			MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
+			// Khởi tạo trạng thái checkbox
+			if (Properties.Settings.Default.RememberMe)
+			{
+				ckb_GhiNho.IsChecked = true;
+				txtUsername.Text = Properties.Settings.Default.AcUsername;
+				txtPasswordHidden.Password = Properties.Settings.Default.AcPassword;
+				txtPasswordVisible.Text = txtPasswordHidden.Password;
+			}
+			else
+			{
+				ckb_GhiNho.IsChecked = false;
+			}
 		}
 
 		private void btn_Close_Click(object sender, RoutedEventArgs e)
 		{
+			Properties.Settings.Default.Save();
 			var thongbao = new DialogCustoms("Bạn có thật sự muốn thoát!", "Thông báo", DialogCustoms.YesNo);
 			if (thongbao.ShowDialog() == true) Close();
 		}
@@ -100,18 +113,8 @@ namespace GUI.View
 
 		private void Hyperlink_Click(object sender, RoutedEventArgs e)
 		{
-			string url = "https://www.facebook.com/truong.ac.ien";
-			var thongbao = new DialogCustoms("Liên hệ admin để lấy lại mật khẩu!", "Thông báo", DialogCustoms.OK);
-			thongbao.ShowDialog();
-			try
-			{
-				Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
-			}
-			catch (Exception ex)
-			{
-				var thongbaoloi = new DialogCustoms($"Không thể mở liên kết: {ex.Message}", "Lỗi", DialogCustoms.OK);
-				thongbaoloi.ShowDialog();
-			}
+			DangNhap_QuenMK quenMK = new DangNhap_QuenMK();
+			quenMK.ShowDialog();
 		}
 
 		private void Hide_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -142,6 +145,26 @@ namespace GUI.View
 				txtPasswordVisible.Visibility = Visibility.Collapsed;
 				txtPasswordHidden.Visibility = Visibility.Visible;
 				iconEye.Kind = MaterialDesignThemes.Wpf.PackIconKind.EyeOff;
+			}
+		}
+
+		private void ckb_GhiNho_Checked(object sender, RoutedEventArgs e)
+		{
+			if (!string.IsNullOrEmpty(txtUsername.Text) && !string.IsNullOrEmpty(txtPasswordHidden.Password))
+			{
+				if (ckb_GhiNho.IsChecked == true)
+				{
+					Properties.Settings.Default.RememberMe = true;
+					Properties.Settings.Default.AcUsername = txtUsername.Text;
+					Properties.Settings.Default.AcPassword = txtPasswordHidden.Password;
+				}
+				else
+				{
+					Properties.Settings.Default.RememberMe = false;
+					Properties.Settings.Default.AcUsername = string.Empty;
+					Properties.Settings.Default.AcPassword = string.Empty;
+				}
+				Properties.Settings.Default.Save();
 			}
 		}
 	}

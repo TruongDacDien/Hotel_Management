@@ -54,11 +54,11 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"SELECT tk.username, tk.password, tk.maNV, tk.capDoQuyen, tk.avatar, tk.disabled,
-									nv.hoTen, nv.chucVu, nv.sDT, nv.diaChi, nv.cCCD, nv.nTNS, nv.gioiTinh, nv.luong
+					var query = @"SELECT tk.Username, tk.Password, tk.MaNV, tk.CapDoQuyen, tk.Avatar, tk.Email, tk.Disabled,
+									nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong
 									FROM TaiKhoan tk
-									LEFT JOIN NhanVien nv ON tk.maNV = nv.maNV
-									WHERE tk.username = @Username";
+									LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV
+									WHERE tk.Username = @Username";
 
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@Username", username);
@@ -69,35 +69,36 @@ namespace DAL.Data
 						if (reader.Read())
 							return new TaiKhoan
 							{
-								Username = reader["username"].ToString(),
-								Password = reader["password"].ToString(),
-								MaNV = reader.IsDBNull(reader.GetOrdinal("maNV"))
+								Username = reader["Username"].ToString(),
+								Password = reader["Password"].ToString(),
+								MaNV = reader.IsDBNull(reader.GetOrdinal("MaNV"))
 									? 0
-									: reader.GetInt32(reader.GetOrdinal("maNV")),
-								CapDoQuyen = reader.IsDBNull(reader.GetOrdinal("capDoQuyen"))
+									: reader.GetInt32(reader.GetOrdinal("MaNV")),
+								CapDoQuyen = reader.IsDBNull(reader.GetOrdinal("CapDoQuyen"))
 									? 0
-									: reader.GetInt32(reader.GetOrdinal("capDoQuyen")),
-								Avatar = reader["avatar"] as byte[],
-								Disabled = reader.IsDBNull(reader.GetOrdinal("disabled"))
+									: reader.GetInt32(reader.GetOrdinal("CapDoQuyen")),
+								Avatar = reader["Avatar"] as byte[],
+								Email = reader["Email"].ToString(),
+								Disabled = reader.IsDBNull(reader.GetOrdinal("Disabled"))
 									? false
-									: reader.GetBoolean(reader.GetOrdinal("disabled")),
+									: reader.GetBoolean(reader.GetOrdinal("Disabled")),
 								NhanVien = new NhanVien
 								{
-									MaNV = reader.IsDBNull(reader.GetOrdinal("maNV"))
+									MaNV = reader.IsDBNull(reader.GetOrdinal("MaNV"))
 										? 0
-										: reader.GetInt32(reader.GetOrdinal("maNV")),
-									HoTen = reader["hoTen"]?.ToString(),
-									ChucVu = reader["chucVu"]?.ToString(),
-									SDT = reader["sDT"]?.ToString(),
-									DiaChi = reader["diaChi"]?.ToString(),
-									CCCD = reader["cCCD"]?.ToString(),
-									NTNS = reader.IsDBNull(reader.GetOrdinal("nTNS"))
+										: reader.GetInt32(reader.GetOrdinal("MaNV")),
+									HoTen = reader["HoTen"]?.ToString(),
+									ChucVu = reader["ChucVu"]?.ToString(),
+									SDT = reader["SDT"]?.ToString(),
+									DiaChi = reader["DiaChi"]?.ToString(),
+									CCCD = reader["CCCD"]?.ToString(),
+									NTNS = reader.IsDBNull(reader.GetOrdinal("NTNS"))
 										? DateTime.MinValue
-										: reader.GetDateTime(reader.GetOrdinal("nTNS")),
-									GioiTinh = reader["gioiTinh"]?.ToString(),
-									Luong = reader.IsDBNull(reader.GetOrdinal("luong"))
+										: reader.GetDateTime(reader.GetOrdinal("NTNS")),
+									GioiTinh = reader["GioiTinh"]?.ToString(),
+									Luong = reader.IsDBNull(reader.GetOrdinal("Luong"))
 										? 0
-										: reader.GetDecimal(reader.GetOrdinal("luong"))
+										: reader.GetDecimal(reader.GetOrdinal("Luong"))
 								}
 							};
 					}
@@ -155,7 +156,7 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"SELECT tk.Username, tk.Password, tk.MaNV, tk.CapDoQuyen, tk.Avatar, tk.Disabled,
+					var query = @"SELECT tk.Username, tk.Password, tk.MaNV, tk.CapDoQuyen, tk.Avatar, tk.Email, tk.Disabled,
                             nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong
                             FROM TaiKhoan tk
                             LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV 
@@ -179,6 +180,7 @@ namespace DAL.Data
 									? 0
 									: reader.GetInt32(reader.GetOrdinal("CapDoQuyen")),
 								Avatar = reader["avatar"] as byte[],
+								Email = reader["Email"].ToString(),
 								Disabled = reader.IsDBNull(reader.GetOrdinal("Disabled"))
 									? false
 									: reader.GetBoolean(reader.GetOrdinal("Disabled")),
@@ -223,15 +225,15 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"INSERT INTO TaiKhoan (Username, Password, MaNV, CapDoQuyen, Avatar, Disabled)
-                             VALUES (@Username, @Password, @MaNV, @CapDoQuyen, @Avatar, 0)";
+					var query = @"INSERT INTO TaiKhoan (Username, Password, MaNV, CapDoQuyen, Avatar, Email, Disabled)
+                             VALUES (@Username, @Password, @MaNV, @CapDoQuyen, @Avatar, @Email,0)";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@Username", taiKhoan.Username);
 					cmd.Parameters.AddWithValue("@Password", taiKhoan.Password);
 					cmd.Parameters.AddWithValue("@MaNV", taiKhoan.MaNV);
 					cmd.Parameters.AddWithValue("@CapDoQuyen", taiKhoan.CapDoQuyen);
 					cmd.Parameters.AddWithValue("@Avatar", taiKhoan.Avatar ?? GetDefaultAvatar());
-
+					cmd.Parameters.AddWithValue("@Email", taiKhoan.Email);
 					conn.Open();
 					cmd.ExecuteNonQuery();
 					return true;
@@ -255,13 +257,13 @@ namespace DAL.Data
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query =
-						@"UPDATE TaiKhoan SET MaNV = @MaNV, CapDoQuyen = @CapDoQuyen, Password = @Password WHERE Username = @Username";
+						@"UPDATE TaiKhoan SET MaNV = @MaNV, CapDoQuyen = @CapDoQuyen, Password = @Password , Email = @Email WHERE Username = @Username";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@Username", taiKhoan.Username);
 					cmd.Parameters.AddWithValue("@Password", taiKhoan.Password);
 					cmd.Parameters.AddWithValue("@MaNV", taiKhoan.MaNV);
 					cmd.Parameters.AddWithValue("@CapDoQuyen", taiKhoan.CapDoQuyen);
-
+					cmd.Parameters.AddWithValue("@Email", taiKhoan.Email);
 					conn.Open();
 					var rowsAffected = cmd.ExecuteNonQuery();
 					Console.WriteLine(rowsAffected);
@@ -291,6 +293,30 @@ namespace DAL.Data
 					conn.Open();
 					var count = Convert.ToInt32(cmd.ExecuteScalar());
 					return count > 0; // Trả về true nếu username đã tồn tại
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Lỗi: " + ex.Message);
+				return false;
+			}
+		}
+
+		public bool kiemTraTrungEmail(string email)
+		{
+			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = "SELECT COUNT(*) FROM TaiKhoan WHERE Email = @Email";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@Email", email);
+
+					conn.Open();
+					var count = Convert.ToInt32(cmd.ExecuteScalar());
+					return count > 0; // Trả về true nếu email đã tồn tại
 				}
 			}
 			catch (Exception ex)
