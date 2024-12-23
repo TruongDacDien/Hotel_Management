@@ -40,6 +40,8 @@ namespace GUI.View
 			AvatarBytes = TaiKhoan.Avatar;
 			txtUsername.Text = TaiKhoan.Username;
 			txtUsername.IsReadOnly = true;
+			txtEmail.Text = TaiKhoan.Email;
+			txtEmail.IsReadOnly = true;
 			txtPasswordHidden.Password = string.Empty;
 			txtPasswordVisible.Text = string.Empty;
 		}

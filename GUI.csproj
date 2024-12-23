@@ -213,6 +213,9 @@
     <Compile Include="UserControls\uc_Phong.xaml.cs">
       <DependentUpon>uc_Phong.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\DangNhap_QuenMK.xaml.cs">
+      <DependentUpon>DangNhap_QuenMK.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\DatPhong.xaml.cs">
       <DependentUpon>DatPhong.xaml</DependentUpon>
     </Compile>
@@ -322,6 +325,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\DangNhap.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\DangNhap_QuenMK.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

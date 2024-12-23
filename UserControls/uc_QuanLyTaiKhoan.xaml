@@ -57,9 +57,9 @@
 
         <!--Listview hiển thị-->
         <Grid Grid.Row="1" Margin="0 20 0 0">
-            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="800" Height="500" Background="#F2F1F1">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="950" Height="500" Background="#F2F1F1">
                 <Grid.Clip>
-                    <RectangleGeometry Rect="0,0,800,500" RadiusX="10" RadiusY="10" />
+                    <RectangleGeometry Rect="0,0,950,500" RadiusX="10" RadiusY="10" />
                 </Grid.Clip>
 
                 <Grid.Resources>
@@ -68,8 +68,8 @@
                         <TextBlock Text="{Binding NhanVien.HoTen}" />
                     </DataTemplate>
 
-                    <DataTemplate x:Key="dtpMaNV">
-                        <TextBlock Text="{Binding NhanVien.MaNV}" />
+                    <DataTemplate x:Key="dtpEmail">
+                        <TextBlock Text="{Binding Email}" />
                     </DataTemplate>
 
                     <DataTemplate x:Key="dtpTenTK">
@@ -116,7 +116,7 @@
 
                             <GridViewColumn Header="Tên tài khoản" Width="160" CellTemplate="{StaticResource dtpTenTK}" />
                             <GridViewColumn Header="Tên nhân viên" Width="200" CellTemplate="{StaticResource dtpTenNV}" />
-                            <GridViewColumn Header="Mã nhân viên" Width="180" CellTemplate="{StaticResource dtpMaNV}" />
+                            <GridViewColumn Header="Email nhân viên" Width="330" CellTemplate="{StaticResource dtpEmail}" />
                             <GridViewColumn Header="Cấp độ quyền" Width="120" CellTemplate="{StaticResource dtpQuyen}" />
                             <GridViewColumn Width="70" Header="Sửa" CellTemplate="{StaticResource dtpNutSua}" />
                             <GridViewColumn Width="70" Header="Xóa" CellTemplate="{StaticResource dtpNutXoa}" />
