@@ -34,54 +34,58 @@
                                      Foreground="White" Opacity="0.7" />
         </Button>
 
-        <materialDesign:Card Width="238" Height="325" Background="#FFFFFF"
+        <materialDesign:Card Width="300" Height="325" Background="#FFFFFF"
                              VerticalAlignment="Top" HorizontalAlignment="Left"
-                             Margin="100 80 0 0">
+                             Margin="65 80 0 0">
             <!--vẽ hình tròn-->
             <materialDesign:Card.Clip>
-                <RectangleGeometry Rect="0,0,238,325" RadiusX="10" RadiusY="10" />
+                <RectangleGeometry Rect="0,0,300,325" RadiusX="10" RadiusY="10" />
             </materialDesign:Card.Clip>
             <Grid>
 
                 <TextBlock Height="35" FontWeight="Bold" FontSize="30" Foreground="#0056FC"
-                           HorizontalAlignment="Left" VerticalAlignment="Top" Margin="44,31,0,0">
+                           HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,25,0,0">
                     Đăng Nhập
                 </TextBlock>
                 <materialDesign:PackIcon Kind="Account" HorizontalAlignment="Left" VerticalAlignment="Top"
-                                         Height="19" Width="19"
-                                         Margin="20,114,0,0" />
+                                         Height="30" Width="30"
+                                         Margin="50,90,0,0" />
                 <materialDesign:PackIcon Kind="Lock" HorizontalAlignment="Left" VerticalAlignment="Top"
-                                         Height="19" Width="19"
-                                         Margin="20,160,0,0" />
-                <TextBox Margin="55 107 0 0" Height="26" Width="130" x:Name="txtUsername"
+                                         Height="30" Width="30"
+                                         Margin="50,150,0,0" />
+                <TextBox Margin="85 90 0 0" Height="30" Width="150" x:Name="txtUsername"
                          HorizontalAlignment="Left" VerticalAlignment="Top"
                          materialDesign:HintAssist.Hint="Tên đăng nhập" />
 
                 <PasswordBox materialDesign:HintAssist.Hint="Mật khẩu" x:Name="txtPasswordHidden"
                         HorizontalAlignment="Left" VerticalAlignment="Top"
-                        Margin="55,154,0,0" Height="26" Width="130" Cursor="Hand"
+                        Margin="85,150,0,0" Height="30" Width="150" Cursor="Hand"
                         KeyDown="txbMatKhau_KeyDown" />
                 <TextBox materialDesign:HintAssist.Hint="Mật khẩu" Name="txtPasswordVisible"
                         HorizontalAlignment="Left" VerticalAlignment="Top"
-                        Margin="55,154,0,0" Height="26" Width="130" Visibility="Collapsed"/>
+                        Margin="85,150,0,0" Height="30" Width="150" Visibility="Collapsed"/>
 
                 <materialDesign:PackIcon  x:Name="iconEye" Kind="EyeOff" HorizontalAlignment="Left" VerticalAlignment="Top"
-                         Height="19" Width="19"
-                         Margin="195,160,0,0" MouseDown="Hide_MouseLeftButtonUp"/>
+                         Height="30" Width="30"
+                         Margin="245,150,0,0" MouseDown="Hide_MouseLeftButtonUp"/>
                 <TextBlock Foreground="#0056FC"
                            HorizontalAlignment="Left" VerticalAlignment="Top"
-                           Margin="119 200 0 0">
-                    <Hyperlink Click="Hyperlink_Click">Quên mật khẩu?</Hyperlink>
+                           Margin="167,217,0,0">
+                    <Hyperlink Click="Hyperlink_Click" FontSize="15">Quên mật khẩu?</Hyperlink>
                 </TextBlock>
 
-                <Button Height="28" Width="107" Background="#0056FC"
-                        HorizontalAlignment="Left" VerticalAlignment="Top"
-                        Margin="63,240,0,0" Click="click_DangNhap">
+                <Button Height="30" Width="110" Background="#0056FC"
+                        HorizontalAlignment="Center" VerticalAlignment="Top"
+                        Margin="0,265,0,0" Click="click_DangNhap">
                     <Button.Clip>
-                        <RectangleGeometry Rect="0,0,107,28" RadiusX="10" RadiusY="10" />
+                        <RectangleGeometry Rect="0,0,110,30" RadiusX="10" RadiusY="10" />
                     </Button.Clip>
                     <TextBlock Text="Đăng nhập" FontSize="15" Foreground="White" />
                 </Button>
+                <CheckBox x:Name="ckb_GhiNho" Content="Ghi nhớ" FontSize="15" 
+                          HorizontalAlignment="Left" 
+                          Margin="50,210,0,0" VerticalAlignment="Top" 
+                          materialDesign:CheckBoxAssist.CheckBoxSize="30" Checked="ckb_GhiNho_Checked" Unchecked="ckb_GhiNho_Checked"/>
             </Grid>
 
         </materialDesign:Card>

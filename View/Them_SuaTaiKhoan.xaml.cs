@@ -38,11 +38,12 @@ namespace GUI.View
 		public Them_SuaTaiKhoan(bool isEditing = false, TaiKhoan taiKhoan = null) : this()
 		{
 			this.isEditing = isEditing;
-			txtUsername.IsReadOnly = true;
-
 			if (isEditing && taiKhoan != null)
 			{
+				txtUsername.IsReadOnly = true;
 				txtUsername.Text = taiKhoan.Username;
+				txtEmail.IsReadOnly = true;
+				txtEmail.Text = taiKhoan.Email;
 				cmbCapDo.Text = taiKhoan.CapDoQuyen.ToString();
 				cmbMaNV.Text = taiKhoan.NhanVien.DisplayInfo;
 				txbTitle.Text = "Sửa thông tin tài khoản " + taiKhoan.Username;
@@ -54,12 +55,18 @@ namespace GUI.View
 		}
 
 		#region Method
-
 		private bool KiemTra()
 		{
 			if (string.IsNullOrWhiteSpace(txtUsername.Text) || txtUsername.Text.Any(ch => !char.IsLetterOrDigit(ch)))
 			{
 				new DialogCustoms("Vui lòng nhập tên tài khoản và không chứa ký tự đặc biệt", "Thông báo",
+					DialogCustoms.OK).Show();
+				return false;
+			}
+
+			if (string.IsNullOrWhiteSpace(txtEmail.Text))
+			{
+				new DialogCustoms("Vui lòng nhập email", "Thông báo",
 					DialogCustoms.OK).Show();
 				return false;
 			}
@@ -103,6 +110,7 @@ namespace GUI.View
 				{
 					Username = txtUsername.Text,
 					Password = pass,
+					Email = txtPassword.Text,
 					CapDoQuyen = int.Parse(cmbCapDo.Text),
 					MaNV = int.Parse(cmbMaNV.SelectedValue.ToString())
 				};
@@ -128,11 +136,18 @@ namespace GUI.View
 				return;
 			}
 
+			if (TaiKhoanBUS.GetInstance().kiemTraTrungEmail(txtEmail.Text))
+			{
+				new DialogCustoms("Email đã được đăng ký!", "Thông báo", DialogCustoms.OK).ShowDialog();
+				return;
+			}
+
 			var pass = Bcrypt_HashBUS.GetInstance().HashMatKhau(txtPassword.Text);
 			var taiKhoan = new TaiKhoan
 			{
 				Username = txtUsername.Text,
 				Password = pass,
+				Email = txtPassword.Text,
 				CapDoQuyen = int.Parse(cmbCapDo.Text),
 				MaNV = int.Parse(cmbMaNV.SelectedValue.ToString())
 			};

@@ -11,6 +11,7 @@
 		public int CapDoQuyen { get; set; }
 
 		public byte[] Avatar { get; set; }
+		public string Email { get; set; }
 
 		public NhanVien NhanVien { get; set; }
 
