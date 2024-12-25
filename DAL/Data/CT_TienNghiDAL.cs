@@ -24,7 +24,7 @@ namespace DAL.Data
 		public List<CT_TienNghi> getData()
 		{
 			var listCTTienNghi = new List<CT_TienNghi>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -67,7 +67,7 @@ namespace DAL.Data
 		// Thêm một chi tiết tiện nghi mới
 		public bool addCTTienNghi(CT_TienNghi chiTietTN)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
@@ -99,7 +99,7 @@ namespace DAL.Data
 		// Xóa chi tiết tiện nghi
 		public bool xoaCTTienNghi(CT_TienNghi chiTietTN)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
@@ -124,7 +124,7 @@ namespace DAL.Data
 		// Cập nhật chi tiết tiện nghi
 		public bool capnhatCTTienNghi(CT_TienNghi chiTietTN)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
 				Console.WriteLine(chiTietTN.MaCTTN + " " + chiTietTN.MaTN + " " + chiTietTN.SoPhong + " " +
@@ -167,7 +167,7 @@ namespace DAL.Data
 		// Kiểm tra chi tiết tiện nghi có tồn tại hay không
 		public bool KiemTraTonTai(CT_TienNghi chiTietTN)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
@@ -193,7 +193,7 @@ namespace DAL.Data
 		// Hiển thị lại chi tiết tiện nghi đã xóa
 		public bool hienThiLaiCT_TienNghi(int maTN, string soPhong)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{

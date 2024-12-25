@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <ApplicationDefinition Update="App.xaml">
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="UserControls\ucControlbar2.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\uc_Controlbar.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\uc_HoaDon.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\uc_Home.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\uc_NhanVien.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\uc_PhieuThue.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\uc_Phong.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\uc_QuanLyChiTietTienNghi.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\uc_QuanLyDichVu.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\uc_QuanLyKhachHang.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\uc_QuanLyLoaiDichVu.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\uc_QuanLyLoaiPhong.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\uc_QuanLyPhong.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\uc_QuanLyTaiKhoan.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\uc_QuanLyTienNghi.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\uc_ThongKe.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\ChiTietPhieuThue.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\ChiTietPhong.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\CTP_ThemDV.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\DangNhap.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\DangNhap_QuenMK.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\DatPhong.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\DialogCustoms.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\MW_ThongTinCaNhan.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\MW_ThongTinTaiKhoan.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Them_SuaChiTietTienNghi.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Them_SuaDichVu.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Them_SuaKhachHang.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Them_SuaLoaiDichVu.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Them_SuaLoaiPhong.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Them_SuaNhanVien.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Them_SuaPhong.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Them_SuaTaiKhoan.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Them_SuaTienNghi.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\WebThanhToan.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\XuatBaoCaoThongKe.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\XuatHoaDon.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ngrok.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="update-ngrok.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="View\WebThanhToan.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

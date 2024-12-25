@@ -1,0 +1,111 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>property.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Res\add.png" />
+    <None Remove="Res\backGround_DN.png" />
+    <None Remove="Res\default_image.jpg" />
+    <None Remove="Res\delete.png" />
+    <None Remove="Res\edit.png" />
+    <None Remove="Res\FieldCornerIcon.png" />
+    <None Remove="Res\Home0.png" />
+    <None Remove="Res\Home1.png" />
+    <None Remove="Res\Home2.png" />
+    <None Remove="Res\Home3.png" />
+    <None Remove="Res\Home4.png" />
+    <None Remove="Res\Home5.png" />
+    <None Remove="Res\ic_more.png" />
+    <None Remove="Res\image.png" />
+    <None Remove="Res\IncomeIcon.png" />
+    <None Remove="Res\IncreaseIcon.png" />
+    <None Remove="Res\logo.png" />
+    <None Remove="Res\notification_sound.wav" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Res\default_image.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="property.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.104.2" />
+    <PackageReference Include="LiveCharts.Wpf.NetCore3" Version="0.9.8" />
+    <PackageReference Include="MaterialDesignColors" Version="3.1.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
+    <PackageReference Include="payOS" Version="1.0.9" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BUS\BUS.csproj" />
+    <ProjectReference Include="..\DAL\DAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Res\add.png" />
+    <Resource Include="Res\backGround_DN.png" />
+    <Resource Include="Res\edit.png" />
+    <Resource Include="Res\FieldCornerIcon.png" />
+    <Resource Include="Res\Home0.png" />
+    <Resource Include="Res\Home1.png" />
+    <Resource Include="Res\Home2.png" />
+    <Resource Include="Res\Home3.png" />
+    <Resource Include="Res\Home4.png" />
+    <Resource Include="Res\Home5.png" />
+    <Resource Include="Res\ic_more.png" />
+    <Resource Include="Res\image.png" />
+    <Resource Include="Res\IncomeIcon.png" />
+    <Resource Include="Res\IncreaseIcon.png" />
+    <Resource Include="Res\Light010.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Res\delete.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Res\logo.png" />
+    <Resource Include="Res\notification_sound.wav" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+</Project>

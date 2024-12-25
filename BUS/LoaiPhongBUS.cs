@@ -23,6 +23,11 @@ namespace BUS
 			return LoaiPhongDAL.GetInstance().getDataLoaiPhong();
 		}
 
+		public LoaiPhong getLoaiPhongTheoMaLoaiPhong(int maLoaiPhong)
+		{
+			return LoaiPhongDAL.GetInstance().getLoaiPhongTheoMaLoaiPhong(maLoaiPhong);
+		}
+
 		public bool addLoaiPhong(LoaiPhong loaiPhong)
 		{
 			return LoaiPhongDAL.GetInstance().addLoaiPhong(loaiPhong);

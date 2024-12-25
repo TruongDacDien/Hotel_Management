@@ -25,7 +25,7 @@ namespace DAL.Data
 		public ObservableCollection<Phong_Custom> getDataPhongTheoNgay(DateTime? ngayChon)
 		{
 			var ls = new ObservableCollection<Phong_Custom>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -100,7 +100,7 @@ namespace DAL.Data
 		public ObservableCollection<Phong_Custom> getDataPhong_Custom()
 		{
 			var ls = new ObservableCollection<Phong_Custom>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
@@ -123,7 +123,7 @@ namespace DAL.Data
                                     ct.NgayKT AS NgayDi,
                                     COALESCE(ct.SoNguoiO, 0) AS SoNguoi
                                     FROM Phong p
-                                    LEFT JOIN CT_PhieuThue ct ON p.SoPhong = ct.SoPhong 
+                                    LEFT JOIN CT_PhieuThue ct ON p.SoPhong = ct.SoPhong
                                     LEFT JOIN PhieuThue pt ON ct.MaPhieuThue = pt.MaPhieuThue
                                     LEFT JOIN KhachHang kh ON pt.MaKH = kh.MaKH
                                     LEFT JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
@@ -169,7 +169,7 @@ namespace DAL.Data
 		public bool suaTinhTrangPhong(string maPhong, string text, out string error)
 		{
 			error = string.Empty;
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -202,7 +202,7 @@ namespace DAL.Data
 		// Lấy giá tiền của phòng theo mã phòng
 		public decimal layGiaTienTheoMaPhong(string maphong, bool isday)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			using (var conn = new MySqlConnection(connectionString))
 			{
@@ -231,7 +231,7 @@ namespace DAL.Data
 		public List<PhongTrong> getPhongTrong(DateTime? ngayBD, DateTime? ngayKT)
 		{
 			var lsPTrong = new List<PhongTrong>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -275,7 +275,7 @@ namespace DAL.Data
 		// Thêm mới phòng
 		public bool addDataPhong(Phong phong)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
@@ -303,7 +303,7 @@ namespace DAL.Data
 		// Cập nhật phòng
 		public bool capNhatPhong(Phong phong)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
@@ -330,7 +330,7 @@ namespace DAL.Data
 		// Xóa phòng
 		public bool xoaThongTinPhong(Phong phong)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
@@ -355,7 +355,7 @@ namespace DAL.Data
 		public List<Phong> getDataPhong()
 		{
 			var lstPhong = new List<Phong>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -393,10 +393,50 @@ namespace DAL.Data
 			return lstPhong;
 		}
 
+		public Phong getDataPhongTheoSoPhong(string soPhong)
+		{
+			var connectionString = Properties.Resources.MySqlConnection;
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = @"
+                                    SELECT 
+                                        p.SoPhong, 
+                                        p.MaLoaiPhong, 
+                                        p.DonDep, 
+                                        lp.TenLoaiPhong AS LoaiPhong 
+                                    FROM Phong p
+                                    INNER JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
+                                    WHERE p.IsDeleted = 0 AND p.SoPhong = @SoPhong";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@SoPhong", soPhong);
+					conn.Open();
+					using (var reader = cmd.ExecuteReader())
+					{
+						if (reader.Read())
+							return new Phong
+							{
+								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
+								MaLoaiPhong = reader.GetInt32(reader.GetOrdinal("MaLoaiPhong")),
+								DonDep = reader.GetString(reader.GetOrdinal("DonDep")),
+								LoaiPhong = reader.GetString(reader.GetOrdinal("LoaiPhong")) // Lấy tên loại phòng
+							};
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Lỗi khi lấy danh sách phòng: " + ex.Message); // Log lỗi nếu cần
+			}
+
+			return null;
+		}
+
 		// Hiển thị lại phòng đã xóa
 		public bool hienThiLaiPhong(string soPhong)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{

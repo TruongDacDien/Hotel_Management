@@ -23,23 +23,28 @@ namespace DAL.Data
 		public ThongKe LoadThongKeTheoThangNam(int month, int year)
 		{
 			var kq = new ThongKe();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = @"SELECT 
-                                        SUM(HD.TongTien) AS TongTien,
-                                        SUM(DISTINCT CTPT.TienPhong) AS TienPhong,
-                                        SUM(DISTINCT CTDV.ThanhTien) AS TienDV,
-                                        COUNT(DISTINCT CTPT.SoPhong) AS SoPhong,
-                                        GROUP_CONCAT(DISTINCT CTPT.SoPhong) AS DanhSachPhong
-                                    FROM HoaDon HD
-                                    LEFT JOIN CT_PhieuThue CTPT on CTPT.MaCTPT = HD.MaCTPT
-                                    LEFT JOIN CT_SDDichVu CTDV on CTDV.MaCTPT = CTPT.MaCTPT
-                                    WHERE MONTH(NgayLap) = @month AND YEAR(NgayLap) = @year;
-                                    ";
+									(SELECT SUM(CTPT.TienPhong)
+									 FROM CT_PhieuThue CTPT
+									 JOIN HoaDon HD ON CTPT.MaCTPT = HD.MaCTPT
+									 WHERE MONTH(HD.NgayLap) = @month AND YEAR(HD.NgayLap) = @year) AS TongTienPhong,
+									SUM(CTDV.ThanhTien) AS TongTienDV,
+									COUNT(DISTINCT HD.MaHD) AS SoLuongPhongDaDat,
+									(SELECT SUM(CTPT.TienPhong)
+									 FROM CT_PhieuThue CTPT
+									 JOIN HoaDon HD ON CTPT.MaCTPT = HD.MaCTPT
+									 WHERE MONTH(HD.NgayLap) = @month AND YEAR(HD.NgayLap) = @year) + SUM(CTDV.ThanhTien) AS TongDoanhThu
+								FROM HoaDon HD
+								LEFT JOIN CT_PhieuThue CTPT ON CTPT.MaCTPT = HD.MaCTPT
+								LEFT JOIN CT_SDDichVu CTDV ON CTDV.MaCTPT = CTPT.MaCTPT
+								WHERE MONTH(HD.NgayLap) = @month AND YEAR(HD.NgayLap) = @year";
+
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@month", month);
 					cmd.Parameters.AddWithValue("@year", year);
@@ -47,19 +52,23 @@ namespace DAL.Data
 					conn.Open();
 					using (var reader = cmd.ExecuteReader())
 					{
-						while (reader.Read())
+						if (reader.Read())
 						{
-							kq.DoanhthuDichVu = reader.GetDecimal(reader.GetOrdinal("TienDV"));
-							kq.DoanhthuPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong"));
-							kq.TongDoanhThu = reader.GetDecimal(reader.GetOrdinal("TongTien"));
-							kq.Sophong = reader.GetInt32(reader.GetOrdinal("SoPhong"));
-							var danhSachPhong = reader["DanhSachPhong"].ToString();
-							Console.WriteLine($"Danh sách các phòng đã đếm: {danhSachPhong}");
+							kq.DoanhthuPhong = reader.IsDBNull(reader.GetOrdinal("TongTienPhong"))
+								? 0
+								: reader.GetDecimal(reader.GetOrdinal("TongTienPhong"));
+							kq.DoanhthuDichVu = reader.IsDBNull(reader.GetOrdinal("TongTienDV"))
+								? 0
+								: reader.GetDecimal(reader.GetOrdinal("TongTienDV"));
+							kq.Sophong = reader.IsDBNull(reader.GetOrdinal("SoLuongPhongDaDat"))
+								? 0
+								: reader.GetInt32(reader.GetOrdinal("SoLuongPhongDaDat"));
+							kq.TongDoanhThu = reader.IsDBNull(reader.GetOrdinal("TongDoanhThu"))
+								? 0
+								: reader.GetDecimal(reader.GetOrdinal("TongDoanhThu"));
 						}
 					}
 				}
-
-				Console.WriteLine(kq.TongDoanhThu + " " + kq.DoanhthuDichVu + " " + kq.DoanhthuPhong);
 				return kq;
 			}
 			catch (Exception ex)
@@ -72,20 +81,22 @@ namespace DAL.Data
 		public List<CTHD> LoadThongKeTheoNam(int year)
 		{
 			var kq = new List<CTHD>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"SELECT HD.TongTien,
-                                    CTPT.TienPhong,
-                                    CTDV.ThanhTien,
-                                    HD.NgayLap
-                                    FROM HoaDon HD
-                                    LEFT JOIN CT_PhieuThue CTPT on CTPT.MaCTPT = HD.MaCTPT
-                                    LEFT JOIN CT_SDDichVu CTDV on CTDV.MaCTPT = CTPT.MaCTPT
-                                    WHERE YEAR(NgayLap) = @year";
+					var query = @"SELECT 
+                            CTPT.TienPhong,
+                            CTDV.ThanhTien AS TienDV,
+                            (IFNULL(CTPT.TienPhong, 0) + IFNULL(CTDV.ThanhTien, 0)) AS TongTien,
+                            HD.NgayLap
+                          FROM HoaDon HD
+                          LEFT JOIN CT_PhieuThue CTPT ON CTPT.MaCTPT = HD.MaCTPT
+                          LEFT JOIN CT_SDDichVu CTDV ON CTDV.MaCTPT = CTPT.MaCTPT
+                          WHERE YEAR(HD.NgayLap) = @year";
+
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@year", year);
 
@@ -98,21 +109,19 @@ namespace DAL.Data
 							{
 								TienPhong = reader.IsDBNull(reader.GetOrdinal("TienPhong"))
 									? 0
-									: reader.GetDecimal("TienPhong"),
-								TienDV = reader.IsDBNull(reader.GetOrdinal("ThanhTien"))
+									: reader.GetDecimal(reader.GetOrdinal("TienPhong")),
+								TienDV = reader.IsDBNull(reader.GetOrdinal("TienDV"))
 									? 0
-									: reader.GetDecimal("ThanhTien"),
+									: reader.GetDecimal(reader.GetOrdinal("TienDV")),
 								TongTien = reader.IsDBNull(reader.GetOrdinal("TongTien"))
 									? 0
-									: reader.GetDecimal("TongTien"),
+									: reader.GetDecimal(reader.GetOrdinal("TongTien")),
 								NgayLap = reader.GetDateTime(reader.GetOrdinal("NgayLap"))
 							});
-							Console.WriteLine(kq);
 						}
 					}
 				}
 
-				Console.WriteLine();
 				return kq;
 			}
 			catch (Exception ex)

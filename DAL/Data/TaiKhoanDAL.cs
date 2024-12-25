@@ -48,7 +48,7 @@ namespace DAL.Data
 		// Lấy tài khoản theo username
 		public TaiKhoan layTaiKhoanTheoUsername(string username)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -116,7 +116,7 @@ namespace DAL.Data
 		public bool capNhatAvatar(string username, byte[] avatarBytes, out string error)
 		{
 			error = string.Empty;
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -150,7 +150,7 @@ namespace DAL.Data
 		public List<TaiKhoan> getDataTaiKhoan()
 		{
 			var danhSachTaiKhoan = new List<TaiKhoan>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -219,7 +219,7 @@ namespace DAL.Data
 
 		public bool themTaiKhoan(TaiKhoan taiKhoan)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -248,7 +248,7 @@ namespace DAL.Data
 
 		public bool capNhatTaiKhoan(TaiKhoan taiKhoan)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -280,7 +280,7 @@ namespace DAL.Data
 
 		public bool kiemTraTrungUsername(string username)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -304,7 +304,7 @@ namespace DAL.Data
 
 		public bool kiemTraTrungEmail(string email)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -328,7 +328,7 @@ namespace DAL.Data
 
 		public bool xoaTaiKhoan(TaiKhoan taiKhoan)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
@@ -351,7 +351,7 @@ namespace DAL.Data
 
 		public bool hienThiLaiTaiKhoan(string username)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{

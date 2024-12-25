@@ -24,7 +24,7 @@ namespace DAL.Data
 		public List<HoaDon> LayDuLieuHoaDon()
 		{
 			var lstHoaDon = new List<HoaDon>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -98,11 +98,86 @@ namespace DAL.Data
 			return lstHoaDon;
 		}
 
+		public HoaDon LayHoaDonTheoMaCTPT(int? maCTPT)
+		{
+			var connectionString = Properties.Resources.MySqlConnection;
+
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = @"
+					SELECT 
+						hd.MaHD, hd.MaNV, hd.MaCTPT, hd.NgayLap, hd.TongTien,
+						nv.MaNV, nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, 
+						nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong,
+						ctpt.MaCTPT, ctpt.MaPhieuThue, ctpt.SoPhong, ctpt.NgayBD, 
+						ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong
+					FROM HoaDon hd, NhanVien nv, CT_PhieuThue ctpt
+					WHERE hd.MaNV = nv.MaNV AND hd.MaCTPT = ctpt.MaCTPT AND hd.MaCTPT = @MaCTPT";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
+
+					conn.Open();
+
+					using (var reader = cmd.ExecuteReader())
+					{
+						if (reader.Read())
+						{
+							return new HoaDon
+							{
+								MaHD = reader.GetInt32(reader.GetOrdinal("MaHD")),
+								MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
+								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT"))
+									? (int?)null
+									: reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+								NgayLap = reader.GetDateTime(reader.GetOrdinal("NgayLap")),
+								TongTien = reader.GetDecimal(reader.GetOrdinal("TongTien")),
+								NhanVien = reader.IsDBNull(reader.GetOrdinal("MaNV"))
+									? null
+									: new NhanVien
+									{
+										MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
+										HoTen = reader.GetString(reader.GetOrdinal("HoTen")),
+										ChucVu = reader.GetString(reader.GetOrdinal("ChucVu")),
+										SDT = reader.GetString(reader.GetOrdinal("SDT")),
+										DiaChi = reader.GetString(reader.GetOrdinal("DiaChi")),
+										CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
+										NTNS = reader.GetDateTime(reader.GetOrdinal("NTNS")),
+										GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
+										Luong = reader.GetDecimal(reader.GetOrdinal("Luong"))
+									},
+								CT_PhieuThue = reader.IsDBNull(reader.GetOrdinal("MaCTPT"))
+									? null
+									: new CT_PhieuThue
+									{
+										MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+										MaPhieuThue = reader.GetInt32(reader.GetOrdinal("MaPhieuThue")),
+										SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
+										NgayBD = reader.GetDateTime(reader.GetOrdinal("NgayBD")),
+										NgayKT = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
+										SoNguoiO = reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
+										TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue")),
+										TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong"))
+									}
+							};
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Lỗi: " + ex.Message);
+			}
+
+			return null;
+		}
+
 		// Thêm hóa đơn mới
 		public bool themHoaDon(HoaDon hd, out string error)
 		{
 			error = string.Empty;
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -134,7 +209,7 @@ namespace DAL.Data
 		public int layMaHDMoiNhat()
 		{
 			var maHD = -1; // Giá trị mặc định nếu không tìm thấy
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -155,6 +230,32 @@ namespace DAL.Data
 			}
 
 			return maHD;
+		}
+
+		public bool capNhatHoaDon(HoaDon hd)
+		{
+			var connectionString = Properties.Resources.MySqlConnection;
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = "UPDATE HoaDon SET MaNV = @MaNV, NgayLap = @NgayLap, TongTien=@TongTien WHERE MaHD = @MaHD";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaNV", hd.MaNV);
+					cmd.Parameters.AddWithValue("@NgayLap", hd.NgayLap);
+					cmd.Parameters.AddWithValue("@TongTien", hd.TongTien);
+					cmd.Parameters.AddWithValue("@MaHD", hd.MaHD);
+
+					conn.Open();
+					var rowsAffected = cmd.ExecuteNonQuery();
+					return rowsAffected > 0;
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				return false;
+			}
 		}
 	}
 }
