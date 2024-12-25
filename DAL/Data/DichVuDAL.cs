@@ -24,7 +24,7 @@ namespace DAL.Data
 		public List<DichVu> getDataDichVu_Custom()
 		{
 			var lsNDVCT = new List<DichVu>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -66,7 +66,7 @@ namespace DAL.Data
 		public List<DichVu> getDataDichVu()
 		{
 			var lsDichVu = new List<DichVu>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -104,7 +104,7 @@ namespace DAL.Data
 		// Thêm dịch vụ
 		public bool addDichVu(DichVu dv)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
@@ -131,7 +131,7 @@ namespace DAL.Data
 		// Cập nhật dịch vụ
 		public bool capNhatDichVu(DichVu dv)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			Console.WriteLine($"MaDV: {dv.MaDV}, TenDV: {dv.TenDV}, MaLoaiDV: {dv.MaLoaiDV}, Gia: {dv.Gia}");
 			try
 			{
@@ -159,7 +159,7 @@ namespace DAL.Data
 		// Xóa dịch vụ
 		public bool xoaDichVu(DichVu dv)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
@@ -183,7 +183,7 @@ namespace DAL.Data
 		// Kiểm tra dịch vụ có tên trùng không
 		public bool KiemTraTrungTen(DichVu dv)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
@@ -207,7 +207,7 @@ namespace DAL.Data
 		// Hiển thị lại dịch vụ đã xóa
 		public bool hienThiLaiDichVu(string tenDichVu)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{

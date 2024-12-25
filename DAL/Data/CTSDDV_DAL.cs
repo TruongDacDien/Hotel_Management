@@ -24,7 +24,7 @@ namespace DAL.Data
 		public bool addDataCTSDDC(CT_SDDichVu ctsddv, out string error)
 		{
 			error = string.Empty;
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -55,7 +55,7 @@ namespace DAL.Data
 		public List<decimal> tongTienChiTietSuDungDichVu(int? maCTPT)
 		{
 			var results = new List<decimal>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -84,7 +84,7 @@ namespace DAL.Data
 		public List<DichVu_DaChon> getCTSDDVtheoMaCTPT(int? maCTPT)
 		{
 			var ls = new List<DichVu_DaChon>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{

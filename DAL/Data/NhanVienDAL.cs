@@ -24,7 +24,7 @@ namespace DAL.Data
 		public List<NhanVien> getDataNhanVien()
 		{
 			var lsNV = new List<NhanVien>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -64,7 +64,7 @@ namespace DAL.Data
 		// Thêm mới nhân viên
 		public bool addDataNhanVien(NhanVien nv)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -100,7 +100,7 @@ namespace DAL.Data
 		// Sửa thông tin nhân viên
 		public bool updateDataNhanVien(NhanVien nv)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -139,7 +139,7 @@ namespace DAL.Data
 		// Xóa nhân viên
 		public bool deleteDataNhanVien(NhanVien nv)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -166,7 +166,7 @@ namespace DAL.Data
 		public NhanVien kiemTraTonTaiNhanVien(string CCCD)
 		{
 			NhanVien nhanVien = null;
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -208,7 +208,7 @@ namespace DAL.Data
 		public NhanVien layNhanVienTheoMaNV(int maNV)
 		{
 			NhanVien nhanVien = null;
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -248,7 +248,7 @@ namespace DAL.Data
 		// Hiển thị lại nhân viên đã xóa
 		public bool hienThiLaiNhanVien(string cCCD)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{

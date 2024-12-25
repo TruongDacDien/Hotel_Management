@@ -23,6 +23,11 @@ namespace BUS
 			return HoaDonDAL.GetInstance().LayDuLieuHoaDon();
 		}
 
+		public HoaDon LayHoaDonThepMaCTPT(int? maCTPT)
+		{
+			return HoaDonDAL.GetInstance().LayHoaDonTheoMaCTPT(maCTPT);
+		}
+
 		public bool themHoaDon(HoaDon hd, out string error)
 		{
 			return HoaDonDAL.GetInstance().themHoaDon(hd, out error);
@@ -31,6 +36,10 @@ namespace BUS
 		public int layMaHDMoiNhat()
 		{
 			return HoaDonDAL.GetInstance().layMaHDMoiNhat();
+		}
+		public bool capNhatHoaDon(HoaDon hoaDon)
+		{
+			return HoaDonDAL.GetInstance().capNhatHoaDon(hoaDon);
 		}
 	}
 }
