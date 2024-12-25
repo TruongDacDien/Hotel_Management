@@ -24,7 +24,7 @@ namespace DAL.Data
 		public List<LoaiPhong> getDataLoaiPhong()
 		{
 			var loaiPhongs = new List<LoaiPhong>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -56,10 +56,45 @@ namespace DAL.Data
 			return loaiPhongs;
 		}
 
+		public LoaiPhong getLoaiPhongTheoMaLoaiPhong(int maLoaiPhong)
+		{
+			var connectionString = Properties.Resources.MySqlConnection;
+
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = "SELECT * FROM LoaiPhong WHERE MaLoaiPhong = @MaLoaiPhong AND IsDeleted = 0";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaLoaiPhong", maLoaiPhong);
+					conn.Open();
+
+					using (var reader = cmd.ExecuteReader())
+					{
+						if (reader.Read())
+							return new LoaiPhong
+							{
+								MaLoaiPhong = reader.GetInt32(reader.GetOrdinal("MaLoaiPhong")),
+								TenLoaiPhong = reader.GetString(reader.GetOrdinal("TenLoaiPhong")),
+								SoNguoiToiDa = reader.GetInt32(reader.GetOrdinal("SoNguoiToiDa")),
+								GiaNgay = reader.GetDecimal(reader.GetOrdinal("GiaNgay")),
+								GiaGio = reader.GetDecimal(reader.GetOrdinal("GiaGio"))
+							};
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+			}
+
+			return null;
+		}
+
 		// Thêm loại phòng mới
 		public bool addLoaiPhong(LoaiPhong loaiPhong)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -91,7 +126,7 @@ namespace DAL.Data
 		// Xóa loại phòng
 		public bool xoaLoaiPhong(LoaiPhong loaiPhong)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -117,7 +152,7 @@ namespace DAL.Data
 		// Cập nhật loại phòng
 		public bool capnhatLoaiPhong(LoaiPhong loaiPhong)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -152,7 +187,7 @@ namespace DAL.Data
 		public bool KiemTraTenLoaiPhong(LoaiPhong loaiPhong)
 		{
 			var isExist = false;
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -178,7 +213,7 @@ namespace DAL.Data
 		// Hiển thị lại loại phòng đã xóa
 		public bool hienThiLaiLoaiPhong(string tenLoaiPhong)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{

@@ -24,7 +24,7 @@ namespace DAL.Data
 		public bool addKhachHang(KhachHang kh, out string error)
 		{
 			error = string.Empty;
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -59,7 +59,7 @@ namespace DAL.Data
 		public KhachHang kiemTraTonTaiKhachHang(string CCCD)
 		{
 			KhachHang khachHang = null;
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -99,7 +99,7 @@ namespace DAL.Data
 		public List<KhachHang> getData()
 		{
 			var lstKhachHang = new List<KhachHang>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -136,7 +136,7 @@ namespace DAL.Data
 		// Cập nhật thông tin khách hàng
 		public bool capnhatKhachHang(KhachHang khachHang)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			var error = string.Empty;
 
 			try
@@ -173,7 +173,7 @@ namespace DAL.Data
 		// Xóa khách hàng
 		public bool xoaKhachHang(KhachHang khachHang)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -200,7 +200,7 @@ namespace DAL.Data
 		public string layTenKhachHangTheoMaPT(int? maPhieuThue)
 		{
 			var tenKhachHang = string.Empty;
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -229,7 +229,7 @@ namespace DAL.Data
 		public int layMaKHMoiNhat()
 		{
 			var maKH = -1; // Giá trị mặc định nếu không tìm thấy
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -255,7 +255,7 @@ namespace DAL.Data
 		// Hiển thị lại khách hàng đã xóa
 		public bool hienThiLaiKhachHang(string cCCD)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{

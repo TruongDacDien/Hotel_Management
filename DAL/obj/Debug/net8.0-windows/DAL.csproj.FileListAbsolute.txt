@@ -1,0 +1,15 @@
+C:\Users\Admin\Visual Studio\Hotel_Management\DAL\bin\Debug\net8.0-windows\DAL.dll.config
+C:\Users\Admin\Visual Studio\Hotel_Management\DAL\bin\Debug\net8.0-windows\DAL.deps.json
+C:\Users\Admin\Visual Studio\Hotel_Management\DAL\bin\Debug\net8.0-windows\DAL.dll
+C:\Users\Admin\Visual Studio\Hotel_Management\DAL\bin\Debug\net8.0-windows\DAL.pdb
+C:\Users\Admin\Visual Studio\Hotel_Management\DAL\obj\Debug\net8.0-windows\DAL.csproj.AssemblyReference.cache
+C:\Users\Admin\Visual Studio\Hotel_Management\DAL\obj\Debug\net8.0-windows\DAL.Properties.Resources.resources
+C:\Users\Admin\Visual Studio\Hotel_Management\DAL\obj\Debug\net8.0-windows\DAL.csproj.GenerateResource.cache
+C:\Users\Admin\Visual Studio\Hotel_Management\DAL\obj\Debug\net8.0-windows\DAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Admin\Visual Studio\Hotel_Management\DAL\obj\Debug\net8.0-windows\DAL.AssemblyInfoInputs.cache
+C:\Users\Admin\Visual Studio\Hotel_Management\DAL\obj\Debug\net8.0-windows\DAL.AssemblyInfo.cs
+C:\Users\Admin\Visual Studio\Hotel_Management\DAL\obj\Debug\net8.0-windows\DAL.csproj.CoreCompileInputs.cache
+C:\Users\Admin\Visual Studio\Hotel_Management\DAL\obj\Debug\net8.0-windows\DAL.dll
+C:\Users\Admin\Visual Studio\Hotel_Management\DAL\obj\Debug\net8.0-windows\refint\DAL.dll
+C:\Users\Admin\Visual Studio\Hotel_Management\DAL\obj\Debug\net8.0-windows\DAL.pdb
+C:\Users\Admin\Visual Studio\Hotel_Management\DAL\obj\Debug\net8.0-windows\ref\DAL.dll

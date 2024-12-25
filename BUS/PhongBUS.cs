@@ -36,7 +36,7 @@ namespace BUS
 			return PhongDAL.GetInstance().getPhongTrong(ngayBD, ngayKT);
 		}
 
-		public decimal? tinhTienPhong(Phong_Custom phong, CT_PhieuThue cT_PhieuThue)
+		public decimal? tinhTienPhong(Phong_Custom phong, CT_PhieuThue cT_PhieuThue, DateTime ngayKT)
 		{
 			// Lấy giá tiền theo ngày và giờ
 			decimal? giaNgay = PhongDAL.GetInstance().layGiaTienTheoMaPhong(phong.MaPhong, true); // Giá theo ngày
@@ -50,7 +50,7 @@ namespace BUS
 			if (phong.IsDay)
 			{
 				// Tính số ngày nguyên và số giờ dư
-				var duration = cT_PhieuThue.NgayKT - cT_PhieuThue.NgayBD;
+				var duration = ngayKT - cT_PhieuThue.NgayBD;
 				var soNgay = (int)duration.TotalDays; // Số ngày nguyên
 				var soGioLe = (decimal)(duration.TotalHours % 24); // Số giờ dư
 				var soGioLamTron = soGioLe > 0 ? (int)Math.Ceiling(soGioLe) : 0; // Làm tròn giờ dư
@@ -61,7 +61,7 @@ namespace BUS
 			else
 			{
 				// Tính tiền theo giờ (dựa trên khoảng thời gian)
-				var duration = cT_PhieuThue.NgayKT - cT_PhieuThue.NgayBD;
+				var duration = ngayKT - cT_PhieuThue.NgayBD;
 				var soPhut = (decimal)duration.TotalMinutes; // Tổng số phút
 
 				// Làm tròn theo chính sách: nếu thời gian nhỏ hơn 1h thì làm tròn lên 1h
@@ -85,6 +85,11 @@ namespace BUS
 		public List<Phong> getDataPhong()
 		{
 			return PhongDAL.GetInstance().getDataPhong();
+		}
+
+		public Phong getDataPhongTheoSoPhong(string soPhong)
+		{
+			return PhongDAL.GetInstance().getDataPhongTheoSoPhong(soPhong);
 		}
 
 		public bool addDataPhong(Phong phong)

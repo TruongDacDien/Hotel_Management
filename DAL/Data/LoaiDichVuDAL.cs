@@ -24,7 +24,7 @@ namespace DAL.Data
 		public List<LoaiDV> getData()
 		{
 			var loaiDichVus = new List<LoaiDV>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -56,7 +56,7 @@ namespace DAL.Data
 		// Thêm loại dịch vụ mới
 		public bool addDataLoaiDV(LoaiDV loaiDV)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
@@ -84,7 +84,7 @@ namespace DAL.Data
 		// Xóa loại dịch vụ
 		public bool xoaLoaiDV(LoaiDV loaiDV)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -110,7 +110,7 @@ namespace DAL.Data
 		// Cập nhật loại dịch vụ
 		public bool capnhatLoaiDV(LoaiDV loaiDV)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
@@ -141,7 +141,7 @@ namespace DAL.Data
 		public bool KiemTraTenLoaiDichVu(LoaiDV loaiDV)
 		{
 			var isExist = false;
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -167,7 +167,7 @@ namespace DAL.Data
 		// Hiển thị lại loại dịch vụ đã xóa
 		public bool hienThiLaiLoaiDV(string tenLoaiDV)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{

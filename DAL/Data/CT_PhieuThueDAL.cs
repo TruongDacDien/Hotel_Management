@@ -24,8 +24,7 @@ namespace DAL.Data
 		public bool addCTPhieuThue(CT_PhieuThue ctpt, out string error)
 		{
 			error = string.Empty;
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
-
+			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
@@ -65,7 +64,7 @@ namespace DAL.Data
 				return false;
 			}
 
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -98,7 +97,7 @@ namespace DAL.Data
 		public List<CT_PhieuThue> getPhieuThueTheoMaPT(int maPT)
 		{
 			var ls = new List<CT_PhieuThue>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -141,7 +140,7 @@ namespace DAL.Data
 		public CT_PhieuThue getCT_PhieuThueTheoMaCTPT(int? maCTPT)
 		{
 			CT_PhieuThue cT_PhieuThue = null;
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
@@ -186,7 +185,7 @@ namespace DAL.Data
 				return false;
 			}
 
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -225,7 +224,7 @@ namespace DAL.Data
 				return false;
 			}
 
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -258,7 +257,7 @@ namespace DAL.Data
 		public bool capNhatTien(int? maCTPT, decimal? tienPhong, out string errorCapNhatCTPT)
 		{
 			errorCapNhatCTPT = string.Empty;
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{

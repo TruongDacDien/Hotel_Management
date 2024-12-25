@@ -24,7 +24,7 @@ namespace DAL.Data
 		public bool addPhieuThue(PhieuThue pt, out string error)
 		{
 			error = string.Empty;
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -56,7 +56,7 @@ namespace DAL.Data
 		public bool xoaPhieuThueTheoMaPhieuThue(int maPhieuThue, out string error)
 		{
 			error = string.Empty;
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -116,7 +116,7 @@ namespace DAL.Data
 		public List<PhieuThue_Custom> getDataFromDB()
 		{
 			var ls = new List<PhieuThue_Custom>();
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
@@ -155,7 +155,7 @@ namespace DAL.Data
 		public int layMaPhieuThueMoiNhat()
 		{
 			var maPhieuThue = -1; // Giá trị mặc định nếu không tìm thấy
-			var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
