@@ -187,13 +187,24 @@
             <Grid Width="230" Height="130" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Grid.Style>
                     <Style TargetType="Grid">
-                        <Setter Property="Background" Value="#71D693" />
+                        <Setter Property="Background" Value="#7D7D7D" />
+                        <!-- Nền mặc định -->
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding TinhTrang}" Value="Phòng đang thuê">
-                                <Setter Property="Background" Value="#89B5CE" />
+                                <Setter Property="Background" Value="#5DADE2" />
+                                <!-- Xanh lam nhạt -->
                             </DataTrigger>
                             <DataTrigger Binding="{Binding TinhTrang}" Value="Phòng đã đặt">
-                                <Setter Property="Background" Value="#7D7D7D" />
+                                <Setter Property="Background" Value="#58D68D" />
+                                <!-- Xanh lá nhạt -->
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding DonDep}" Value="Chưa dọn dẹp">
+                                <Setter Property="Background" Value="#FFC300" />
+                                <!-- Vàng nhạt -->
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding DonDep}" Value="Sửa chữa">
+                                <Setter Property="Background" Value="#E74C3C" />
+                                <!-- Đỏ cam -->
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
