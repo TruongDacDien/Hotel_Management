@@ -11,27 +11,14 @@
         x:Name="WebThanhToans"
         AllowsTransparency="True"
         WindowStartupLocation="CenterScreen"
-        WindowState="Maximized"
-        Title="Web Thanh Toán" Height="530" Width="800" Loaded="WebThanhToans_Loaded">
+        Title="Web Thanh Toán" Height="900" Width="1600" Loaded="WebThanhToans_Loaded">
     <Window.Clip>
-        <RectangleGeometry Rect="0,0,1920,1080" RadiusX="10" RadiusY="10" x:Name="boGoc" />
+        <RectangleGeometry Rect="0,0,1600,900" RadiusX="10" RadiusY="10" x:Name="boGoc" />
     </Window.Clip>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-
-        <!-- Thanh Controlbar -->
-        <uc:uc_Controlbar Grid.Row="0"
-                          MinHeight="{Binding MinHeight_ucControlbar, Mode=TwoWay ,UpdateSourceTrigger=PropertyChanged}"
-                          Tag="{Binding Title, ElementName=WebThanhToans}"
-                          VerticalAlignment="Center" />
-
         <!-- WebView2 -->
         <Wpf:WebView2 Grid.Row="1" x:Name="webView" 
                       VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
                       NavigationCompleted="WebView2_NavigationCompleted"/>
-
     </Grid>
 </Window>

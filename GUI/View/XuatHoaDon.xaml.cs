@@ -18,6 +18,7 @@ using System.Windows.Media;
 using DAL.Data;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Windows.Media.Animation;
+using GUI.UserControls;
 
 namespace GUI.View
 {
@@ -65,10 +66,25 @@ namespace GUI.View
 				// Hiển thị thông tin chi tiết
 				txbSoPhong.Text = Phong.MaPhong;
 
-				// Phân tích số ngày và giờ từ tổng thời gian thuê
+				// Phân tích số ngày và giờ
 				var time = ngayKT - cT_PhieuThue.NgayBD;
-				var songay = (int)time.TotalDays;
-				var sogio = time.Hours + (time.Seconds > 0 ? 1 : 0); // Làm tròn giờ nếu có phút dư
+				var songay = (int)time.TotalDays; // Số ngày đã thuê
+
+				// Tính số giờ
+				decimal sogio = (decimal)time.TotalHours;
+
+				// Làm tròn giờ: nếu thời gian thuê trong ngày vượt quá 6 giờ, tính thêm một ngày
+				decimal gioDu = (decimal)(time.TotalHours % 24);
+				if (gioDu > 12)
+				{
+					songay++; // Trên 12 giờ: Tính thêm 1 ngày
+					sogio = 0; // Sau khi tính thêm 1 ngày thì không cần tính giờ nữa
+				}
+				else
+				{
+					// Trường hợp còn lại, làm tròn số giờ thuê theo cách tính đã yêu cầu
+					sogio = sogio == 0 ? 1 : (time.Hours + (time.Minutes > 30 || time.Seconds > 0 ? 1 : 0));
+				}
 
 				var thoiGianThue = $"{songay} ngày {sogio} giờ";
 
@@ -150,6 +166,13 @@ namespace GUI.View
 
 				// Thêm danh sách dịch vụ khác
 				lvDichVuDaSD.ItemsSource = ls;
+
+				var chuaDonDep = new Phong
+				{
+					SoPhong = ph.MaPhong,
+					DonDep = "Chưa dọn dẹp",
+				};
+				PhongBUS.GetInstance().capNhatDataPhong(chuaDonDep);
 			}
 			catch (Exception ex)
 			{
@@ -157,7 +180,6 @@ namespace GUI.View
 					.ShowDialog();
 			}
 		}
-
 
 		public XuatHoaDon(HoaDon hoaDon) : this()
 		{
@@ -172,8 +194,23 @@ namespace GUI.View
 
 				// Phân tích số ngày và giờ
 				var time = ngayKT - ngayBD;
-				var songay = (int)time.TotalDays;
-				var sogio = time.Hours + (time.Seconds > 0 ? 1 : 0);
+				var songay = (int)time.TotalDays; // Số ngày đã thuê
+
+				// Tính số giờ
+				decimal sogio = (decimal)time.TotalHours;
+
+				// Làm tròn giờ: nếu thời gian thuê trong ngày vượt quá 6 giờ, tính thêm một ngày
+				decimal gioDu = (decimal)(time.TotalHours % 24);
+				if (gioDu > 12)
+				{
+					songay++; // Trên 12 giờ: Tính thêm 1 ngày
+					sogio = 0; // Sau khi tính thêm 1 ngày thì không cần tính giờ nữa
+				}
+				else
+				{
+					// Trường hợp còn lại, làm tròn số giờ thuê theo cách tính đã yêu cầu
+					sogio = sogio == 0 ? 1 : (time.Hours + (time.Minutes > 30 || time.Seconds > 0 ? 1 : 0));
+				}
 
 				var thoiGianThue = $"{songay} ngày {sogio} giờ";
 
@@ -273,22 +310,10 @@ namespace GUI.View
 			btnDaThanhToan.Background = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#808080"));
 			btnQR.IsEnabled = false;
 			btnQR.Background = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#808080"));
-
-			// Tắt ngrok
-			StopNgrok();
 		}
 
 		private async void btnQR_Click(object sender, RoutedEventArgs e)
 		{
-			// Chạy ngrok và chờ đến khi hoàn thành
-			var urls = await RunNgrok();
-
-			if (urls.CancelUrl == null || urls.ReturnUrl == null)
-			{
-				new DialogCustoms("Không thể lấy URL từ Ngrok.", "Lỗi", DialogCustoms.OK).ShowDialog();
-				return;
-			}
-
 			List<ItemData> items = new List<ItemData>();
 			foreach (var dv in ls)
 			{
@@ -300,12 +325,15 @@ namespace GUI.View
 			}
 
 			var noidung = "THANH TOAN KHACH SAN";
-			var orderID = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(); // Tính bằng mili giây
+			int soHoaDon = Convert.ToInt32(txbSoHoaDon.Text);
+			// Lấy thời gian Unix timestamp (mili giây)
+			long unixTimeMilliseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+			int unixTimestampPart = (int)(unixTimeMilliseconds % 10000); // Lấy 4 chữ số cuối
+			// Kết hợp số hóa đơn và phần cuối của Unix timestamp
+			var orderID = soHoaDon * 10000 + unixTimestampPart;
 			var tongGiaTien = items.Sum(item => item.price * item.quantity);
-			var cancelUrl = urls.CancelUrl;
-			var returnUrl = urls.ReturnUrl;
 
-			PaymentData paymentData = new PaymentData(orderID, tongGiaTien, noidung, items, cancelUrl, returnUrl);
+			PaymentData paymentData = new PaymentData(orderID, tongGiaTien, noidung, items, "https://localhost:3002", "https://localhost:3002");
 
 			try
 			{
@@ -341,100 +369,6 @@ namespace GUI.View
 				isPaymentHandled = true; // Đặt cờ để tránh lặp
 				new DialogCustoms("Thanh toán thành công!", "Thông báo", DialogCustoms.OK).ShowDialog();
 				btnDaThanhToan_Click(this, new RoutedEventArgs());
-			}
-		}
-
-		private async Task<(string CancelUrl, string ReturnUrl)> RunNgrok()
-		{
-			try
-			{
-				var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-				var scriptPath = System.IO.Path.Combine(baseDirectory, "update-ngrok.ps1");
-				var ngrokPath = System.IO.Path.Combine(baseDirectory, "ngrok.exe");
-
-				if (!System.IO.File.Exists(scriptPath) || !System.IO.File.Exists(ngrokPath))
-				{
-					new DialogCustoms("Không tìm thấy file update-ngrok.ps1 hoặc ngrok.exe trong thư mục ứng dụng.", "Lỗi", DialogCustoms.OK).ShowDialog();
-					return (null, null);
-				}
-
-				StopNgrok();
-
-				var processStartInfo = new ProcessStartInfo
-				{
-					FileName = "powershell.exe",
-					Arguments = $"-ExecutionPolicy Bypass -File \"{scriptPath}\"",
-					RedirectStandardOutput = true,
-					RedirectStandardError = true,
-					UseShellExecute = false,
-					CreateNoWindow = true
-				};
-
-				using (var process = new Process { StartInfo = processStartInfo })
-				{
-					process.Start();
-					string output = await process.StandardOutput.ReadToEndAsync();
-					string error = await process.StandardError.ReadToEndAsync();
-					Console.WriteLine("Output:\n" + output);
-					Console.WriteLine("Error:\n" + error);
-
-					var cancelUrl = ParseSetting(output, "cancelUrl");
-					var returnUrl = ParseSetting(output, "returnUrl");
-
-					if (!string.IsNullOrEmpty(cancelUrl) && !string.IsNullOrEmpty(returnUrl))
-					{
-						SettingsHelper.UpdateSettings(cancelUrl, returnUrl);
-						return (cancelUrl, returnUrl);
-					}
-					else
-					{
-						new DialogCustoms("Failed to parse Ngrok URLs from script output.", "Lỗi", DialogCustoms.OK).ShowDialog();
-						return (null, null);
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				new DialogCustoms($"Có lỗi xảy ra khi chạy script: {ex.Message}", "Lỗi", DialogCustoms.OK).ShowDialog();
-				return (null, null);
-			}
-		}
-
-		private string ParseSetting(string output, string key)
-		{
-			Console.WriteLine("Output from script:\n" + output);
-
-			// Split by lines and search for the key
-			var lines = output.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-			foreach (var line in lines)
-			{
-				Console.WriteLine($"Checking line: {line}");
-				if (line.StartsWith(key + "=", StringComparison.OrdinalIgnoreCase))
-				{
-					var value = line.Substring(key.Length + 1).Trim();
-					Console.WriteLine($"Found {key}: {value}");
-					return value;
-				}
-			}
-
-			Console.WriteLine($"Key '{key}' not found in output.");
-			return null;
-		}
-
-		private void StopNgrok()
-		{
-			try
-			{
-				// Tìm và kết thúc process của ngrok
-				foreach (var process in Process.GetProcessesByName("ngrok"))
-				{
-					process.Kill();
-					process.WaitForExit(); // Chờ process dừng hoàn toàn
-				}
-			}
-			catch (Exception ex)
-			{
-				new DialogCustoms($"Có lỗi xảy ra khi tắt ngrok: {ex.Message}", "Lỗi", DialogCustoms.OK).ShowDialog();
 			}
 		}
 	}

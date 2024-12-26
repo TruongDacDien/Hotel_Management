@@ -39,13 +39,13 @@ namespace DAL.Data
                                     lp.TenLoaiPhong AS LoaiPhong,
                                     ct.NgayBD AS NgayDen,
                                     CASE 
-                                        WHEN ct.NgayBD IS NULL OR ct.NgayKT IS NULL THEN 0
-                                        ELSE DATEDIFF(ct.NgayKT, ct.NgayBD) + 1
-                                    END AS SoNgayO,
+										WHEN ct.NgayBD IS NULL OR ct.NgayKT IS NULL THEN 0
+										ELSE CEIL(TIMESTAMPDIFF(MINUTE, ct.NgayBD, ct.NgayKT) / 1440.0)
+									END AS SoNgayO,
                                     CASE 
-                                        WHEN ct.NgayBD IS NULL OR ct.NgayKT IS NULL THEN 0
-                                        ELSE TIMESTAMPDIFF(HOUR, ct.NgayBD, ct.NgayKT)
-                                    END AS SoGio,
+										WHEN ct.NgayBD IS NULL OR ct.NgayKT IS NULL THEN 0
+										ELSE TIMESTAMPDIFF(MINUTE, ct.NgayBD, ct.NgayKT) / 60
+									END AS SoGio,
                                     ct.NgayKT AS NgayDi,
                                     COALESCE(ct.SoNguoiO, 0) AS SoNguoi
                                     FROM Phong p
@@ -113,13 +113,13 @@ namespace DAL.Data
                                     lp.TenLoaiPhong AS LoaiPhong,
                                     ct.NgayBD AS NgayDen,
                                     CASE 
-                                        WHEN ct.NgayBD IS NULL OR ct.NgayKT IS NULL THEN 0
-                                        ELSE DATEDIFF(ct.NgayKT, ct.NgayBD) + 1
-                                    END AS SoNgayO,
+										WHEN ct.NgayBD IS NULL OR ct.NgayKT IS NULL THEN 0
+										ELSE CEIL(TIMESTAMPDIFF(MINUTE, ct.NgayBD, ct.NgayKT) / 1440.0)
+									END AS SoNgayO,
                                     CASE 
-                                        WHEN ct.NgayBD IS NULL OR ct.NgayKT IS NULL THEN 0
-                                        ELSE TIMESTAMPDIFF(HOUR, ct.NgayBD, ct.NgayKT)
-                                    END AS SoGio,
+										WHEN ct.NgayBD IS NULL OR ct.NgayKT IS NULL THEN 0
+										ELSE TIMESTAMPDIFF(MINUTE, ct.NgayBD, ct.NgayKT) / 60
+									END AS SoGio,
                                     ct.NgayKT AS NgayDi,
                                     COALESCE(ct.SoNguoiO, 0) AS SoNguoi
                                     FROM Phong p
@@ -241,7 +241,7 @@ namespace DAL.Data
                         SELECT p.SoPhong, lp.TenLoaiPhong
                         FROM Phong p
                         JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
-                        WHERE p.IsDeleted = 0
+                        WHERE p.IsDeleted = 0 AND p.DonDep NOT IN ('Sửa chữa', 'Chưa dọn dẹp')
                         AND p.SoPhong NOT IN (
                             SELECT ct.SoPhong
                             FROM CT_PhieuThue ct

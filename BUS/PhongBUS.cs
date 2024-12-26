@@ -55,6 +55,12 @@ namespace BUS
 				var soGioLe = (decimal)(duration.TotalHours % 24); // Số giờ dư
 				var soGioLamTron = soGioLe > 0 ? (int)Math.Ceiling(soGioLe) : 0; // Làm tròn giờ dư
 
+				// Nếu số giờ dư > 12 thì tính thêm 1 ngày
+				if (soGioLamTron > 12)
+				{
+					soNgay += 1;
+				}
+
 				// Tính tổng tiền
 				return soNgay * giaNgay + soGioLamTron * giaGio;
 			}
@@ -64,8 +70,14 @@ namespace BUS
 				var duration = ngayKT - cT_PhieuThue.NgayBD;
 				var soPhut = (decimal)duration.TotalMinutes; // Tổng số phút
 
-				// Làm tròn theo chính sách: nếu thời gian nhỏ hơn 1h thì làm tròn lên 1h
-				var soGioLamTron = soPhut > 0 ? Math.Max(1, (int)Math.Ceiling(soPhut / 60)) : 0;
+				// Nếu thời gian thuê trên 30 phút thì làm tròn lên 1 giờ
+				var soGioLamTron = soPhut > 30 ? Math.Max(1, (int)Math.Ceiling(soPhut / 60)) : 0;
+
+				// Nếu số giờ dư > 12 thì tính thêm 1 ngày
+				if (soGioLamTron > 12)
+				{
+					return giaNgay;
+				}
 
 				// Tính tổng tiền
 				return soGioLamTron * giaGio;
