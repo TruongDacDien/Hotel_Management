@@ -123,14 +123,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ngrok.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="update-ngrok.ps1">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Update="View\WebThanhToan.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

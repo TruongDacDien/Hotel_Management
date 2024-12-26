@@ -33,17 +33,23 @@ namespace DAL.Data
 									(SELECT SUM(CTPT.TienPhong)
 									 FROM CT_PhieuThue CTPT
 									 JOIN HoaDon HD ON CTPT.MaCTPT = HD.MaCTPT
-									 WHERE MONTH(HD.NgayLap) = @month AND YEAR(HD.NgayLap) = @year) AS TongTienPhong,
+									 WHERE MONTH(HD.NgayLap) = @month 
+									   AND YEAR(HD.NgayLap) = @year
+									   AND CTPT.TinhTrangThue = 'Đã thanh toán') AS TongTienPhong,
 									SUM(CTDV.ThanhTien) AS TongTienDV,
 									COUNT(DISTINCT HD.MaHD) AS SoLuongPhongDaDat,
 									(SELECT SUM(CTPT.TienPhong)
 									 FROM CT_PhieuThue CTPT
 									 JOIN HoaDon HD ON CTPT.MaCTPT = HD.MaCTPT
-									 WHERE MONTH(HD.NgayLap) = @month AND YEAR(HD.NgayLap) = @year) + SUM(CTDV.ThanhTien) AS TongDoanhThu
+									 WHERE MONTH(HD.NgayLap) = @month 
+									   AND YEAR(HD.NgayLap) = @year
+									   AND CTPT.TinhTrangThue = 'Đã thanh toán') + SUM(CTDV.ThanhTien) AS TongDoanhThu
 								FROM HoaDon HD
 								LEFT JOIN CT_PhieuThue CTPT ON CTPT.MaCTPT = HD.MaCTPT
 								LEFT JOIN CT_SDDichVu CTDV ON CTDV.MaCTPT = CTPT.MaCTPT
-								WHERE MONTH(HD.NgayLap) = @month AND YEAR(HD.NgayLap) = @year";
+								WHERE MONTH(HD.NgayLap) = @month 
+								  AND YEAR(HD.NgayLap) = @year 
+								  AND CTPT.TinhTrangThue = 'Đã thanh toán'";
 
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@month", month);
@@ -88,14 +94,15 @@ namespace DAL.Data
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = @"SELECT 
-                            CTPT.TienPhong,
-                            CTDV.ThanhTien AS TienDV,
-                            (IFNULL(CTPT.TienPhong, 0) + IFNULL(CTDV.ThanhTien, 0)) AS TongTien,
-                            HD.NgayLap
-                          FROM HoaDon HD
-                          LEFT JOIN CT_PhieuThue CTPT ON CTPT.MaCTPT = HD.MaCTPT
-                          LEFT JOIN CT_SDDichVu CTDV ON CTDV.MaCTPT = CTPT.MaCTPT
-                          WHERE YEAR(HD.NgayLap) = @year";
+									CTPT.TienPhong,
+									CTDV.ThanhTien AS TienDV,
+									(IFNULL(CTPT.TienPhong, 0) + IFNULL(CTDV.ThanhTien, 0)) AS TongTien,
+									HD.NgayLap
+								FROM HoaDon HD
+								LEFT JOIN CT_PhieuThue CTPT ON CTPT.MaCTPT = HD.MaCTPT
+								LEFT JOIN CT_SDDichVu CTDV ON CTDV.MaCTPT = CTPT.MaCTPT
+								WHERE YEAR(HD.NgayLap) = @year 
+								  AND CTPT.TinhTrangThue = 'Đã thanh toán'";
 
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@year", year);

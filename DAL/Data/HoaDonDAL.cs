@@ -38,7 +38,7 @@ namespace DAL.Data
 						ctpt.MaCTPT, ctpt.MaPhieuThue, ctpt.SoPhong, ctpt.NgayBD, 
 						ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong
 					FROM HoaDon hd, NhanVien nv, CT_PhieuThue ctpt
-					WHERE hd.MaNV = nv.MaNV AND hd.MaCTPT = ctpt.MaCTPT";
+					WHERE hd.MaNV = nv.MaNV AND hd.MaCTPT = ctpt.MaCTPT AND ctpt.TinhTrangThue = 'Đã thanh toán'";
 
 					var cmd = new MySqlCommand(query, conn);
 					conn.Open();

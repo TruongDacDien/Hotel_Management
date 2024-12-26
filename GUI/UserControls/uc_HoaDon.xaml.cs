@@ -43,16 +43,17 @@ namespace GUI.UserControls
 		private bool HoaDonFilter(object obj)
 		{
 			if (string.IsNullOrEmpty(txtFilter.Text)) return true;
-
 			return (obj as HoaDon).MaHD == int.Parse(txtFilter.Text);
 		}
 
 		private bool HoaDonFilterTheoNgay(object obj)
 		{
-			if (string.IsNullOrEmpty(dtpChonNgay.Text))
+			if (dtpChonNgay.SelectedDate == null)
 				return true;
-			return (obj as HoaDon).NgayLap.ToShortDateString().Equals(dtpChonNgay.Text);
+			var selectedDate = dtpChonNgay.SelectedDate.Value.ToShortDateString();
+			return (obj as HoaDon).NgayLap.ToShortDateString().Equals(selectedDate);
 		}
+
 
 		private void dtpChonNgay_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
 		{
