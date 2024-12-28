@@ -103,7 +103,7 @@ namespace GUI.View
 
 						// Ghi tiêu đề "Báo cáo doanh thu"
 						var titleCell = worksheet.Cell(2, 1);
-						titleCell.Value = "BÁO CÁO DOANH THU";
+						titleCell.Value = $"BÁO CÁO DOANH THU THÁNG {MonthSelector.SelectedIndex + 1}/{YearSelector.SelectedItem}";
 						titleCell.Style.Font.Bold = true;
 						titleCell.Style.Font.FontSize = 16;
 						titleCell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
