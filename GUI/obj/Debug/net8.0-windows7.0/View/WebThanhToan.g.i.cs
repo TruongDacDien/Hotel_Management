@@ -79,7 +79,7 @@ namespace GUI.View {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/GUI;V1.0.0.0;component/view/webthanhtoan.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/GUI;component/view/webthanhtoan.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\View\WebThanhToan.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
