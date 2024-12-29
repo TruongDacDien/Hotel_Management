@@ -2893,6 +2893,7 @@
       "MaterialDesignThemes >= 5.1.0",
       "Microsoft.Extensions.Configuration.Json >= 9.0.0",
       "Microsoft.Web.WebView2 >= 1.0.2903.40",
+      "MySql.Data >= 9.1.0",
       "System.Drawing.Common >= 9.0.0",
       "payOS >= 1.0.9"
     ]
@@ -2977,6 +2978,10 @@
           "Microsoft.Web.WebView2": {
             "target": "Package",
             "version": "[1.0.2903.40, )"
+          },
+          "MySql.Data": {
+            "target": "Package",
+            "version": "[9.1.0, )"
           },
           "System.Drawing.Common": {
             "target": "Package",
