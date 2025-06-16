@@ -13,9 +13,9 @@ namespace GUI.View
 	/// </summary>
 	public partial class Them_SuaTaiKhoan : Window
 	{
-		public delegate void suaData(TaiKhoan taiKhoan);
+		public delegate void suaData(TaiKhoanNV taiKhoan);
 
-		public delegate void truyenData(TaiKhoan taiKhoan);
+		public delegate void truyenData(TaiKhoanNV taiKhoan);
 
 		private readonly bool isEditing;
 
@@ -35,7 +35,7 @@ namespace GUI.View
 			cmbMaNV.SelectedValuePath = "MaNV";
 		}
 
-		public Them_SuaTaiKhoan(bool isEditing = false, TaiKhoan taiKhoan = null) : this()
+		public Them_SuaTaiKhoan(bool isEditing = false, TaiKhoanNV taiKhoan = null) : this()
 		{
 			this.isEditing = isEditing;
 			if (isEditing && taiKhoan != null)
@@ -44,7 +44,7 @@ namespace GUI.View
 				txtUsername.Text = taiKhoan.Username;
 				txtEmail.IsReadOnly = true;
 				txtEmail.Text = taiKhoan.Email;
-				cmbCapDo.Text = taiKhoan.CapDoQuyen.ToString();
+				//cmbCapDo.Text = taiKhoan.CapDoQuyen.ToString();
 				cmbMaNV.Text = taiKhoan.NhanVien.DisplayInfo;
 				txbTitle.Text = "Sửa thông tin tài khoản " + taiKhoan.Username;
 			}
@@ -106,12 +106,12 @@ namespace GUI.View
 					pass = TaiKhoanDAL.GetInstance().layTaiKhoanTheoUsername(txtUsername.Text).Password;
 				else
 					pass = Bcrypt_HashBUS.GetInstance().HashMatKhau(txtPassword.Text);
-				var taiKhoan = new TaiKhoan
+				var taiKhoan = new TaiKhoanNV
 				{
 					Username = txtUsername.Text,
 					Password = pass,
 					Email = txtPassword.Text,
-					CapDoQuyen = int.Parse(cmbCapDo.Text),
+					//CapDoQuyen = int.Parse(cmbCapDo.Text),
 					MaNV = int.Parse(cmbMaNV.SelectedValue.ToString())
 				};
 
@@ -143,12 +143,12 @@ namespace GUI.View
 			}
 
 			var pass = Bcrypt_HashBUS.GetInstance().HashMatKhau(txtPassword.Text);
-			var taiKhoan = new TaiKhoan
+			var taiKhoan = new TaiKhoanNV
 			{
 				Username = txtUsername.Text,
 				Password = pass,
 				Email = txtPassword.Text,
-				CapDoQuyen = int.Parse(cmbCapDo.Text),
+				//CapDoQuyen = int.Parse(cmbCapDo.Text),
 				MaNV = int.Parse(cmbMaNV.SelectedValue.ToString())
 			};
 			if (truyenTaiKhoan != null) truyenTaiKhoan(taiKhoan);

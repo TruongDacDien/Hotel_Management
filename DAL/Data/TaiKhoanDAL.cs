@@ -23,30 +23,8 @@ namespace DAL.Data
 			return Instance;
 		}
 
-		// Chuyển đổi hình ảnh thành mảng byte
-		public byte[] ConvertImageToByteArray(Image image)
-		{
-			using (var ms = new MemoryStream())
-			{
-				image.Save(ms, ImageFormat.Jpeg); // Hoặc định dạng khác
-				return ms.ToArray();
-			}
-		}
-
-		private byte[] GetDefaultAvatar()
-		{
-			var basePath = AppDomain.CurrentDomain.BaseDirectory; // Lấy thư mục gốc của ứng dụng
-			var filepath = Path.Combine(basePath, "Res", "default_image.jpg");
-			if (!File.Exists(filepath))
-				throw new FileNotFoundException("Không tìm thấy file ảnh mặc định", filepath);
-			using (var image = Image.FromFile(filepath))
-			{
-				return ConvertImageToByteArray(image);
-			}
-		}
-
 		// Lấy tài khoản theo username
-		public TaiKhoan layTaiKhoanTheoUsername(string username)
+		public TaiKhoanNV layTaiKhoanTheoUsername(string username)
 		{
 			var connectionString = Properties.Resources.MySqlConnection;
 
@@ -54,11 +32,12 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"SELECT tk.Username, tk.Password, tk.MaNV, tk.CapDoQuyen, tk.Avatar, tk.Email, tk.Disabled,
-									nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong
-									FROM TaiKhoan tk
-									LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV
-									WHERE tk.Username = @Username";
+					var query = @"SELECT tknv.MaTKNV, tknv.Username, tknv.Password, tknv.MaNV, tknv.AvatarId, tknv.AvatarURL,
+									tknv.Email, tknv.LastLogin, tknv.MaXacNhan, tknv.ThoiGianHetHan, tknv.Disabled,
+									nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, nv.CCCD, nv.CCCDImage, nv.NTNS, nv.GioiTinh, nv.Luong, nv.IsDeleted
+								  FROM TaiKhoanNV tknv
+								  LEFT JOIN NhanVien nv ON tknv.MaNV = nv.MaNV
+								  WHERE tknv.Username = @Username";
 
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@Username", username);
@@ -67,40 +46,36 @@ namespace DAL.Data
 					using (var reader = cmd.ExecuteReader())
 					{
 						if (reader.Read())
-							return new TaiKhoan
+						{
+							return new TaiKhoanNV
 							{
-								Username = reader["Username"].ToString(),
-								Password = reader["Password"].ToString(),
-								MaNV = reader.IsDBNull(reader.GetOrdinal("MaNV"))
-									? 0
-									: reader.GetInt32(reader.GetOrdinal("MaNV")),
-								CapDoQuyen = reader.IsDBNull(reader.GetOrdinal("CapDoQuyen"))
-									? 0
-									: reader.GetInt32(reader.GetOrdinal("CapDoQuyen")),
-								Avatar = reader["Avatar"] as byte[],
-								Email = reader["Email"].ToString(),
-								Disabled = reader.IsDBNull(reader.GetOrdinal("Disabled"))
-									? false
-									: reader.GetBoolean(reader.GetOrdinal("Disabled")),
+								MaTKNV = reader.IsDBNull(reader.GetOrdinal("MaTKNV")) ? 0 : reader.GetInt32(reader.GetOrdinal("MaTKNV")),
+								Username = reader.IsDBNull(reader.GetOrdinal("Username")) ? null : reader["Username"].ToString(),
+								Password = reader.IsDBNull(reader.GetOrdinal("Password")) ? null : reader["Password"].ToString(),
+								MaNV = reader.IsDBNull(reader.GetOrdinal("MaNV")) ? 0 : reader.GetInt32(reader.GetOrdinal("MaNV")),
+								AvatarId = reader.IsDBNull(reader.GetOrdinal("AvatarId")) ? null : reader["AvatarId"].ToString(),
+								AvatarURL = reader.IsDBNull(reader.GetOrdinal("AvatarURL")) ? null : reader["AvatarURL"].ToString(),
+								Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader["Email"].ToString(),
+								LastLogin = reader.IsDBNull(reader.GetOrdinal("LastLogin")) ? DateTime.MinValue : reader.GetDateTime(reader.GetOrdinal("LastLogin")),
+								MaXacNhan = reader.IsDBNull(reader.GetOrdinal("MaXacNhan")) ? null : reader["MaXacNhan"].ToString(),
+								ThoiGianHetHan = reader.IsDBNull(reader.GetOrdinal("ThoiGianHetHan")) ? DateTime.MinValue : reader.GetDateTime(reader.GetOrdinal("ThoiGianHetHan")),
+								Disabled = reader.IsDBNull(reader.GetOrdinal("Disabled"))? false : reader.GetBoolean(reader.GetOrdinal("Disabled")),
 								NhanVien = new NhanVien
 								{
-									MaNV = reader.IsDBNull(reader.GetOrdinal("MaNV"))
-										? 0
-										: reader.GetInt32(reader.GetOrdinal("MaNV")),
-									HoTen = reader["HoTen"]?.ToString(),
-									ChucVu = reader["ChucVu"]?.ToString(),
-									SDT = reader["SDT"]?.ToString(),
-									DiaChi = reader["DiaChi"]?.ToString(),
-									CCCD = reader["CCCD"]?.ToString(),
-									NTNS = reader.IsDBNull(reader.GetOrdinal("NTNS"))
-										? DateTime.MinValue
-										: reader.GetDateTime(reader.GetOrdinal("NTNS")),
-									GioiTinh = reader["GioiTinh"]?.ToString(),
-									Luong = reader.IsDBNull(reader.GetOrdinal("Luong"))
-										? 0
-										: reader.GetDecimal(reader.GetOrdinal("Luong"))
+									MaNV = reader.IsDBNull(reader.GetOrdinal("MaNV")) ? 0 : reader.GetInt32(reader.GetOrdinal("MaNV")),
+									HoTen = reader.IsDBNull(reader.GetOrdinal("HoTen")) ? null : reader["HoTen"].ToString(),
+									ChucVu = reader.IsDBNull(reader.GetOrdinal("ChucVu")) ? null : reader["ChucVu"].ToString(),
+									SDT = reader.IsDBNull(reader.GetOrdinal("SDT")) ? null : reader["SDT"].ToString(),
+									DiaChi = reader.IsDBNull(reader.GetOrdinal("DiaChi")) ? null : reader["DiaChi"].ToString(),
+									CCCD = reader.IsDBNull(reader.GetOrdinal("CCCD")) ? null : reader["CCCD"].ToString(),
+									CCCDImage = reader.IsDBNull(reader.GetOrdinal("CCCDImage")) ? null : reader["CCCDImage"].ToString(),
+									NTNS = reader.IsDBNull(reader.GetOrdinal("NTNS")) ? DateTime.MinValue : reader.GetDateTime(reader.GetOrdinal("NTNS")),
+									GioiTinh = reader.IsDBNull(reader.GetOrdinal("GioiTinh")) ? null : reader["GioiTinh"].ToString(),
+									Luong = reader.IsDBNull(reader.GetOrdinal("Luong")) ? 0 : reader.GetDecimal(reader.GetOrdinal("Luong")),
+									IsDeleted = reader.IsDBNull(reader.GetOrdinal("IsDeleted")) ? false : reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
 								}
 							};
+						}
 					}
 				}
 			}
@@ -109,11 +84,11 @@ namespace DAL.Data
 				Console.WriteLine("Lỗi: " + ex.Message);
 			}
 
-			return null; // Trả về null nếu không tìm thấy
+			return null;
 		}
 
 		// Cập nhật avatar của tài khoản
-		public bool capNhatAvatar(string username, byte[] avatarBytes, out string error)
+		public bool capNhatAvatar(string username, string avatarId, string avatarURL, out string error)
 		{
 			error = string.Empty;
 			var connectionString = Properties.Resources.MySqlConnection;
@@ -122,9 +97,10 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = "UPDATE TaiKhoan SET avatar = @Avatar WHERE username = @Username";
+					var query = "UPDATE TaiKhoanNV SET AvatarId = @AvatarId, AvatarURL = @AvatarURL WHERE username = @Username";
 					var cmd = new MySqlCommand(query, conn);
-					cmd.Parameters.AddWithValue("@Avatar", avatarBytes);
+					cmd.Parameters.AddWithValue("@AvatarId", avatarId);
+					cmd.Parameters.AddWithValue("@AvatarURL", avatarURL);
 					cmd.Parameters.AddWithValue("@Username", username);
 
 					conn.Open();
@@ -147,20 +123,21 @@ namespace DAL.Data
 		}
 
 		// Lấy danh sách tất cả tài khoản
-		public List<TaiKhoan> getDataTaiKhoan()
+		public List<TaiKhoanNV> getDataTaiKhoan()
 		{
-			var danhSachTaiKhoan = new List<TaiKhoan>();
+			var danhSachTaiKhoan = new List<TaiKhoanNV>();
 			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"SELECT tk.Username, tk.Password, tk.MaNV, tk.CapDoQuyen, tk.Avatar, tk.Email, tk.Disabled,
-                            nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong
-                            FROM TaiKhoan tk
-                            LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV 
-							WHERE tk.Disabled = 0";
+					var query = @"SELECT tknv.MaTKNV, tknv.Username, tknv.Password, tknv.MaNV, tknv.AvatarId, tknv.AvatarURL,
+									tknv.Email, tknv.LastLogin, tknv.MaXacNhan, tknv.ThoiGianHetHan, tknv.Disabled,
+									nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, nv.CCCD, nv.CCCDImage, nv.NTNS, nv.GioiTinh, nv.Luong, nv.IsDeleted
+                                  FROM TaiKhoanNV tknv
+                                  LEFT JOIN NhanVien nv ON tknv.MaNV = nv.MaNV 
+								  WHERE tknv.Disabled = 0 AND nv.IsDeleted = 0";
 
 					var cmd = new MySqlCommand(query, conn);
 					conn.Open();
@@ -169,41 +146,34 @@ namespace DAL.Data
 					{
 						while (reader.Read())
 						{
-							var taiKhoan = new TaiKhoan
+							var taiKhoan = new TaiKhoanNV
 							{
-								Username = reader["Username"].ToString(),
-								Password = reader["Password"].ToString(),
-								MaNV = reader.IsDBNull(reader.GetOrdinal("MaNV"))
-									? 0
-									: reader.GetInt32(reader.GetOrdinal("MaNV")),
-								CapDoQuyen = reader.IsDBNull(reader.GetOrdinal("CapDoQuyen"))
-									? 0
-									: reader.GetInt32(reader.GetOrdinal("CapDoQuyen")),
-								Avatar = reader["avatar"] as byte[],
-								Email = reader["Email"].ToString(),
-								Disabled = reader.IsDBNull(reader.GetOrdinal("Disabled"))
-									? false
-									: reader.GetBoolean(reader.GetOrdinal("Disabled")),
+								MaTKNV = reader.IsDBNull(reader.GetOrdinal("MaTKNV")) ? 0 : reader.GetInt32(reader.GetOrdinal("MaTKNV")),
+								Username = reader.IsDBNull(reader.GetOrdinal("Username")) ? null : reader["Username"].ToString(),
+								Password = reader.IsDBNull(reader.GetOrdinal("Password")) ? null : reader["Password"].ToString(),
+								MaNV = reader.IsDBNull(reader.GetOrdinal("MaNV")) ? 0 : reader.GetInt32(reader.GetOrdinal("MaNV")),
+								AvatarId = reader.IsDBNull(reader.GetOrdinal("AvatarId")) ? null : reader["AvatarId"].ToString(),
+								AvatarURL = reader.IsDBNull(reader.GetOrdinal("AvatarURL")) ? null : reader["AvatarURL"].ToString(),
+								Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader["Email"].ToString(),
+								LastLogin = reader.IsDBNull(reader.GetOrdinal("LastLogin")) ? DateTime.MinValue : reader.GetDateTime(reader.GetOrdinal("LastLogin")),
+								MaXacNhan = reader.IsDBNull(reader.GetOrdinal("MaXacNhan")) ? null : reader["MaXacNhan"].ToString(),
+								ThoiGianHetHan = reader.IsDBNull(reader.GetOrdinal("ThoiGianHetHan")) ? DateTime.MinValue : reader.GetDateTime(reader.GetOrdinal("ThoiGianHetHan")),
+								Disabled = reader.IsDBNull(reader.GetOrdinal("Disabled")) ? false : reader.GetBoolean(reader.GetOrdinal("Disabled")),
 								NhanVien = new NhanVien
 								{
-									MaNV = reader.IsDBNull(reader.GetOrdinal("MaNV"))
-										? 0
-										: reader.GetInt32(reader.GetOrdinal("maNV")),
-									HoTen = reader["HoTen"]?.ToString(),
-									ChucVu = reader["ChucVu"]?.ToString(),
-									SDT = reader["SDT"]?.ToString(),
-									DiaChi = reader["DiaChi"]?.ToString(),
-									CCCD = reader["CCCD"]?.ToString(),
-									NTNS = reader.IsDBNull(reader.GetOrdinal("NTNS"))
-										? DateTime.MinValue
-										: reader.GetDateTime(reader.GetOrdinal("NTNS")),
-									GioiTinh = reader["GioiTinh"]?.ToString(),
-									Luong = reader.IsDBNull(reader.GetOrdinal("Luong"))
-										? 0
-										: reader.GetDecimal(reader.GetOrdinal("Luong"))
+									MaNV = reader.IsDBNull(reader.GetOrdinal("MaNV")) ? 0 : reader.GetInt32(reader.GetOrdinal("MaNV")),
+									HoTen = reader.IsDBNull(reader.GetOrdinal("HoTen")) ? null : reader["HoTen"].ToString(),
+									ChucVu = reader.IsDBNull(reader.GetOrdinal("ChucVu")) ? null : reader["ChucVu"].ToString(),
+									SDT = reader.IsDBNull(reader.GetOrdinal("SDT")) ? null : reader["SDT"].ToString(),
+									DiaChi = reader.IsDBNull(reader.GetOrdinal("DiaChi")) ? null : reader["DiaChi"].ToString(),
+									CCCD = reader.IsDBNull(reader.GetOrdinal("CCCD")) ? null : reader["CCCD"].ToString(),
+									CCCDImage = reader.IsDBNull(reader.GetOrdinal("CCCDImage")) ? null : reader["CCCDImage"].ToString(),
+									NTNS = reader.IsDBNull(reader.GetOrdinal("NTNS")) ? DateTime.MinValue : reader.GetDateTime(reader.GetOrdinal("NTNS")),
+									GioiTinh = reader.IsDBNull(reader.GetOrdinal("GioiTinh")) ? null : reader["GioiTinh"].ToString(),
+									Luong = reader.IsDBNull(reader.GetOrdinal("Luong")) ? 0 : reader.GetDecimal(reader.GetOrdinal("Luong")),
+									IsDeleted = reader.IsDBNull(reader.GetOrdinal("IsDeleted")) ? false : reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
 								}
 							};
-
 							danhSachTaiKhoan.Add(taiKhoan);
 						}
 					}
@@ -217,7 +187,7 @@ namespace DAL.Data
 			return danhSachTaiKhoan;
 		}
 
-		public bool themTaiKhoan(TaiKhoan taiKhoan)
+		public bool themTaiKhoan(TaiKhoanNV taiKhoan)
 		{
 			var connectionString = Properties.Resources.MySqlConnection;
 
@@ -225,15 +195,15 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"INSERT INTO TaiKhoan (Username, Password, MaNV, CapDoQuyen, Avatar, Email, Disabled)
-                             VALUES (@Username, @Password, @MaNV, @CapDoQuyen, @Avatar, @Email,0)";
+					var query = @"INSERT INTO TaiKhoanNV (Username, Password, Email, AvatarId, AvatarURL, MaTKNV, LastLogin, Disabled)
+                             VALUES (@Username, @Password, @Email, @AvatarId, @AvatarURL, @MaTKNV, NOW(),0)";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@Username", taiKhoan.Username);
 					cmd.Parameters.AddWithValue("@Password", taiKhoan.Password);
-					cmd.Parameters.AddWithValue("@MaNV", taiKhoan.MaNV);
-					cmd.Parameters.AddWithValue("@CapDoQuyen", taiKhoan.CapDoQuyen);
-					cmd.Parameters.AddWithValue("@Avatar", taiKhoan.Avatar ?? GetDefaultAvatar());
 					cmd.Parameters.AddWithValue("@Email", taiKhoan.Email);
+					cmd.Parameters.AddWithValue("@AvatarId", taiKhoan.AvatarId);
+					cmd.Parameters.AddWithValue("@AvatarURL", taiKhoan.AvatarURL);
+					cmd.Parameters.AddWithValue("@MaTKNV", taiKhoan.MaNV);
 					conn.Open();
 					cmd.ExecuteNonQuery();
 					return true;
@@ -246,23 +216,20 @@ namespace DAL.Data
 			}
 		}
 
-		public bool capNhatTaiKhoan(TaiKhoan taiKhoan)
+		public bool capNhatTaiKhoan(TaiKhoanNV taiKhoan)
 		{
 			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
-				Console.WriteLine(taiKhoan.Username + " " + taiKhoan.Password + " " + taiKhoan.CapDoQuyen + " " +
-				                  taiKhoan.MaNV);
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query =
-						@"UPDATE TaiKhoan SET MaNV = @MaNV, CapDoQuyen = @CapDoQuyen, Password = @Password , Email = @Email WHERE Username = @Username";
+						@"UPDATE TaiKhoanNV SET MaNV = @MaNV, Password = @Password , Email = @Email WHERE Username = @Username";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@Username", taiKhoan.Username);
 					cmd.Parameters.AddWithValue("@Password", taiKhoan.Password);
 					cmd.Parameters.AddWithValue("@MaNV", taiKhoan.MaNV);
-					cmd.Parameters.AddWithValue("@CapDoQuyen", taiKhoan.CapDoQuyen);
 					cmd.Parameters.AddWithValue("@Email", taiKhoan.Email);
 					conn.Open();
 					var rowsAffected = cmd.ExecuteNonQuery();
@@ -286,7 +253,7 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = "SELECT COUNT(*) FROM TaiKhoan WHERE Username = @Username";
+					var query = "SELECT COUNT(*) FROM TaiKhoanNV WHERE Username = @Username";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@Username", username);
 
@@ -310,7 +277,7 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = "SELECT COUNT(*) FROM TaiKhoan WHERE Email = @Email";
+					var query = "SELECT COUNT(*) FROM TaiKhoanNV WHERE Email = @Email";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@Email", email);
 
@@ -326,7 +293,7 @@ namespace DAL.Data
 			}
 		}
 
-		public bool xoaTaiKhoan(TaiKhoan taiKhoan)
+		public bool xoaTaiKhoan(TaiKhoanNV taiKhoan)
 		{
 			var connectionString = Properties.Resources.MySqlConnection;
 			try
@@ -374,6 +341,55 @@ namespace DAL.Data
 				Console.WriteLine(ex.Message); // Log lỗi nếu cần
 				return false;
 			}
+		}
+
+		public PhanQuyen layPhanQuyenTaiKhoan(int maTKNV)
+		{
+			var connectionString = Properties.Resources.MySqlConnection;
+
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = "SELECT * FROM PhanQuyen WHERE MaTKNV = @MaTKNV";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaTKNV", maTKNV);
+
+					conn.Open();
+					using (var reader = cmd.ExecuteReader())
+					{
+						if (reader.Read())
+						{
+							return new PhanQuyen
+							{
+								MaPQ = reader.IsDBNull(reader.GetOrdinal("MaPQ")) ? 0 : reader.GetInt32(reader.GetOrdinal("MaPQ")),
+								MaTKNV = reader.IsDBNull(reader.GetOrdinal("MaTKNV")) ? 0 : reader.GetInt32(reader.GetOrdinal("MaTKNV")),
+								TrangChu = reader.IsDBNull(reader.GetOrdinal("TrangChu")) ? false : reader.GetBoolean(reader.GetOrdinal("TrangChu")),
+								Phong = reader.IsDBNull(reader.GetOrdinal("Phong")) ? false : reader.GetBoolean(reader.GetOrdinal("Phong")),
+								DatPhong = reader.IsDBNull(reader.GetOrdinal("DatPhong")) ? false : reader.GetBoolean(reader.GetOrdinal("DatPhong")),
+								HoaDon = reader.IsDBNull(reader.GetOrdinal("HoaDon")) ? false : reader.GetBoolean(reader.GetOrdinal("HoaDon")),
+								QLKhachHang = reader.IsDBNull(reader.GetOrdinal("QLKhachHang")) ? false : reader.GetBoolean(reader.GetOrdinal("QLKhachHang")),
+								QLPhong = reader.IsDBNull(reader.GetOrdinal("QLPhong")) ? false : reader.GetBoolean(reader.GetOrdinal("QLPhong")),
+								QLLoaiPhong = reader.IsDBNull(reader.GetOrdinal("QLLoaiPhong")) ? false : reader.GetBoolean(reader.GetOrdinal("QLLoaiPhong")),
+								QLDichVu = reader.IsDBNull(reader.GetOrdinal("QLDichVu")) ? false : reader.GetBoolean(reader.GetOrdinal("QLDichVu")),
+								QLLoaiDichVu = reader.IsDBNull(reader.GetOrdinal("QLLoaiDichVu")) ? false : reader.GetBoolean(reader.GetOrdinal("QLLoaiDichVu")),
+								QLTienNghi = reader.IsDBNull(reader.GetOrdinal("QLTienNghi")) ? false : reader.GetBoolean(reader.GetOrdinal("QLTienNghi")),
+								QLNhanVien = reader.IsDBNull(reader.GetOrdinal("QLNhanVien")) ? false : reader.GetBoolean(reader.GetOrdinal("QLNhanVien")),
+								QLTaiKhoan = reader.IsDBNull(reader.GetOrdinal("QLTaiKhoan")) ? false : reader.GetBoolean(reader.GetOrdinal("QLTaiKhoan")),
+								ThongKe = reader.IsDBNull(reader.GetOrdinal("ThongKe")) ? false : reader.GetBoolean(reader.GetOrdinal("ThongKe")),
+								ThongBao = reader.IsDBNull(reader.GetOrdinal("ThongBao")) ? false : reader.GetBoolean(reader.GetOrdinal("ThongBao")),
+								LichSuHoatDong = reader.IsDBNull(reader.GetOrdinal("LichSuHoatDong")) ? false : reader.GetBoolean(reader.GetOrdinal("LichSuHoatDong"))
+							};
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Lỗi: {ex.Message}");
+			}
+
+			return null; // Trả về null nếu không tìm thấy hoặc có lỗi
 		}
 	}
 }

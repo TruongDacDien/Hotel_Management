@@ -58,7 +58,22 @@ namespace GUI.View
 			}
 
 			// Lấy thông tin tài khoản
-			TaiKhoan taiKhoan = TaiKhoanBUS.GetInstance().layTaiKhoanTheoUsername(txtUsername.Text.Trim());
+			TaiKhoanNV taiKhoan = TaiKhoanBUS.GetInstance().layTaiKhoanTheoUsername(txtUsername.Text.Trim());
+			if (taiKhoan == null)
+			{
+				new DialogCustoms("Không lấy được thông tin tài khoản!", "Thông báo", DialogCustoms.OK).ShowDialog();
+				return;
+			}
+			if (taiKhoan.NhanVien.IsDeleted == true)
+			{
+				new DialogCustoms("Không tồn tại nhân viên tương ứng với tài khoản!", "Thông báo", DialogCustoms.OK).ShowDialog();
+				return;
+			}
+			if (taiKhoan.Disabled == true)
+			{
+				new DialogCustoms("Tài khoản đã bị khóa vui lòng liên hệ với quản trị viên!", "Thông báo", DialogCustoms.OK).ShowDialog();
+				return;
+			}
 
 			// Tạo mật khẩu mới
 			string newPassword = GenerateRandomPassword();

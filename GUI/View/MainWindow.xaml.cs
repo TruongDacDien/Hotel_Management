@@ -19,18 +19,19 @@ namespace GUI.View
 	/// </summary>
 	public partial class MainWindow : Window, INotifyPropertyChanged
 	{
-		private readonly TaiKhoan taiKhoan;
+		private readonly TaiKhoanNV taiKhoan;
+		private readonly PhanQuyen phanQuyen;
 
 		public MainWindow()
 		{
 			InitializeComponent();
 		}
 
-		public MainWindow(TaiKhoan tk) : this()
+		public MainWindow(TaiKhoanNV tk) : this()
 		{
 			taiKhoan = tk;
 			MaNV = tk.MaNV;
-			CapDoQuyen = tk.CapDoQuyen;
+			phanQuyen = TaiKhoanBUS.GetInstance().layPhanQuyenTaiKhoan(tk.MaTKNV);
 			MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
 			MaxWidth = SystemParameters.MaximizedPrimaryScreenWidth;
 		}
@@ -46,7 +47,7 @@ namespace GUI.View
 		private uc_QuanLyLoaiPhong QuanLyLoaiPhong_UC;
 		private uc_QuanLyDichVu QuanLyDichVu_UC;
 		private uc_QuanLyTienNghi QuanLyTienNghi_UC;
-		private uc_QuanLyChiTietTienNghi QuanLyChiTietTienNghi_UC;
+		//private uc_QuanLyChiTietTienNghi QuanLyChiTietTienNghi_UC;
 		private uc_QuanLyLoaiDichVu QuanLyLoaiDichVu_UC;
 		private uc_QuanLyTaiKhoan QuanLyTaiKhoan_UC;
 		private uc_HoaDon HoaDon_UC;
@@ -92,8 +93,6 @@ namespace GUI.View
 			}
 		}
 
-		public int CapDoQuyen { get; set; }
-
 		public int MaNV { get; set; }
 
 		#endregion
@@ -110,75 +109,60 @@ namespace GUI.View
 		private void initListViewMenu()
 		{
 			listMenu = new List<ItemMenuMainWindow>();
+			if (phanQuyen == null)
+			{
+				new DialogCustoms("Không thể lấy phân quyền!", "Thông báo", DialogCustoms.OK).ShowDialog();
+				return;
+			}
+
 			//Khoi tao Menu
-			if (CapDoQuyen == 1)
-			{
+			if (phanQuyen.TrangChu)
 				listMenu.Add(new ItemMenuMainWindow { name = "Trang Chủ", foreColor = "Gray", kind_Icon = "Home" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "Phòng", foreColor = "#FFF08033", kind_Icon = "HomeCity" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "Đặt Phòng", foreColor = "Green", kind_Icon = "BookAccount" });
-				listMenu.Add(
-					new ItemMenuMainWindow { name = "Hóa đơn", foreColor = "#FFD41515", kind_Icon = "Receipt" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "QL khách hàng", foreColor = "#FFD41515", kind_Icon = "AccountGroup" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "QL phòng", foreColor = "#FFE6A701", kind_Icon = "StarCircle" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "QL loại phòng", foreColor = "#FFE6A701", kind_Icon = "StarCircle" });
-				listMenu.Add(
-					new ItemMenuMainWindow { name = "QL dịch vụ", foreColor = "Blue", kind_Icon = "FaceAgent" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "QL loại dịch vụ", foreColor = "Blue", kind_Icon = "FaceAgent" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "QL tiện nghi", foreColor = "#FFF08033", kind_Icon = "Fridge" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "QL chi tiết tiện nghi", foreColor = "#FFF08033", kind_Icon = "Fridge" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "QL nhân Viên", foreColor = "#FFD41515", kind_Icon = "AccountHardHat" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "QL tài khoản", foreColor = "Blue", kind_Icon = "AccountCog" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "Thống kê", foreColor = "#FF0069C1", kind_Icon = "ChartAreaspline" });
-			}
-			else if (CapDoQuyen == 2)
-			{
-				listMenu.Add(new ItemMenuMainWindow { name = "Trang Chủ", foreColor = "Gray", kind_Icon = "Home" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "Phòng", foreColor = "#FFF08033", kind_Icon = "HomeCity" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "Đặt Phòng", foreColor = "Green", kind_Icon = "BookAccount" });
-				listMenu.Add(
-					new ItemMenuMainWindow { name = "Hóa đơn", foreColor = "#FFD41515", kind_Icon = "Receipt" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "QL khách hàng", foreColor = "#FFD41515", kind_Icon = "AccountGroup" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "QL phòng", foreColor = "#FFE6A701", kind_Icon = "StarCircle" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "QL loại phòng", foreColor = "#FFE6A701", kind_Icon = "StarCircle" });
-				listMenu.Add(
-					new ItemMenuMainWindow { name = "QL dịch vụ", foreColor = "Blue", kind_Icon = "FaceAgent" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "QL loại dịch vụ", foreColor = "Blue", kind_Icon = "FaceAgent" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "QL tiện nghi", foreColor = "#FFF08033", kind_Icon = "Fridge" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "QL chi tiết tiện nghi", foreColor = "#FFF08033", kind_Icon = "Fridge" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "QL nhân Viên", foreColor = "#FFD41515", kind_Icon = "AccountHardHat" });
-			}
-			else if (CapDoQuyen == 3)
-			{
-				listMenu.Add(new ItemMenuMainWindow { name = "Trang Chủ", foreColor = "Gray", kind_Icon = "Home" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "Phòng", foreColor = "#FFF08033", kind_Icon = "HomeCity" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "Đặt Phòng", foreColor = "Green", kind_Icon = "BookAccount" });
-				listMenu.Add(
-					new ItemMenuMainWindow { name = "Hóa đơn", foreColor = "#FFD41515", kind_Icon = "Receipt" });
-				listMenu.Add(new ItemMenuMainWindow
-					{ name = "QL khách hàng", foreColor = "#FFD41515", kind_Icon = "AccountGroup" });
-			}
+
+			if (phanQuyen.Phong)
+				listMenu.Add(new ItemMenuMainWindow { name = "Phòng", foreColor = "#FFF08033", kind_Icon = "HomeCity" });
+
+			if (phanQuyen.DatPhong)
+				listMenu.Add(new ItemMenuMainWindow { name = "Đặt Phòng", foreColor = "Green", kind_Icon = "BookAccount" });
+
+			if (phanQuyen.HoaDon)
+				listMenu.Add(new ItemMenuMainWindow { name = "Hóa đơn", foreColor = "#FFD41515", kind_Icon = "Receipt" });
+
+			if (phanQuyen.QLKhachHang)
+				listMenu.Add(new ItemMenuMainWindow { name = "QL khách hàng", foreColor = "#FFD41515", kind_Icon = "AccountGroup" });
+
+			if (phanQuyen.QLPhong)
+				listMenu.Add(new ItemMenuMainWindow { name = "QL phòng", foreColor = "#FFE6A701", kind_Icon = "StarCircle" });
+
+			if (phanQuyen.QLLoaiPhong)
+				listMenu.Add(new ItemMenuMainWindow { name = "QL loại phòng", foreColor = "#FFE6A701", kind_Icon = "StarCircle" });
+
+			if (phanQuyen.QLDichVu)
+				listMenu.Add(new ItemMenuMainWindow { name = "QL dịch vụ", foreColor = "Blue", kind_Icon = "FaceAgent" });
+
+			if (phanQuyen.QLLoaiDichVu)
+				listMenu.Add(new ItemMenuMainWindow { name = "QL loại dịch vụ", foreColor = "Blue", kind_Icon = "FaceAgent" });
+
+			if (phanQuyen.QLTienNghi)
+				listMenu.Add(new ItemMenuMainWindow { name = "QL tiện nghi", foreColor = "#FFF08033", kind_Icon = "Fridge" });
+
+			// Nếu có thêm QLChiTietTienNghi, bạn thêm ở đây
+
+			if (phanQuyen.QLNhanVien)
+				listMenu.Add(new ItemMenuMainWindow { name = "QL nhân Viên", foreColor = "#FFD41515", kind_Icon = "AccountHardHat" });
+
+			if (phanQuyen.QLTaiKhoan)
+				listMenu.Add(new ItemMenuMainWindow { name = "QL tài khoản", foreColor = "Blue", kind_Icon = "AccountCog" });
+
+			if (phanQuyen.ThongKe)
+				listMenu.Add(new ItemMenuMainWindow { name = "Thống kê", foreColor = "#FF0069C1", kind_Icon = "ChartAreaspline" });
+
+			// Tùy chọn thêm nếu bạn có các chức năng thông báo và lịch sử hoạt động
+			if (phanQuyen.ThongBao)
+				listMenu.Add(new ItemMenuMainWindow { name = "Thông báo", foreColor = "Orange", kind_Icon = "Bell" });
+
+			if (phanQuyen.LichSuHoatDong)
+				listMenu.Add(new ItemMenuMainWindow { name = "Lịch sử hoạt động", foreColor = "Gray", kind_Icon = "History" });
 
 			lisviewMenu.ItemsSource = listMenu;
 			lisviewMenu.SelectedValuePath = "name";
@@ -203,23 +187,18 @@ namespace GUI.View
 		{
 			try
 			{
-				if (taiKhoan.Avatar == null || taiKhoan.Avatar.Length == 0)
-				{
-					// Ảnh mặc định
-					var uri = new Uri("pack://application:,,,/GUI;component/Res/mountains.jpg", UriKind.Absolute);
-					imgAvatar.Fill = new ImageBrush(new BitmapImage(uri));
-				}
-				else
-				{
-					// Hiển thị ảnh từ byte[]
-					var ms = new MemoryStream(taiKhoan.Avatar);
-					var bitmap = new BitmapImage();
-					bitmap.BeginInit();
-					bitmap.CacheOption = BitmapCacheOption.OnLoad;
-					bitmap.StreamSource = ms;
-					bitmap.EndInit();
-					imgAvatar.Fill = new ImageBrush(bitmap);
-				}
+				var bitmap = new BitmapImage();
+
+				//Bust cache bằng cách thêm chuỗi ngẫu nhiên vào URL
+				var uri = new Uri($"{taiKhoan.AvatarURL}?v={Guid.NewGuid()}", UriKind.Absolute);
+
+				bitmap.BeginInit();
+				bitmap.UriSource = uri;
+				bitmap.CacheOption = BitmapCacheOption.OnLoad;
+				bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache; // Cũng giúp không dùng cache
+				bitmap.EndInit();
+
+				imgAvatar.Fill = new ImageBrush(bitmap);
 			}
 			catch (Exception ex)
 			{
@@ -274,21 +253,20 @@ namespace GUI.View
 						QuanLyTienNghi_UC = new uc_QuanLyTienNghi();
 						contenDisplayMain.Content = QuanLyTienNghi_UC;
 						break;
+					//case 10:
+					//	QuanLyChiTietTienNghi_UC = new uc_QuanLyChiTietTienNghi();
+					//	contenDisplayMain.Content = QuanLyChiTietTienNghi_UC;
+					//	break;
 					case 10:
-						QuanLyChiTietTienNghi_UC = new uc_QuanLyChiTietTienNghi();
-						contenDisplayMain.Content = QuanLyChiTietTienNghi_UC;
-						break;
-					case 11:
 						NhanVien_UC = new uc_NhanVien();
 						contenDisplayMain.Content = NhanVien_UC;
 						break;
-					case 12:
+					case 11:
 						QuanLyTaiKhoan_UC = new uc_QuanLyTaiKhoan();
 						contenDisplayMain.Content = QuanLyTaiKhoan_UC;
 						break;
-					case 13:
+					case 12:
 						ThongKe_UC = new uc_ThongKe();
-
 						contenDisplayMain.Content = ThongKe_UC;
 						break;
 				}
