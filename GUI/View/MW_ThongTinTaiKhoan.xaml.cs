@@ -9,13 +9,17 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Threading.Tasks;
 
 namespace GUI.View
 {
 	public partial class MW_ThongTinTaiKhoan : Window
 	{
-		public TaiKhoan TaiKhoan { get; set; }
-		public byte[] AvatarBytes { get; set; }
+		public TaiKhoanNV TaiKhoan { get; set; }
+		public string AvatarId { get; set; }
+		public string AvatarURL { get; set; }
+		public string SelectedAvatarPath { get; set; } //ảnh vừa chọn nhưng chưa upload
+
 		private bool _isPasswordVisible;
 		public bool IsPasswordVisible
 		{
@@ -33,11 +37,12 @@ namespace GUI.View
 		}
 
 		#region Constructor
-		public MW_ThongTinTaiKhoan(TaiKhoan taiKhoan) : this()
+		public MW_ThongTinTaiKhoan(TaiKhoanNV taiKhoan) : this()
 		{
 			TaiKhoan = taiKhoan;
 			LoadAvatar();
-			AvatarBytes = TaiKhoan.Avatar;
+			AvatarId = TaiKhoan.AvatarId;
+			AvatarURL = TaiKhoan.AvatarURL;
 			txtUsername.Text = TaiKhoan.Username;
 			txtUsername.IsReadOnly = true;
 			txtEmail.Text = TaiKhoan.Email;
@@ -52,23 +57,18 @@ namespace GUI.View
 		{
 			try
 			{
-				if (TaiKhoan.Avatar == null || TaiKhoan.Avatar.Length == 0)
-				{
-					// Ảnh mặc định
-					var uri = new Uri("pack://application:,,,/GUI;component/Res/mountains.jpg", UriKind.Absolute);
-					imgAvatar.Fill = new ImageBrush(new BitmapImage(uri));
-				}
-				else
-				{
-					// Hiển thị ảnh từ byte[]
-					var ms = new MemoryStream(TaiKhoan.Avatar);
-					var bitmap = new BitmapImage();
-					bitmap.BeginInit();
-					bitmap.CacheOption = BitmapCacheOption.OnLoad;
-					bitmap.StreamSource = ms;
-					bitmap.EndInit();
-					imgAvatar.Fill = new ImageBrush(bitmap);
-				}
+				var bitmap = new BitmapImage();
+
+				//Bust cache bằng cách thêm chuỗi ngẫu nhiên vào URL
+				var uri = new Uri($"{TaiKhoan.AvatarURL}?v={Guid.NewGuid()}", UriKind.Absolute);
+
+				bitmap.BeginInit();
+				bitmap.UriSource = uri;
+				bitmap.CacheOption = BitmapCacheOption.OnLoad;
+				bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache; // Cũng giúp không dùng cache
+				bitmap.EndInit();
+
+				imgAvatar.Fill = new ImageBrush(bitmap);
 			}
 			catch (Exception ex)
 			{
@@ -90,14 +90,11 @@ namespace GUI.View
 			{
 				try
 				{
-					var sourceFile = openFile.FileName;
-
-					// Hiển thị ảnh lên giao diện
-					var bitmap = new BitmapImage(new Uri(sourceFile));
+					this.SelectedAvatarPath = openFile.FileName; //lưu đường dẫn file để upload
+					this.AvatarId = $"hotel_management/avatar_{TaiKhoan.Username}";
+					// Hiển thị lên giao diện
+					var bitmap = new BitmapImage(new Uri(SelectedAvatarPath));
 					imgAvatar.Fill = new ImageBrush(bitmap);
-
-					// Chuyển đổi ảnh thành byte[]
-					AvatarBytes = File.ReadAllBytes(sourceFile);
 				}
 				catch (Exception ex)
 				{
@@ -108,7 +105,7 @@ namespace GUI.View
 		#endregion
 
 		#region Update Account
-		private void btnCapNhat_Click(object sender, RoutedEventArgs e)
+		private async void btnCapNhat_Click(object sender, RoutedEventArgs e)
 		{
 			if (!ValidateInput())
 				return;
@@ -121,14 +118,30 @@ namespace GUI.View
 				this.TaiKhoan.Password = Bcrypt_HashBUS.GetInstance().HashMatKhau(txtPasswordVisible.Text);
 			}
 
+			// Upload avatar mới nếu người dùng có chọn
+			if (!string.IsNullOrEmpty(SelectedAvatarPath))
+			{
+				try
+				{
+					// Upload lên Cloudinary → lấy URL
+					var url = await TaiKhoanBUS.GetInstance().UploadAvatarAsync(this.SelectedAvatarPath, this.AvatarId, TaiKhoan.AvatarId);
+					this.AvatarURL = url.ToString();
+					this.AvatarId = $"hotel_management/avatar_{TaiKhoan.Username}"; // dùng đúng tên publicId
+				}
+				catch (Exception ex)
+				{
+					new DialogCustoms($"Lỗi upload ảnh: {ex.Message}", "Lỗi", DialogCustoms.OK).ShowDialog();
+				}
+			}
+
 			// Cập nhật thông tin tài khoản
 			bool isAccountUpdated = TaiKhoanBUS.GetInstance().capNhatTaiKhoan(this.TaiKhoan);
 
 			// Cập nhật ảnh đại diện
-			bool isAvatarUpdated = TaiKhoanBUS.GetInstance().capNhatAvatar(this.TaiKhoan.Username, AvatarBytes, out error);
+			bool isAvatarUpdated = TaiKhoanBUS.GetInstance().capNhatAvatar(this.TaiKhoan.Username, this.AvatarId, this.AvatarURL, out error);
 			if (isAvatarUpdated)
 			{
-				TaiKhoan.Avatar = AvatarBytes; // Gán lại ảnh đại diện mới vào đối tượng
+				TaiKhoan.AvatarURL = this.AvatarURL; // Gán lại ảnh đại diện mới vào đối tượng
 				LoadAvatar(); // Gọi lại phương thức LoadAvatar để hiển thị ảnh mới
 			}
 

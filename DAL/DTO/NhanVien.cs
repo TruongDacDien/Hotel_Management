@@ -16,6 +16,8 @@ namespace DAL.DTO
 
 		public string CCCD { get; set; }
 
+		public string CCCDImage { get; set; }
+
 		public DateTime NTNS { get; set; }
 
 		public string GioiTinh { get; set; }

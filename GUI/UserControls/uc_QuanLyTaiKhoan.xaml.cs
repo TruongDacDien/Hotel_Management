@@ -14,7 +14,7 @@ namespace GUI.UserControls
 	/// </summary>
 	public partial class uc_QuanLyTaiKhoan : UserControl
 	{
-		private ObservableCollection<TaiKhoan> list;
+		private ObservableCollection<TaiKhoanNV> list;
 		private CollectionView view;
 
 		public uc_QuanLyTaiKhoan()
@@ -25,7 +25,7 @@ namespace GUI.UserControls
 
 		private void TaiDanhSach()
 		{
-			list = new ObservableCollection<TaiKhoan>(TaiKhoanBUS.GetInstance().getDataTaiKhoan());
+			list = new ObservableCollection<TaiKhoanNV>(TaiKhoanBUS.GetInstance().getDataTaiKhoan());
 			lsvTaiKhoan.ItemsSource = list;
 			view = (CollectionView)CollectionViewSource.GetDefaultView(list);
 			view.Filter = TaiKhoanFilter;
@@ -35,10 +35,10 @@ namespace GUI.UserControls
 		{
 			if (string.IsNullOrEmpty(txtFilter.Text))
 				return true;
-			return (obj as TaiKhoan).Username.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
+			return (obj as TaiKhoanNV).Username.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
 		}
 
-		private void nhanData(TaiKhoan taiKhoan)
+		private void nhanData(TaiKhoanNV taiKhoan)
 		{
 			if (!TaiKhoanBUS.GetInstance().kiemTraTrungUsername(taiKhoan.Username))
 			{
@@ -58,7 +58,7 @@ namespace GUI.UserControls
 			}
 		}
 
-		private void capNhatData(TaiKhoan taiKhoan)
+		private void capNhatData(TaiKhoanNV taiKhoan)
 		{
 			if (TaiKhoanBUS.GetInstance().capNhatTaiKhoan(taiKhoan))
 			{
@@ -74,7 +74,7 @@ namespace GUI.UserControls
 
 		private void btnXoa_Click(object sender, RoutedEventArgs e)
 		{
-			var taiKhoan = (sender as Button).DataContext as TaiKhoan;
+			var taiKhoan = (sender as Button).DataContext as TaiKhoanNV;
 
 			var thongbao = new DialogCustoms("Bạn có thật sự muốn xóa " + taiKhoan.Username, "Thông báo",
 				DialogCustoms.YesNo);
@@ -96,7 +96,7 @@ namespace GUI.UserControls
 
 		private void btnCapNhat_Click(object sender, RoutedEventArgs e)
 		{
-			var taiKhoan = (sender as Button).DataContext as TaiKhoan;
+			var taiKhoan = (sender as Button).DataContext as TaiKhoanNV;
 			var CapNhatTaiKhoan = new Them_SuaTaiKhoan(true, taiKhoan);
 			CapNhatTaiKhoan.suaTaiKhoan = capNhatData;
 			CapNhatTaiKhoan.ShowDialog();

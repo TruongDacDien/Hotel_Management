@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-C:\Users\Admin\Source\Repos\Hotel_Management\GUI\obj\Debug\net8.0-windows7.0\
+C:\Users\TRUONG DAC DIEN\Source\Repos\Hotel_Management\GUI\obj\Debug\net8.0-windows7.0\
 GUI
 none
 false
-TRACE;DEBUG;NET;NET8_0;NETCOREAPP
-C:\Users\Admin\Source\Repos\Hotel_Management\GUI\App.xaml
+TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
+C:\Users\TRUONG DAC DIEN\Source\Repos\Hotel_Management\GUI\App.xaml
 381888880000
-41432284068
+42002595954
 45-2111097816
-2361538630932
+237-1640060879
 UserControls\ucControlbar2.xaml;UserControls\uc_Controlbar.xaml;UserControls\uc_HoaDon.xaml;UserControls\uc_Home.xaml;UserControls\uc_NhanVien.xaml;UserControls\uc_PhieuThue.xaml;UserControls\uc_Phong.xaml;UserControls\uc_QuanLyChiTietTienNghi.xaml;UserControls\uc_QuanLyDichVu.xaml;UserControls\uc_QuanLyKhachHang.xaml;UserControls\uc_QuanLyLoaiDichVu.xaml;UserControls\uc_QuanLyLoaiPhong.xaml;UserControls\uc_QuanLyPhong.xaml;UserControls\uc_QuanLyTaiKhoan.xaml;UserControls\uc_QuanLyTienNghi.xaml;UserControls\uc_ThongKe.xaml;View\ChiTietPhieuThue.xaml;View\ChiTietPhong.xaml;View\CTP_ThemDV.xaml;View\DangNhap.xaml;View\DangNhap_QuenMK.xaml;View\DatPhong.xaml;View\DialogCustoms.xaml;View\MainWindow.xaml;View\MW_ThongTinCaNhan.xaml;View\MW_ThongTinTaiKhoan.xaml;View\Them_SuaChiTietTienNghi.xaml;View\Them_SuaDichVu.xaml;View\Them_SuaKhachHang.xaml;View\Them_SuaLoaiDichVu.xaml;View\Them_SuaLoaiPhong.xaml;View\Them_SuaNhanVien.xaml;View\Them_SuaPhong.xaml;View\Them_SuaTaiKhoan.xaml;View\Them_SuaTienNghi.xaml;View\WebThanhToan.xaml;View\XuatBaoCaoThongKe.xaml;View\XuatHoaDon.xaml;
 
 False
