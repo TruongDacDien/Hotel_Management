@@ -57,9 +57,9 @@
 
         <!-- ListView hiển thị -->
         <Grid Grid.Row="1" Margin="0 20 0 0">
-            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="740" Height="500" Background="#F2F1F1">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="1190" Height="500" Background="#F2F1F1">
                 <Grid.Clip>
-                    <RectangleGeometry Rect="0,0,740,500" RadiusX="10" RadiusY="10" />
+                    <RectangleGeometry Rect="0,0,1190,500" RadiusX="10" RadiusY="10" />
                 </Grid.Clip>
 
                 <ListView Name="lsvDichVu" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
@@ -79,10 +79,19 @@
 
                             <!-- Cột dữ liệu -->
                             <GridViewColumn Header="Mã dịch vụ" Width="100" DisplayMemberBinding="{Binding MaDV}" />
+                            <GridViewColumn Header="Ảnh" Width="170">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Source="{Binding ImageURL}" Width="150" Height="100" Stretch="UniformToFill" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                             <GridViewColumn Header="Tên dịch vụ" Width="200" DisplayMemberBinding="{Binding TenDV}" />
-                            <GridViewColumn Header="Loại" Width="140" DisplayMemberBinding="{Binding TenLoaiDV}" />
+                            <GridViewColumn Header="Mô tả" Width="200" DisplayMemberBinding="{Binding MoTa}" />
+                            <GridViewColumn Header="Loại dịch vụ" Width="140" DisplayMemberBinding="{Binding TenLoaiDV}" />
                             <GridViewColumn Header="Đơn giá" Width="120"
                                             DisplayMemberBinding="{Binding Gia, StringFormat={}{0:N0} VND}" />
+                            <GridViewColumn Header="Số lượng" Width="80" DisplayMemberBinding="{Binding SoLuong}" />
                             <GridViewColumn Width="90" Header="Sửa">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>

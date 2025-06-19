@@ -39,7 +39,10 @@ namespace DAL.Data
 						var tn = new TienNghi
 						{
 							MaTN = reader.GetInt32(reader.GetOrdinal("MaTN")),
-							TenTN = reader.GetString(reader.GetOrdinal("TenTN"))
+							TenTN = reader.GetString(reader.GetOrdinal("TenTN")),
+							ImageId = reader["ImageId"].ToString(),
+							ImageURL = reader["ImageURL"].ToString(),
+							SoLuong = reader.GetInt32(reader.GetOrdinal("SoLuong")),
 						};
 						tienNghiList.Add(tn);
 					}
@@ -57,9 +60,13 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = "INSERT INTO TienNghi (TenTN, IsDeleted) VALUES (@TenTN, 0)";
+					var query = @"INSERT INTO TienNghi (TenTN, ImageId, ImageURL, SoLuong,IsDeleted)
+                          VALUES (@TenTN, @ImageId, @ImageURL, @SoLuong,0)";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenTN", tn.TenTN);
+					cmd.Parameters.AddWithValue("@ImageId", tn.ImageId);
+					cmd.Parameters.AddWithValue("@ImageURL", tn.ImageURL);
+					cmd.Parameters.AddWithValue("@SoLuong", tn.SoLuong);
 
 					conn.Open();
 					var rowsAffected = cmd.ExecuteNonQuery();
@@ -103,9 +110,14 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = "UPDATE TienNghi SET TenTN = @TenTN WHERE MaTN = @MaTN";
+					var query = @"UPDATE TienNghi 
+                          SET TenTN = @TenTN, ImageId = @ImageId, ImageURL = @ImageURL, SoLuong = @SoLuong 
+                          WHERE MaTN = @MaTN";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenTN", tn.TenTN);
+					cmd.Parameters.AddWithValue("@ImageId", tn.ImageId);
+					cmd.Parameters.AddWithValue("@ImageURL", tn.ImageURL);
+					cmd.Parameters.AddWithValue("@SoLuong", tn.SoLuong);
 					cmd.Parameters.AddWithValue("@MaTN", tn.MaTN);
 
 					conn.Open();
