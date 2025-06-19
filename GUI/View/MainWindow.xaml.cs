@@ -52,12 +52,13 @@ namespace GUI.View
 		private uc_QuanLyTaiKhoan QuanLyTaiKhoan_UC;
 		private uc_HoaDon HoaDon_UC;
 		private uc_ThongKe ThongKe_UC;
+		private uc_DDXQ DDXQ_UC;
 
-		#endregion
+        #endregion
 
-		#region Khai báo biến
+        #region Khai báo biến
 
-		public List<ItemMenuMainWindow> listMenu { get; set; }
+        public List<ItemMenuMainWindow> listMenu { get; set; }
 		private string title_Main;
 		private int minHeight_ucControlbar;
 
@@ -157,8 +158,11 @@ namespace GUI.View
 			if (phanQuyen.ThongKe)
 				listMenu.Add(new ItemMenuMainWindow { name = "Thống kê", foreColor = "#FF0069C1", kind_Icon = "ChartAreaspline" });
 
-			// Tùy chọn thêm nếu bạn có các chức năng thông báo và lịch sử hoạt động
-			if (phanQuyen.ThongBao)
+            if (phanQuyen.QLDDXQ)
+                listMenu.Add(new ItemMenuMainWindow { name = "QL DĐXQ", foreColor = "#FF0069C1", kind_Icon = "MapMarker" });
+
+            // Tùy chọn thêm nếu bạn có các chức năng thông báo và lịch sử hoạt động
+            if (phanQuyen.ThongBao)
 				listMenu.Add(new ItemMenuMainWindow { name = "Thông báo", foreColor = "Orange", kind_Icon = "Bell" });
 
 			if (phanQuyen.LichSuHoatDong)
@@ -269,7 +273,11 @@ namespace GUI.View
 						ThongKe_UC = new uc_ThongKe();
 						contenDisplayMain.Content = ThongKe_UC;
 						break;
-				}
+                    case 13:
+                        DDXQ_UC = new uc_DDXQ();
+                        contenDisplayMain.Content = DDXQ_UC;
+                        break;
+                }
 
 				Title_Main = lisviewMenu.SelectedValue.ToString();
 				//Tự động hóa việc click Button toggleBtnMenu_Close
