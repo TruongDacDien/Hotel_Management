@@ -8,6 +8,8 @@ namespace BUS
 	{
 		private static DichVuBUS Instance;
 
+		private readonly CloudinaryService _cloudinaryService = new CloudinaryService();
+
 		private DichVuBUS()
 		{
 		}
@@ -51,6 +53,19 @@ namespace BUS
 		public bool hienThiLaiDichVu(string tenDV)
 		{
 			return DichVuDAL.GetInstance().hienThiLaiDichVu(tenDV);
+		}
+
+		public async Task<string> UploadImageAsync(string filePath, string publicId, string oldImageId)
+		{
+			if (publicId != oldImageId && publicId != "hotel_management/image_default")
+			{
+				// Xoá ảnh cũ nếu có up ảnh mới
+				await _cloudinaryService.DeleteImageAsync(publicId);
+			}
+
+			// Upload ảnh mới
+			var url = await _cloudinaryService.UploadImageAsync(filePath, publicId);
+			return url;
 		}
 	}
 }

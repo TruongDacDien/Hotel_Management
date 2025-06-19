@@ -39,18 +39,23 @@ namespace DAL.Data
 						while (reader.Read())
 							loaiPhongs.Add(new LoaiPhong
 							{
-								MaLoaiPhong = reader.GetInt32(reader.GetOrdinal("MaLoaiPhong")),
-								TenLoaiPhong = reader.GetString(reader.GetOrdinal("TenLoaiPhong")),
-								SoNguoiToiDa = reader.GetInt32(reader.GetOrdinal("SoNguoiToiDa")),
-								GiaNgay = reader.GetDecimal(reader.GetOrdinal("GiaNgay")),
-								GiaGio = reader.GetDecimal(reader.GetOrdinal("GiaGio"))
+								MaLoaiPhong = reader.GetInt32("MaLoaiPhong"),
+								TenLoaiPhong = reader.GetString("TenLoaiPhong"),
+								MoTa = reader["MoTa"].ToString(),
+								ChinhSach = reader["ChinhSach"].ToString(),
+								ChinhSachHuy = reader["ChinhSachHuy"].ToString(),
+								SoNguoiToiDa = reader.GetInt32("SoNguoiToiDa"),
+								GiaNgay = reader.GetDecimal("GiaNgay"),
+								GiaGio = reader.GetDecimal("GiaGio"),
+								ImageId = reader["ImageId"].ToString(),
+								ImageURL = reader["ImageURL"].ToString()
 							});
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				Console.WriteLine(ex.Message);
 			}
 
 			return loaiPhongs;
@@ -74,18 +79,23 @@ namespace DAL.Data
 						if (reader.Read())
 							return new LoaiPhong
 							{
-								MaLoaiPhong = reader.GetInt32(reader.GetOrdinal("MaLoaiPhong")),
-								TenLoaiPhong = reader.GetString(reader.GetOrdinal("TenLoaiPhong")),
-								SoNguoiToiDa = reader.GetInt32(reader.GetOrdinal("SoNguoiToiDa")),
-								GiaNgay = reader.GetDecimal(reader.GetOrdinal("GiaNgay")),
-								GiaGio = reader.GetDecimal(reader.GetOrdinal("GiaGio"))
+								MaLoaiPhong = reader.GetInt32("MaLoaiPhong"),
+								TenLoaiPhong = reader.GetString("TenLoaiPhong"),
+								MoTa = reader["MoTa"].ToString(),
+								ChinhSach = reader["ChinhSach"].ToString(),
+								ChinhSachHuy = reader["ChinhSachHuy"].ToString(),
+								SoNguoiToiDa = reader.GetInt32("SoNguoiToiDa"),
+								GiaNgay = reader.GetDecimal("GiaNgay"),
+								GiaGio = reader.GetDecimal("GiaGio"),
+								ImageId = reader["ImageId"].ToString(),
+								ImageURL = reader["ImageURL"].ToString()
 							};
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				Console.WriteLine(ex.Message);
 			}
 
 			return null;
@@ -101,14 +111,19 @@ namespace DAL.Data
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = @"
-                        INSERT INTO LoaiPhong (TenLoaiPhong, SoNguoiToiDa, GiaNgay, GiaGio, IsDeleted)
-                        VALUES (@TenLoaiPhong, @SoNguoiToiDa, @GiaNgay, @GiaGio, 0)";
+				INSERT INTO LoaiPhong (TenLoaiPhong, MoTa, ChinhSach, ChinhSachHuy, SoNguoiToiDa, GiaNgay, GiaGio, ImageId, ImageURL, IsDeleted)
+				VALUES (@TenLoaiPhong, @MoTa, @ChinhSach, @ChinhSachHuy, @SoNguoiToiDa, @GiaNgay, @GiaGio, @ImageId, @ImageURL, 0)";
 
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenLoaiPhong", loaiPhong.TenLoaiPhong);
+					cmd.Parameters.AddWithValue("@MoTa", loaiPhong.MoTa);
+					cmd.Parameters.AddWithValue("@ChinhSach", loaiPhong.ChinhSach);
+					cmd.Parameters.AddWithValue("@ChinhSachHuy", loaiPhong.ChinhSachHuy);
 					cmd.Parameters.AddWithValue("@SoNguoiToiDa", loaiPhong.SoNguoiToiDa);
 					cmd.Parameters.AddWithValue("@GiaNgay", loaiPhong.GiaNgay);
 					cmd.Parameters.AddWithValue("@GiaGio", loaiPhong.GiaGio);
+					cmd.Parameters.AddWithValue("@ImageId", loaiPhong.ImageId);
+					cmd.Parameters.AddWithValue("@ImageURL", loaiPhong.ImageURL);
 
 					conn.Open();
 					cmd.ExecuteNonQuery();
@@ -118,7 +133,7 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				Console.WriteLine(ex.Message);
 				return false;
 			}
 		}
@@ -159,15 +174,22 @@ namespace DAL.Data
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = @"
-                        UPDATE LoaiPhong 
-                        SET TenLoaiPhong = @TenLoaiPhong, SoNguoiToiDa = @SoNguoiToiDa, GiaNgay = @GiaNgay, GiaGio = @GiaGio
-                        WHERE MaLoaiPhong = @MaLoaiPhong";
+				UPDATE LoaiPhong 
+				SET TenLoaiPhong = @TenLoaiPhong, MoTa = @MoTa, ChinhSach = @ChinhSach, ChinhSachHuy = @ChinhSachHuy,
+					SoNguoiToiDa = @SoNguoiToiDa, GiaNgay = @GiaNgay, GiaGio = @GiaGio,
+					ImageId = @ImageId, ImageURL = @ImageURL
+				WHERE MaLoaiPhong = @MaLoaiPhong";
 
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenLoaiPhong", loaiPhong.TenLoaiPhong);
+					cmd.Parameters.AddWithValue("@MoTa", loaiPhong.MoTa);
+					cmd.Parameters.AddWithValue("@ChinhSach", loaiPhong.ChinhSach);
+					cmd.Parameters.AddWithValue("@ChinhSachHuy", loaiPhong.ChinhSachHuy);
 					cmd.Parameters.AddWithValue("@SoNguoiToiDa", loaiPhong.SoNguoiToiDa);
 					cmd.Parameters.AddWithValue("@GiaNgay", loaiPhong.GiaNgay);
 					cmd.Parameters.AddWithValue("@GiaGio", loaiPhong.GiaGio);
+					cmd.Parameters.AddWithValue("@ImageId", loaiPhong.ImageId);
+					cmd.Parameters.AddWithValue("@ImageURL", loaiPhong.ImageURL);
 					cmd.Parameters.AddWithValue("@MaLoaiPhong", loaiPhong.MaLoaiPhong);
 
 					conn.Open();
@@ -178,7 +200,7 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				Console.WriteLine(ex.Message);
 				return false;
 			}
 		}

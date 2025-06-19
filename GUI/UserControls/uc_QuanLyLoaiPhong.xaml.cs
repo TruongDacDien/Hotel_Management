@@ -94,7 +94,7 @@ namespace GUI.UserControls
 		{
 			var phong = (sender as Button).DataContext as LoaiPhong;
 
-			var thongbao = new DialogCustoms("Bạn có thật sự muốn loai phòng " + phong.TenLoaiPhong, "Thông báo",
+			var thongbao = new DialogCustoms("Bạn có thật sự muốn xóa loại phòng " + phong.TenLoaiPhong, "Thông báo",
 				DialogCustoms.YesNo);
 
 			if (thongbao.ShowDialog() == true)

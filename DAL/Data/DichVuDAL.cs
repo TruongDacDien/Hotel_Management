@@ -31,11 +31,12 @@ namespace DAL.Data
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = @"
-                        SELECT 
-                            dv.MaDV,dv.MaLoaiDV, dv.TenDV, dv.Gia, ldv.TenLoaiDV AS LoaiDV
-                        FROM DichVu dv
-                        INNER JOIN LoaiDV ldv ON dv.MaLoaiDV = ldv.MaLoaiDV
-						WHERE dv.IsDeleted = 0";
+				SELECT 
+					dv.MaDV, dv.TenDV, dv.MoTa, dv.MaLoaiDV, dv.Gia, dv.SoLuong, dv.ImageId, dv.ImageURL,
+					ldv.TenLoaiDV AS LoaiDV
+				FROM DichVu dv
+				INNER JOIN LoaiDV ldv ON dv.MaLoaiDV = ldv.MaLoaiDV
+				WHERE dv.IsDeleted = 0";
 
 					var cmd = new MySqlCommand(query, conn);
 					conn.Open();
@@ -45,18 +46,22 @@ namespace DAL.Data
 						while (reader.Read())
 							lsNDVCT.Add(new DichVu
 							{
-								MaDV = reader.GetInt32(reader.GetOrdinal("MaDV")),
-								MaLoaiDV = reader.GetInt32(reader.GetOrdinal("MaLoaiDV")),
-								TenDV = reader.GetString(reader.GetOrdinal("TenDV")),
-								Gia = reader.GetDecimal(reader.GetOrdinal("Gia")),
-								TenLoaiDV = reader.GetString(reader.GetOrdinal("LoaiDV"))
+								MaDV = reader.GetInt32("MaDV"),
+								TenDV = reader.GetString("TenDV"),
+								MoTa = reader.GetString("MoTa"),
+								MaLoaiDV = reader.GetInt32("MaLoaiDV"),
+								Gia = reader.GetDecimal("Gia"),
+								SoLuong = reader.GetInt32("SoLuong"),
+								ImageId = reader["ImageId"]?.ToString(),
+								ImageURL = reader["ImageURL"]?.ToString(),
+								TenLoaiDV = reader.GetString("LoaiDV")
 							});
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				Console.WriteLine(ex.Message);
 			}
 
 			return lsNDVCT;
@@ -72,10 +77,12 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"SELECT dv.MaDV, dv.TenDV, ldv.MaLoaiDV, dv.Gia, ldv.TenLoaiDV
-									FROM DichVu dv
-									JOIN LoaiDV ldv ON dv.MaLoaiDV = ldv.MaLoaiDV
-									WHERE dv.IsDeleted = 0";
+					var query = @"SELECT 
+					dv.MaDV, dv.TenDV, dv.MoTa, dv.MaLoaiDV, dv.Gia, dv.SoLuong, dv.ImageId, dv.ImageURL,
+					ldv.TenLoaiDV AS LoaiDV
+				FROM DichVu dv
+				INNER JOIN LoaiDV ldv ON dv.MaLoaiDV = ldv.MaLoaiDV
+				WHERE dv.IsDeleted = 0";
 					var cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
@@ -84,11 +91,15 @@ namespace DAL.Data
 						while (reader.Read())
 							lsDichVu.Add(new DichVu
 							{
-								MaDV = reader.GetInt32(reader.GetOrdinal("MaDV")),
-								TenDV = reader.GetString(reader.GetOrdinal("TenDV")),
-								MaLoaiDV = reader.GetInt32(reader.GetOrdinal("MaLoaiDV")),
-								TenLoaiDV = reader.GetString(reader.GetOrdinal("TenLoaiDV")),
-								Gia = reader.GetDecimal(reader.GetOrdinal("Gia"))
+								MaDV = reader.GetInt32("MaDV"),
+								TenDV = reader.GetString("TenDV"),
+								MoTa = reader.GetString("MoTa"),
+								MaLoaiDV = reader.GetInt32("MaLoaiDV"),
+								Gia = reader.GetDecimal("Gia"),
+								SoLuong = reader.GetInt32("SoLuong"),
+								ImageId = reader["ImageId"]?.ToString(),
+								ImageURL = reader["ImageURL"]?.ToString(),
+								TenLoaiDV = reader.GetString("LoaiDV")
 							});
 					}
 				}
@@ -109,12 +120,18 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query =
-						"INSERT INTO DichVu (TenDV, MaLoaiDV, Gia, IsDeleted) VALUES (@TenDV, @MaLoaiDV, @Gia, 0)";
+					var query = @"
+				INSERT INTO DichVu (TenDV, MoTa, MaLoaiDV, Gia, SoLuong, ImageId, ImageURL, IsDeleted)
+				VALUES (@TenDV, @MoTa, @MaLoaiDV, @Gia, @SoLuong, @ImageId, @ImageURL, 0)";
+
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenDV", dv.TenDV);
+					cmd.Parameters.AddWithValue("@MoTa", dv.MoTa);
 					cmd.Parameters.AddWithValue("@MaLoaiDV", dv.MaLoaiDV);
 					cmd.Parameters.AddWithValue("@Gia", dv.Gia);
+					cmd.Parameters.AddWithValue("@SoLuong", dv.SoLuong);
+					cmd.Parameters.AddWithValue("@ImageId", dv.ImageId ?? (object)DBNull.Value);
+					cmd.Parameters.AddWithValue("@ImageURL", dv.ImageURL ?? (object)DBNull.Value);
 
 					conn.Open();
 					var rowsAffected = cmd.ExecuteNonQuery();
@@ -123,7 +140,7 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				Console.WriteLine(ex.Message);
 				return false;
 			}
 		}
@@ -132,17 +149,24 @@ namespace DAL.Data
 		public bool capNhatDichVu(DichVu dv)
 		{
 			var connectionString = Properties.Resources.MySqlConnection;
-			Console.WriteLine($"MaDV: {dv.MaDV}, TenDV: {dv.TenDV}, MaLoaiDV: {dv.MaLoaiDV}, Gia: {dv.Gia}");
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = "UPDATE DichVu SET TenDV = @TenDV, MaLoaiDV = @MaLoaiDV, Gia = @Gia WHERE MaDV = @MaDV";
+					var query = @"
+				UPDATE DichVu
+				SET TenDV = @TenDV, MoTa = @MoTa, MaLoaiDV = @MaLoaiDV, Gia = @Gia, SoLuong = @SoLuong, ImageId = @ImageId, ImageURL = @ImageURL
+				WHERE MaDV = @MaDV";
+
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaDV", dv.MaDV);
 					cmd.Parameters.AddWithValue("@TenDV", dv.TenDV);
+					cmd.Parameters.AddWithValue("@MoTa", dv.MoTa);
 					cmd.Parameters.AddWithValue("@MaLoaiDV", dv.MaLoaiDV);
-					cmd.Parameters.AddWithValue("@Gia", Convert.ToDecimal(dv.Gia));
+					cmd.Parameters.AddWithValue("@Gia", dv.Gia);
+					cmd.Parameters.AddWithValue("@SoLuong", dv.SoLuong);
+					cmd.Parameters.AddWithValue("@ImageId", dv.ImageId ?? (object)DBNull.Value);
+					cmd.Parameters.AddWithValue("@ImageURL", dv.ImageURL ?? (object)DBNull.Value);
 
 					conn.Open();
 					var rowsAffected = cmd.ExecuteNonQuery();
@@ -151,7 +175,7 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				Console.WriteLine(ex.Message);
 				return false;
 			}
 		}
