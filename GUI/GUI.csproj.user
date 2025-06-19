@@ -123,6 +123,12 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="UserControls\uc_QuanLyDDXQ.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\Them_SuaDDXQ.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\WebThanhToan.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -378,8 +378,10 @@ namespace DAL.Data
 								QLTaiKhoan = reader.IsDBNull(reader.GetOrdinal("QLTaiKhoan")) ? false : reader.GetBoolean(reader.GetOrdinal("QLTaiKhoan")),
 								ThongKe = reader.IsDBNull(reader.GetOrdinal("ThongKe")) ? false : reader.GetBoolean(reader.GetOrdinal("ThongKe")),
 								ThongBao = reader.IsDBNull(reader.GetOrdinal("ThongBao")) ? false : reader.GetBoolean(reader.GetOrdinal("ThongBao")),
-								LichSuHoatDong = reader.IsDBNull(reader.GetOrdinal("LichSuHoatDong")) ? false : reader.GetBoolean(reader.GetOrdinal("LichSuHoatDong"))
-							};
+								LichSuHoatDong = reader.IsDBNull(reader.GetOrdinal("LichSuHoatDong")) ? false : reader.GetBoolean(reader.GetOrdinal("LichSuHoatDong")),
+                                QLDatDV = reader.IsDBNull(reader.GetOrdinal("QLDatDV")) ? false : reader.GetBoolean(reader.GetOrdinal("QLDatDV")),
+                                QLDDXQ = reader.IsDBNull(reader.GetOrdinal("QLDDXQ")) ? false : reader.GetBoolean(reader.GetOrdinal("QLDDXQ"))
+                            };
 						}
 					}
 				}

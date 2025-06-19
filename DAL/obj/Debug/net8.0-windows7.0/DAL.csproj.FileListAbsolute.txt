@@ -1,0 +1,15 @@
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\DAL\bin\Debug\net8.0-windows7.0\DAL.deps.json
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\DAL\bin\Debug\net8.0-windows7.0\DAL.dll
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\DAL\bin\Debug\net8.0-windows7.0\DAL.pdb
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\DAL\obj\Debug\net8.0-windows7.0\DAL.csproj.AssemblyReference.cache
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\DAL\obj\Debug\net8.0-windows7.0\DAL.Properties.Resources.resources
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\DAL\obj\Debug\net8.0-windows7.0\DAL.csproj.GenerateResource.cache
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\DAL\obj\Debug\net8.0-windows7.0\DAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\DAL\obj\Debug\net8.0-windows7.0\DAL.AssemblyInfoInputs.cache
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\DAL\obj\Debug\net8.0-windows7.0\DAL.AssemblyInfo.cs
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\DAL\obj\Debug\net8.0-windows7.0\DAL.csproj.CoreCompileInputs.cache
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\DAL\obj\Debug\net8.0-windows7.0\DAL.sourcelink.json
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\DAL\obj\Debug\net8.0-windows7.0\DAL.dll
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\DAL\obj\Debug\net8.0-windows7.0\refint\DAL.dll
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\DAL\obj\Debug\net8.0-windows7.0\DAL.pdb
+C:\Users\Admin\Desktop\Đồ án 1\Hotel_Management\DAL\obj\Debug\net8.0-windows7.0\ref\DAL.dll

@@ -35,5 +35,9 @@
 		public bool ThongBao { get; set; }
 
 		public bool LichSuHoatDong { get; set; }
-	}
+
+        public bool QLDatDV { get; set; }
+
+        public bool QLDDXQ { get; set; }
+    }
 }

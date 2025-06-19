@@ -1,0 +1,143 @@
+﻿<UserControl x:Class="GUI.UserControls.uc_DDXQ"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d"
+             Background="White"
+             d:DesignHeight="641" d:DesignWidth="1300"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="13"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             FontFamily="{DynamicResource MaterialDesignFont}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Top bar -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" FlowDirection="RightToLeft">
+                <Button Width="150" Height="38" Content="Thêm địa điểm" FontSize="15"
+                        FontFamily="Roboto" FontWeight="Bold" Background="#FF478C10"
+                        Margin="85 0 0 0" Click="click_ThemDDXQ">
+                    <Button.Clip>
+                        <RectangleGeometry Rect="0,0,150,38" RadiusX="10" RadiusY="10" />
+                    </Button.Clip>
+                </Button>
+            </StackPanel>
+
+            <Grid Grid.Column="0">
+                <!-- Search -->
+                <materialDesign:ColorZone Mode="Standard" CornerRadius="5"
+                                          HorizontalAlignment="Left" Margin="85,0,0,0"
+                                          VerticalAlignment="Center" Width="250">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Style="{DynamicResource MaterialDesignToolButton}">
+                            <materialDesign:PackIcon Kind="Search" Opacity="0.56" />
+                        </Button>
+                        <TextBox Grid.Column="1" x:Name="txbTimKiem"
+                                 Margin="0 0 10 0"
+                                 materialDesign:HintAssist.Hint="Tìm địa điểm"
+                                 materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                                 BorderThickness="0"
+                                 MinWidth="200"
+                                 FlowDirection="LeftToRight"
+                                 TextChanged="TimKiem_TextChanged"
+                                 VerticalAlignment="Center" />
+                    </Grid>
+                </materialDesign:ColorZone>
+            </Grid>
+        </Grid>
+
+        <!-- ListView -->
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <!-- ListView -->
+                <RowDefinition Height="Auto" />
+                <!-- Pagination -->
+            </Grid.RowDefinitions>
+
+            <!-- ListView với scroll -->
+            <Grid Grid.Row="0" Width="1220" Height="500" Background="#F2F1F1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid.Clip>
+                    <RectangleGeometry Rect="0,0,1220,500" RadiusX="10" RadiusY="10" />
+                </Grid.Clip>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <ListView x:Name="lvDDXQ"  
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                        <ListView.View>
+                            <GridView>
+                                <GridView.ColumnHeaderContainerStyle>
+                                    <Style TargetType="{x:Type GridViewColumnHeader}">
+                                        <Setter Property="Background" Value="LightBlue" />
+                                        <Setter Property="Foreground" Value="Black" />
+                                        <Setter Property="FontWeight" Value="Bold" />
+                                    </Style>
+                                </GridView.ColumnHeaderContainerStyle>
+
+                                <GridViewColumn Header="Mã DD" Width="60" DisplayMemberBinding="{Binding MaDD}" />
+                                <GridViewColumn Header="Mã CN" Width="60" DisplayMemberBinding="{Binding MaCN}" />
+                                <GridViewColumn Header="Tên địa điểm" Width="150" DisplayMemberBinding="{Binding TenDD}" />
+                                <GridViewColumn Header="Loại địa điểm" Width="120" DisplayMemberBinding="{Binding LoaiDD}" />
+                                <GridViewColumn Header="Địa chỉ" Width="250" DisplayMemberBinding="{Binding DiaChi}" />
+                                <GridViewColumn Header="Đánh giá" Width="80" DisplayMemberBinding="{Binding DanhGia}" />
+                                <GridViewColumn Header="Khoảng cách (m)" Width="130" DisplayMemberBinding="{Binding KhoangCach}" />
+                                <GridViewColumn Header="Thời gian đi chuyển" Width="150" DisplayMemberBinding="{Binding ThoiGianDiChuyen}" />
+                                <GridViewColumn Header="Thời gian cập nhật" Width="150"
+                                        DisplayMemberBinding="{Binding ThoiGianCapNhat, StringFormat=dd/MM/yyyy HH:mm:ss}" />
+
+                                <GridViewColumn Width="60" Header="Sửa">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Width="25" Height="25" BorderThickness="0" Click="click_SuaDDXQ">
+                                                <Button.Background>
+                                                    <ImageBrush ImageSource="/GUI;component/Res/edit.png" />
+                                                </Button.Background>
+                                            </Button>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <!--<GridViewColumn Width="60" Header="Xóa">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Width="25" Height="25" BorderThickness="0" Click="click_XoaDDXQ">
+                                                <Button.Background>
+                                                    <ImageBrush ImageSource="/GUI;component/Res/delete.png" />
+                                                </Button.Background>
+                                            </Button>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>-->
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </ScrollViewer>
+            </Grid>
+
+            <!-- Pagination -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                <Button Content="⏮" Click="BtnPrevPage_Click" Margin="5"/>
+               
+                <Button Content="⏭" Click="BtnNextPage_Click" Margin="5"/>
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+</UserControl>
