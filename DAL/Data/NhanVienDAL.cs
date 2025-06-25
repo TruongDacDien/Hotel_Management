@@ -45,6 +45,7 @@ namespace DAL.Data
 								SDT = reader.GetString(reader.GetOrdinal("SDT")),
 								DiaChi = reader.GetString(reader.GetOrdinal("DiaChi")),
 								CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
+								CCCDImage = reader.GetString(reader.GetOrdinal("CCCDImage")),
 								NTNS = reader.GetDateTime(reader.GetOrdinal("NTNS")),
 								GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
 								Luong = reader.GetDecimal(reader.GetOrdinal("Luong")),
@@ -71,8 +72,8 @@ namespace DAL.Data
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = @"
-                        INSERT INTO NhanVien (HoTen, ChucVu, SDT, DiaChi, CCCD, NTNS, GioiTinh, Luong, IsDeleted)
-                        VALUES (@HoTen, @ChucVu, @SDT, @DiaChi, @CCCD, @NTNS, @GioiTinh, @Luong, 0)";
+                        INSERT INTO NhanVien (HoTen, ChucVu, SDT, DiaChi, CCCD, CCCDImage, NTNS, GioiTinh, Luong, IsDeleted)
+                        VALUES (@HoTen, @ChucVu, @SDT, @DiaChi, @CCCD, 'xxx',@NTNS, @GioiTinh, @Luong, 0)";
 
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@HoTen", nv.HoTen);
@@ -109,7 +110,7 @@ namespace DAL.Data
 					var query = @"
                         UPDATE NhanVien
                         SET HoTen = @HoTen, ChucVu = @ChucVu, SDT = @SDT, DiaChi = @DiaChi, 
-                            CCCD = @CCCD, NTNS = @NTNS, GioiTinh = @GioiTinh, Luong = @Luong
+                            CCCD = @CCCD, CCCDImage = @CCCDImage, NTNS = @NTNS, GioiTinh = @GioiTinh, Luong = @Luong
                         WHERE MaNV = @MaNV";
 
 					var cmd = new MySqlCommand(query, conn);
@@ -119,6 +120,7 @@ namespace DAL.Data
 					cmd.Parameters.AddWithValue("@SDT", nv.SDT);
 					cmd.Parameters.AddWithValue("@DiaChi", nv.DiaChi);
 					cmd.Parameters.AddWithValue("@CCCD", nv.CCCD);
+					cmd.Parameters.AddWithValue("@CCCDImage", "xxx");
 					cmd.Parameters.AddWithValue("@NTNS", nv.NTNS);
 					cmd.Parameters.AddWithValue("@GioiTinh", nv.GioiTinh);
 					cmd.Parameters.AddWithValue("@Luong", nv.Luong);
@@ -188,6 +190,7 @@ namespace DAL.Data
 								SDT = reader.GetString(reader.GetOrdinal("SDT")),
 								DiaChi = reader.GetString(reader.GetOrdinal("DiaChi")),
 								CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
+								CCCDImage = reader.GetString(reader.GetOrdinal("CCCDImage")),
 								NTNS = reader.GetDateTime(reader.GetOrdinal("NTNS")),
 								GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
 								Luong = reader.GetDecimal(reader.GetOrdinal("Luong")),
@@ -230,6 +233,7 @@ namespace DAL.Data
 								SDT = reader.GetString(reader.GetOrdinal("SDT")),
 								DiaChi = reader.GetString(reader.GetOrdinal("DiaChi")),
 								CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
+								CCCDImage = reader.GetString(reader.GetOrdinal("CCCDImage")),
 								NTNS = reader.GetDateTime(reader.GetOrdinal("NTNS")),
 								GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
 								Luong = reader.GetDecimal(reader.GetOrdinal("Luong"))

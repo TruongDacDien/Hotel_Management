@@ -15,6 +15,7 @@
     <None Remove="Res\default_image.jpg" />
     <None Remove="Res\delete.png" />
     <None Remove="Res\edit.png" />
+    <None Remove="Res\edit_role.png" />
     <None Remove="Res\FieldCornerIcon.png" />
     <None Remove="Res\Home0.png" />
     <None Remove="Res\Home1.png" />
@@ -59,6 +60,7 @@
     <Resource Include="Res\add.png" />
     <Resource Include="Res\backGround_DN.png" />
     <Resource Include="Res\edit.png" />
+    <Resource Include="Res\edit_role.png" />
     <Resource Include="Res\FieldCornerIcon.png" />
     <Resource Include="Res\Home0.png" />
     <Resource Include="Res\Home1.png" />

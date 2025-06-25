@@ -4,6 +4,7 @@ using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -20,7 +21,7 @@ namespace GUI.View
 	{
 		public delegate void suaData(LoaiPhong loaiPhong);
 
-		public delegate void truyenData(LoaiPhong loaiPhong);
+		public delegate bool truyenData(LoaiPhong loaiPhong);
 
 		private readonly string maLoaiPhong;
 		public suaData suaLoaiPhong;
@@ -28,6 +29,7 @@ namespace GUI.View
 		private ObservableCollection<TienNghi> lsTienNghi_Customs;
 		private ObservableCollection<TienNghi_DaChon> lsTienNghi_DaChon;
 		private List<TienNghi> lsCache;
+		private List<CT_TienNghi> lsTienNghiPhong;
 
 		public LoaiPhong loaiPhong { get; set; }
 		public string ImageId { get; set; }
@@ -37,6 +39,15 @@ namespace GUI.View
 		public Them_SuaLoaiPhong()
 		{
 			InitializeComponent();
+			lsTienNghi_Customs = new ObservableCollection<TienNghi>(TienNghiBUS.GetInstance().getDataTienNghi());
+			lsTienNghi_DaChon = new ObservableCollection<TienNghi_DaChon>();
+			lsCache = new List<TienNghi>();
+			foreach (var tn in lsTienNghi_Customs)
+			{
+				tn.SoLuongBanDau = tn.SoLuong;
+			}
+			lvDanhSachTN.ItemsSource = lsTienNghi_Customs;
+			lvTienNghiDaChon.ItemsSource = lsTienNghi_DaChon;
 		}
 
 		#region Load Image
@@ -78,7 +89,10 @@ namespace GUI.View
 				try
 				{
 					this.SelectedImagePath = openFile.FileName; //lưu đường dẫn file để upload
-					this.ImageId = $"hotel_management/roomtype_{loaiPhong.MaLoaiPhong}";
+					// Tạo ImageId tạm thời nếu MaLoaiPhong chưa có
+					this.ImageId = (string.IsNullOrEmpty(maLoaiPhong) || maLoaiPhong == "0")
+									? $"roomtype_temp_{Guid.NewGuid():N}"
+									: $"roomtype_{maLoaiPhong}";
 					// Hiển thị lên giao diện
 					var bitmap = new BitmapImage(new Uri(SelectedImagePath));
 					imgAvatar.Fill = new ImageBrush(bitmap);
@@ -92,17 +106,22 @@ namespace GUI.View
 		#endregion
 
 		#region Upload Image to Cloudinary
-		private async void UploadImageToCloudinary()
+		private async Task UploadImageToCloudinary()
 		{
 			// Upload avatar mới nếu người dùng có chọn
 			if (!string.IsNullOrEmpty(SelectedImagePath))
 			{
 				try
 				{
+					string oldImageId = this.loaiPhong != null ? this.loaiPhong.ImageId : null;
 					// Upload lên Cloudinary → lấy URL
-					var url = await LoaiPhongBUS.GetInstance().UploadImageAsync(this.SelectedImagePath, this.ImageId, this.loaiPhong.ImageId);
+					var url = await LoaiPhongBUS.GetInstance().UploadImageAsync(this.SelectedImagePath, this.ImageId, oldImageId);
 					this.ImageURL = url.ToString();
-					this.ImageId = $"hotel_management/roomtype_{this.loaiPhong.MaLoaiPhong}"; // dùng đúng tên publicId
+					// Cập nhật ImageId theo chuẩn nếu đã có MaLoaiPhong (chỉ trong sửa)
+					if (this.loaiPhong != null)
+					{
+						this.ImageId = $"hotel_management/roomtype_{this.loaiPhong.MaLoaiPhong}";
+					}
 				}
 				catch (Exception ex)
 				{
@@ -114,10 +133,26 @@ namespace GUI.View
 
 		public Them_SuaLoaiPhong(LoaiPhong loaiPhong) : this()
 		{
+			lsTienNghiPhong = new List<CT_TienNghi>(CT_TienNghiBUS.GetInstance().getCTTienNghiByLoaiPhong(loaiPhong.MaLoaiPhong));
 			lsTienNghi_Customs = new ObservableCollection<TienNghi>(TienNghiBUS.GetInstance().getDataTienNghi());
 			lsTienNghi_DaChon = new ObservableCollection<TienNghi_DaChon>();
 			lsCache = new List<TienNghi>();
+			foreach (var tn in lsTienNghi_Customs)
+			{
+				tn.SoLuongBanDau = tn.SoLuong;
+			}
 			lvDanhSachTN.ItemsSource = lsTienNghi_Customs;
+			foreach (var ct in lsTienNghiPhong)
+			{
+				var tnDaChon = new TienNghi_DaChon
+				{
+					MaTN = ct.MaTN,
+					TenTN = ct.TenTN,
+					SoLuong = ct.SL,
+					SoLuongTruKhoLucThem = ct.SL // Track initial quantity used
+				};
+				lsTienNghi_DaChon.Add(tnDaChon);
+			}
 			lvTienNghiDaChon.ItemsSource = lsTienNghi_DaChon;
 			this.loaiPhong = loaiPhong;
 			txtTenLoaiPhong.IsReadOnly = true;
@@ -246,16 +281,7 @@ namespace GUI.View
 
 		private void txbSoLuong_LostFocus(object sender, RoutedEventArgs e)
 		{
-			var txb = sender as TextBox;
-			var tndc = (sender as TextBox).DataContext as TienNghi_DaChon;
-			var soLuong = 1;
-			if (!int.TryParse(txb.Text, out soLuong))
-			{
-				new DialogCustoms("Lỗi: Nhập số lượng kiểu số nguyên!", "Thông báo", DialogCustoms.OK).ShowDialog();
-				return;
-			}
-
-			tndc.SoLuong = soLuong;
+			txbSoLuong_KeyUp(sender, new KeyEventArgs(Keyboard.PrimaryDevice, Keyboard.PrimaryDevice.ActiveSource, 0, Key.Enter));
 		}
 
 		private void txbSoLuong_KeyUp(object sender, KeyEventArgs e)
@@ -263,56 +289,134 @@ namespace GUI.View
 			if (e.Key == Key.Enter)
 			{
 				var txb = sender as TextBox;
-				var tndc = (sender as TextBox).DataContext as TienNghi_DaChon;
-				var soLuong = 1;
-				if (!int.TryParse(txb.Text, out soLuong))
+				var tndc = txb.DataContext as TienNghi_DaChon;
+
+				if (!int.TryParse(txb.Text, out int newSoLuong) || newSoLuong < 0)
 				{
-					new DialogCustoms("Lỗi: Nhập số lượng kiểu số nguyên!", "Thông báo", DialogCustoms.OK).ShowDialog();
+					new DialogCustoms("Nhập số nguyên không âm!", "Thông báo", DialogCustoms.OK).ShowDialog();
+					txb.Text = tndc.SoLuong.ToString();
 					return;
 				}
 
-				tndc.SoLuong = soLuong;
+				var tnCustom = lsTienNghi_Customs.FirstOrDefault(t => t.MaTN == tndc.MaTN);
+				if (tnCustom == null) return;
+
+				int oldSoLuong = (int)tndc.SoLuong;
+				int delta = newSoLuong - oldSoLuong;
+
+				// Check if enough stock is available
+				if (tnCustom.SoLuong - delta < 0)
+				{
+					new DialogCustoms("Không đủ tiện nghi trong kho!", "Thông báo", DialogCustoms.OK).ShowDialog();
+					txb.Text = tndc.SoLuong.ToString();
+					return;
+				}
+
+				// Update quantities
+				tndc.SoLuong = newSoLuong;
+				tndc.SoLuongTruKhoLucThem += delta; // Update tracked quantity
+				tnCustom.SoLuong -= delta;
+			}
+		}
+
+		private void LuuDanhSachTienNghi(int maLoaiPhong)
+		{
+			try
+			{
+				// Lấy danh sách tiện nghi hiện tại trong CT_TienNghi từ database
+				var existingCTs = CT_TienNghiBUS.GetInstance().getCTTienNghiByLoaiPhong(maLoaiPhong);
+
+				// Xóa các tiện nghi không còn trong lsTienNghi_DaChon
+				foreach (var ct in existingCTs)
+				{
+					if (!lsTienNghi_DaChon.Any(tn => tn.MaTN == ct.MaTN))
+					{
+						// Xóa bản ghi trong CT_TienNghi
+						CT_TienNghiBUS.GetInstance().xoaCTTienNghi(ct);
+
+						// Hoàn lại số lượng vào bảng TienNghi
+						TienNghiBUS.GetInstance().capNhatSoLuongTienNghi(ct.MaTN, ct.SL);
+					}
+				}
+
+				// Thêm hoặc cập nhật tiện nghi trong lsTienNghi_DaChon
+				foreach (var tn in lsTienNghi_DaChon)
+				{
+					var ct = new CT_TienNghi
+					{
+						MaLoaiPhong = maLoaiPhong,
+						MaTN = tn.MaTN,
+						TenTN = tn.TenTN,
+						SL = (int)tn.SoLuong
+					};
+
+					// Tìm bản ghi hiện tại trong database để tính sự thay đổi số lượng
+					var existingCT = existingCTs.FirstOrDefault(c => c.MaTN == tn.MaTN);
+					int soLuongThayDoi = existingCT != null ? ct.SL - existingCT.SL : ct.SL;
+
+					if (CT_TienNghiBUS.GetInstance().KiemTraTonTai(ct))
+					{
+						// Cập nhật bản ghi trong CT_TienNghi
+						CT_TienNghiBUS.GetInstance().capNhatCTTienNghi(ct);
+					}
+					else
+					{
+						// Thêm mới bản ghi vào CT_TienNghi
+						CT_TienNghiBUS.GetInstance().addCTTienNghi(ct);
+					}
+
+					// Cập nhật số lượng trong bảng TienNghi (giảm số lượng)
+					if (soLuongThayDoi != 0)
+					{
+						TienNghiBUS.GetInstance().capNhatSoLuongTienNghi(tn.MaTN, -soLuongThayDoi);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				new DialogCustoms($"Lỗi khi lưu danh sách tiện nghi: {ex.Message}", "Lỗi", DialogCustoms.OK).ShowDialog();
 			}
 		}
 		#endregion
 
 		#region Event
-
 		private void btnHuy_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
 		}
 
-		private void btnCapNhat_Click(object sender, RoutedEventArgs e)
+		private async void btnCapNhat_Click(object sender, RoutedEventArgs e)
 		{
 			if (!KiemTra()) return;
 
-			UploadImageToCloudinary();
+			await UploadImageToCloudinary();
 
 			var loaiPhong = new LoaiPhong
 			{
 				MaLoaiPhong = int.Parse(maLoaiPhong),
 				TenLoaiPhong = txtTenLoaiPhong.Text,
 				MoTa = txtMoTa.Text,
-				ChinhSach= txtChinhSach.Text,
-				ChinhSachHuy= txtChinhSachHuy.Text,
-				ImageId= this.ImageId,
-				ImageURL= this.ImageURL,
+				ChinhSach = txtChinhSach.Text,
+				ChinhSachHuy = txtChinhSachHuy.Text,
+				ImageId = this.ImageId,
+				ImageURL = this.ImageURL,
 				SoNguoiToiDa = int.Parse(txtSoNguoiToiDa.Text),
 				GiaGio = decimal.Parse(txtGiaGio.Text),
 				GiaNgay = decimal.Parse(txtGiaNgay.Text)
 			};
-			if (suaLoaiPhong != null) suaLoaiPhong(loaiPhong);
+			if (suaLoaiPhong != null)
+			{
+				suaLoaiPhong(loaiPhong);
+				LuuDanhSachTienNghi(loaiPhong.MaLoaiPhong);
+			}
 
 			var wd = GetWindow(sender as Button);
 			wd.Close();
 		}
 
-		private void btnThem_Click(object sender, RoutedEventArgs e)
+		private async void btnThem_Click(object sender, RoutedEventArgs e)
 		{
 			if (!KiemTra()) return;
-
-			UploadImageToCloudinary();
 
 			var loaiPhong = new LoaiPhong
 			{
@@ -326,7 +430,28 @@ namespace GUI.View
 				GiaGio = decimal.Parse(txtGiaGio.Text),
 				GiaNgay = decimal.Parse(txtGiaNgay.Text)
 			};
-			if (truyenLoaiPhong != null) truyenLoaiPhong(loaiPhong);
+
+			if (truyenLoaiPhong != null)
+			{
+				if (truyenLoaiPhong(loaiPhong))
+				{
+					// Nếu thêm thành công, cập nhật ImageId và ImageURL nếu có
+					if (!string.IsNullOrEmpty(SelectedImagePath) && loaiPhong.MaLoaiPhong > 0)
+					{
+						this.ImageId = $"roomtype_{loaiPhong.MaLoaiPhong}";
+						await UploadImageToCloudinary();
+						this.ImageId = $"hotel_management/roomtype_{loaiPhong.MaLoaiPhong}";
+						LoaiPhongBUS.GetInstance().capNhatHinhAnhLoaiPhong(loaiPhong.MaLoaiPhong, this.ImageId, this.ImageURL);
+					}
+					LuuDanhSachTienNghi(loaiPhong.MaLoaiPhong);
+				}
+				else
+				{
+					new DialogCustoms("Lỗi: Không thể tạo loại phòng mới!", "Lỗi", DialogCustoms.OK).ShowDialog();
+					return;
+				}
+			}
+
 			var wd = GetWindow(sender as Button);
 			wd.Close();
 		}
@@ -334,16 +459,62 @@ namespace GUI.View
 		private void click_Them(object sender, RoutedEventArgs e)
 		{
 			var tnct = (sender as Button).DataContext as TienNghi;
-			lsTienNghi_DaChon.Add(new TienNghi_DaChon{ MaTN=tnct.MaTN, TenTN = tnct.TenTN, SoLuong = 1 });
-			lsCache.Add(tnct);
-			lsTienNghi_Customs.Remove(tnct);
+			if (tnct != null && tnct.SoLuong <= 0)
+			{
+				new DialogCustoms("Đã hết tiện nghi trong kho", "Thông báo", DialogCustoms.OK).ShowDialog();
+				return;
+			}
+
+			// Check if enough stock is available
+			if (tnct.SoLuong < 1)
+			{
+				new DialogCustoms("Không đủ tiện nghi trong kho!", "Thông báo", DialogCustoms.OK).ShowDialog();
+				return;
+			}
+
+			tnct.SoLuong--;
+
+			var daChon = lsTienNghi_DaChon.FirstOrDefault(t => t.MaTN == tnct.MaTN);
+			if (daChon != null)
+			{
+				daChon.SoLuong++;
+				daChon.SoLuongTruKhoLucThem++; // Increment tracked quantity
+			}
+			else
+			{
+				lsTienNghi_DaChon.Add(new TienNghi_DaChon
+				{
+					MaTN = tnct.MaTN,
+					TenTN = tnct.TenTN,
+					SoLuong = 1,
+					SoLuongTruKhoLucThem = 1
+				});
+			}
 		}
 
 		private void click_Xoa(object sender, RoutedEventArgs e)
 		{
 			var tndachon = (sender as Button).DataContext as TienNghi_DaChon;
-			var tienNghi_Custom = lsCache.Where(p => p.MaTN.Equals(tndachon.MaTN)).FirstOrDefault();
-			lsTienNghi_Customs.Add(tienNghi_Custom);
+			if (tndachon == null) return;
+
+			var tnCustom = lsTienNghi_Customs.FirstOrDefault(t => t.MaTN == tndachon.MaTN);
+			if (tnCustom != null)
+			{
+				// Restore the quantity used by this amenity
+				tnCustom.SoLuong += tndachon.SoLuongTruKhoLucThem;
+			}
+			else
+			{
+				// If not found, create a new entry
+				lsTienNghi_Customs.Add(new TienNghi
+				{
+					MaTN = tndachon.MaTN,
+					TenTN = tndachon.TenTN,
+					SoLuong = tndachon.SoLuongTruKhoLucThem,
+					SoLuongBanDau = tndachon.SoLuongTruKhoLucThem
+				});
+			}
+
 			lsTienNghi_DaChon.Remove(tndachon);
 		}
 		#endregion

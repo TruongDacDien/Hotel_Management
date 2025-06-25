@@ -9,17 +9,17 @@ using MySql.Data.MySqlClient;
 
 namespace DAL.Data
 {
-	public class TaiKhoanDAL
+	public class TaiKhoanNVDAL
 	{
-		private static TaiKhoanDAL Instance;
+		private static TaiKhoanNVDAL Instance;
 
-		private TaiKhoanDAL()
+		private TaiKhoanNVDAL()
 		{
 		}
 
-		public static TaiKhoanDAL GetInstance()
+		public static TaiKhoanNVDAL GetInstance()
 		{
-			if (Instance == null) Instance = new TaiKhoanDAL();
+			if (Instance == null) Instance = new TaiKhoanNVDAL();
 			return Instance;
 		}
 
@@ -33,7 +33,7 @@ namespace DAL.Data
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = @"SELECT tknv.MaTKNV, tknv.Username, tknv.Password, tknv.MaNV, tknv.AvatarId, tknv.AvatarURL,
-									tknv.Email, tknv.LastLogin, tknv.MaXacNhan, tknv.ThoiGianHetHan, tknv.Disabled,
+									tknv.Email, tknv.LastLogin, tknv.MaXacNhan, tknv.ThoiGianHetHan, tknv.Disabled, tknv.IsDeleted,
 									nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, nv.CCCD, nv.CCCDImage, nv.NTNS, nv.GioiTinh, nv.Luong, nv.IsDeleted
 								  FROM TaiKhoanNV tknv
 								  LEFT JOIN NhanVien nv ON tknv.MaNV = nv.MaNV
@@ -59,7 +59,8 @@ namespace DAL.Data
 								LastLogin = reader.IsDBNull(reader.GetOrdinal("LastLogin")) ? DateTime.MinValue : reader.GetDateTime(reader.GetOrdinal("LastLogin")),
 								MaXacNhan = reader.IsDBNull(reader.GetOrdinal("MaXacNhan")) ? null : reader["MaXacNhan"].ToString(),
 								ThoiGianHetHan = reader.IsDBNull(reader.GetOrdinal("ThoiGianHetHan")) ? DateTime.MinValue : reader.GetDateTime(reader.GetOrdinal("ThoiGianHetHan")),
-								Disabled = reader.IsDBNull(reader.GetOrdinal("Disabled"))? false : reader.GetBoolean(reader.GetOrdinal("Disabled")),
+								Disabled = reader.IsDBNull(reader.GetOrdinal("Disabled")) ? false : reader.GetBoolean(reader.GetOrdinal("Disabled")),
+								IsDeleted = reader.IsDBNull(reader.GetOrdinal("IsDeleted")) ? false : reader.GetBoolean(reader.GetOrdinal("IsDeleted")),
 								NhanVien = new NhanVien
 								{
 									MaNV = reader.IsDBNull(reader.GetOrdinal("MaNV")) ? 0 : reader.GetInt32(reader.GetOrdinal("MaNV")),
@@ -88,27 +89,25 @@ namespace DAL.Data
 		}
 
 		// Cập nhật avatar của tài khoản
-		public bool capNhatAvatar(string username, string avatarId, string avatarURL, out string error)
+		public bool capNhatAvatar(int maTKNV, string avatarId, string avatarURL)
 		{
-			error = string.Empty;
 			var connectionString = Properties.Resources.MySqlConnection;
 
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = "UPDATE TaiKhoanNV SET AvatarId = @AvatarId, AvatarURL = @AvatarURL WHERE username = @Username";
+					var query = "UPDATE TaiKhoanNV SET AvatarId = @AvatarId, AvatarURL = @AvatarURL WHERE MaTKNV = @MaTKNV";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@AvatarId", avatarId);
 					cmd.Parameters.AddWithValue("@AvatarURL", avatarURL);
-					cmd.Parameters.AddWithValue("@Username", username);
+					cmd.Parameters.AddWithValue("@MaTKNV", maTKNV);
 
 					conn.Open();
 					var rowsAffected = cmd.ExecuteNonQuery();
 
 					if (rowsAffected == 0)
 					{
-						error = $"Không tìm thấy tài khoản {username}.";
 						return false;
 					}
 				}
@@ -117,7 +116,6 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				error = ex.Message;
 				return false;
 			}
 		}
@@ -133,11 +131,11 @@ namespace DAL.Data
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = @"SELECT tknv.MaTKNV, tknv.Username, tknv.Password, tknv.MaNV, tknv.AvatarId, tknv.AvatarURL,
-									tknv.Email, tknv.LastLogin, tknv.MaXacNhan, tknv.ThoiGianHetHan, tknv.Disabled,
+									tknv.Email, tknv.LastLogin, tknv.MaXacNhan, tknv.ThoiGianHetHan, tknv.Disabled, tknv.IsDeleted,
 									nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, nv.CCCD, nv.CCCDImage, nv.NTNS, nv.GioiTinh, nv.Luong, nv.IsDeleted
                                   FROM TaiKhoanNV tknv
                                   LEFT JOIN NhanVien nv ON tknv.MaNV = nv.MaNV 
-								  WHERE tknv.Disabled = 0 AND nv.IsDeleted = 0";
+								  WHERE tknv.IsDeleted = 0 AND nv.IsDeleted = 0";
 
 					var cmd = new MySqlCommand(query, conn);
 					conn.Open();
@@ -159,6 +157,7 @@ namespace DAL.Data
 								MaXacNhan = reader.IsDBNull(reader.GetOrdinal("MaXacNhan")) ? null : reader["MaXacNhan"].ToString(),
 								ThoiGianHetHan = reader.IsDBNull(reader.GetOrdinal("ThoiGianHetHan")) ? DateTime.MinValue : reader.GetDateTime(reader.GetOrdinal("ThoiGianHetHan")),
 								Disabled = reader.IsDBNull(reader.GetOrdinal("Disabled")) ? false : reader.GetBoolean(reader.GetOrdinal("Disabled")),
+								IsDeleted = reader.IsDBNull(reader.GetOrdinal("IsDeleted")) ? false : reader.GetBoolean(reader.GetOrdinal("IsDeleted")),
 								NhanVien = new NhanVien
 								{
 									MaNV = reader.IsDBNull(reader.GetOrdinal("MaNV")) ? 0 : reader.GetInt32(reader.GetOrdinal("MaNV")),
@@ -195,17 +194,22 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"INSERT INTO TaiKhoanNV (Username, Password, Email, AvatarId, AvatarURL, MaTKNV, LastLogin, Disabled)
-                             VALUES (@Username, @Password, @Email, @AvatarId, @AvatarURL, @MaTKNV, NOW(),0)";
+					var query = @"INSERT INTO TaiKhoanNV (Username, Password, Email, AvatarId, AvatarURL, MaNV, LastLogin, Disabled, MaXacNhan, ThoiGianHetHan)
+								VALUES (@Username, @Password, @Email, @AvatarId, @AvatarURL, @MaNV, NOW(), 0, 'xxx', NOW());
+								SELECT LAST_INSERT_ID();";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@Username", taiKhoan.Username);
 					cmd.Parameters.AddWithValue("@Password", taiKhoan.Password);
 					cmd.Parameters.AddWithValue("@Email", taiKhoan.Email);
-					cmd.Parameters.AddWithValue("@AvatarId", taiKhoan.AvatarId);
-					cmd.Parameters.AddWithValue("@AvatarURL", taiKhoan.AvatarURL);
-					cmd.Parameters.AddWithValue("@MaTKNV", taiKhoan.MaNV);
+					cmd.Parameters.AddWithValue("@AvatarId", taiKhoan.AvatarId ?? "hotel_management/user_default");
+					cmd.Parameters.AddWithValue("@AvatarURL", taiKhoan.AvatarURL ?? "https://res.cloudinary.com/dzaoyffio/image/upload/v1747814352/hotel_management/user_default.png");
+					cmd.Parameters.AddWithValue("@MaNV", taiKhoan.MaNV);
 					conn.Open();
-					cmd.ExecuteNonQuery();
+					object result = cmd.ExecuteScalar();
+					if (result == null || result == DBNull.Value)
+						throw new Exception("Không thể lấy mã dịch vụ sau khi thêm.");
+
+					taiKhoan.MaTKNV = Convert.ToInt32(result);
 					return true;
 				}
 			}
@@ -224,18 +228,27 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query =
-						@"UPDATE TaiKhoanNV SET MaNV = @MaNV, Password = @Password , Email = @Email WHERE Username = @Username";
+					var query = @"UPDATE TaiKhoanNV 
+								  SET Username = @Username, 
+									MaNV = @MaNV, 
+									Password = @Password, 
+									Email = @Email, 
+									AvatarId = @AvatarId, 
+									AvatarURL = @AvatarURL,
+									Disabled = @Disabled
+								  WHERE MaTKNV = @MaTKNV";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@Username", taiKhoan.Username);
 					cmd.Parameters.AddWithValue("@Password", taiKhoan.Password);
 					cmd.Parameters.AddWithValue("@MaNV", taiKhoan.MaNV);
 					cmd.Parameters.AddWithValue("@Email", taiKhoan.Email);
+					cmd.Parameters.AddWithValue("@MaTKNV", taiKhoan.MaTKNV);
+					cmd.Parameters.AddWithValue("@AvatarId", taiKhoan.AvatarId ?? (object)DBNull.Value);
+					cmd.Parameters.AddWithValue("@AvatarURL", taiKhoan.AvatarURL ?? (object)DBNull.Value);
+					cmd.Parameters.AddWithValue("@Disabled", taiKhoan.Disabled);
 					conn.Open();
 					var rowsAffected = cmd.ExecuteNonQuery();
-					Console.WriteLine(rowsAffected);
-					if (rowsAffected == 0) return false;
-					return true;
+					return rowsAffected > 0;
 				}
 			}
 			catch (Exception ex)
@@ -300,9 +313,9 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = "UPDATE TaiKhoan SET Disabled = 1 WHERE Username = @Username";
+					var query = "UPDATE TaiKhoan SET IsDeleted = 1 WHERE MaTKNV = @MaTKNV";
 					var cmd = new MySqlCommand(query, conn);
-					cmd.Parameters.AddWithValue("@Username", taiKhoan.Username);
+					cmd.Parameters.AddWithValue("@MaTKNV", taiKhoan.MaTKNV);
 					conn.Open();
 					cmd.ExecuteNonQuery();
 				}
@@ -375,13 +388,12 @@ namespace DAL.Data
 								QLLoaiDichVu = reader.IsDBNull(reader.GetOrdinal("QLLoaiDichVu")) ? false : reader.GetBoolean(reader.GetOrdinal("QLLoaiDichVu")),
 								QLTienNghi = reader.IsDBNull(reader.GetOrdinal("QLTienNghi")) ? false : reader.GetBoolean(reader.GetOrdinal("QLTienNghi")),
 								QLNhanVien = reader.IsDBNull(reader.GetOrdinal("QLNhanVien")) ? false : reader.GetBoolean(reader.GetOrdinal("QLNhanVien")),
-								QLTaiKhoan = reader.IsDBNull(reader.GetOrdinal("QLTaiKhoan")) ? false : reader.GetBoolean(reader.GetOrdinal("QLTaiKhoan")),
+								QLTaiKhoanNV = reader.IsDBNull(reader.GetOrdinal("QLTaiKhoanNV")) ? false : reader.GetBoolean(reader.GetOrdinal("QLTaiKhoanNV")),
+								QLTaiKhoanKH = reader.IsDBNull(reader.GetOrdinal("QLTaiKhoanKH")) ? false : reader.GetBoolean(reader.GetOrdinal("QLTaiKhoanKH")),
 								ThongKe = reader.IsDBNull(reader.GetOrdinal("ThongKe")) ? false : reader.GetBoolean(reader.GetOrdinal("ThongKe")),
-								ThongBao = reader.IsDBNull(reader.GetOrdinal("ThongBao")) ? false : reader.GetBoolean(reader.GetOrdinal("ThongBao")),
-								LichSuHoatDong = reader.IsDBNull(reader.GetOrdinal("LichSuHoatDong")) ? false : reader.GetBoolean(reader.GetOrdinal("LichSuHoatDong")),
-                                QLDatDV = reader.IsDBNull(reader.GetOrdinal("QLDatDV")) ? false : reader.GetBoolean(reader.GetOrdinal("QLDatDV")),
-                                QLDDXQ = reader.IsDBNull(reader.GetOrdinal("QLDDXQ")) ? false : reader.GetBoolean(reader.GetOrdinal("QLDDXQ"))
-                            };
+								QLDatDV = reader.IsDBNull(reader.GetOrdinal("QLDatDV")) ? false : reader.GetBoolean(reader.GetOrdinal("QLDatDV")),
+								QLDDXQ = reader.IsDBNull(reader.GetOrdinal("QLDDXQ")) ? false : reader.GetBoolean(reader.GetOrdinal("QLDDXQ"))
+							};
 						}
 					}
 				}
@@ -392,6 +404,141 @@ namespace DAL.Data
 			}
 
 			return null; // Trả về null nếu không tìm thấy hoặc có lỗi
+		}
+
+		public bool capNhatPhanQuyenTaiKhoan(PhanQuyen pq)
+		{
+			var connectionString = Properties.Resources.MySqlConnection;
+
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = @"
+                UPDATE PhanQuyen SET 
+                    TrangChu = @TrangChu,
+                    Phong = @Phong,
+                    DatPhong = @DatPhong,
+                    HoaDon = @HoaDon,
+                    QLKhachHang = @QLKhachHang,
+                    QLPhong = @QLPhong,
+                    QLLoaiPhong = @QLLoaiPhong,
+                    QLDichVu = @QLDichVu,
+                    QLLoaiDichVu = @QLLoaiDichVu,
+                    QLTienNghi = @QLTienNghi,
+                    QLNhanVien = @QLNhanVien,
+                    QLTaiKhoanNV = @QLTaiKhoanNV,
+                    QLTaiKhoanKH = @QLTaiKhoanKH,
+                    ThongKe = @ThongKe,
+                    QLDatDV = @QLDatDV,
+                    QLDDXQ = @QLDDXQ
+                WHERE MaTKNV = @MaTKNV";
+
+					var cmd = new MySqlCommand(query, conn);
+
+					cmd.Parameters.AddWithValue("@TrangChu", pq.TrangChu);
+					cmd.Parameters.AddWithValue("@Phong", pq.Phong);
+					cmd.Parameters.AddWithValue("@DatPhong", pq.DatPhong);
+					cmd.Parameters.AddWithValue("@HoaDon", pq.HoaDon);
+					cmd.Parameters.AddWithValue("@QLKhachHang", pq.QLKhachHang);
+					cmd.Parameters.AddWithValue("@QLPhong", pq.QLPhong);
+					cmd.Parameters.AddWithValue("@QLLoaiPhong", pq.QLLoaiPhong);
+					cmd.Parameters.AddWithValue("@QLDichVu", pq.QLDichVu);
+					cmd.Parameters.AddWithValue("@QLLoaiDichVu", pq.QLLoaiDichVu);
+					cmd.Parameters.AddWithValue("@QLTienNghi", pq.QLTienNghi);
+					cmd.Parameters.AddWithValue("@QLNhanVien", pq.QLNhanVien);
+					cmd.Parameters.AddWithValue("@QLTaiKhoanNV", pq.QLTaiKhoanNV);
+					cmd.Parameters.AddWithValue("@QLTaiKhoanKH", pq.QLTaiKhoanKH);
+					cmd.Parameters.AddWithValue("@ThongKe", pq.ThongKe);
+					cmd.Parameters.AddWithValue("@QLDatDV", pq.QLDatDV);
+					cmd.Parameters.AddWithValue("@QLDDXQ", pq.QLDDXQ);
+					cmd.Parameters.AddWithValue("@MaTKNV", pq.MaTKNV);
+
+					conn.Open();
+					int rowsAffected = cmd.ExecuteNonQuery();
+					return rowsAffected > 0;
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Lỗi cập nhật phân quyền: {ex.Message}");
+				return false;
+			}
+		}
+
+		public bool themPhanQuyenTaiKhoan(PhanQuyen pq)
+		{
+			var connectionString = Properties.Resources.MySqlConnection;
+
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = @"
+                INSERT INTO PhanQuyen (
+                    MaTKNV, TrangChu, Phong, DatPhong, HoaDon, QLKhachHang, QLPhong, QLLoaiPhong,
+                    QLDichVu, QLLoaiDichVu, QLTienNghi, QLNhanVien, QLTaiKhoanNV, QLTaiKhoanKH,
+                    ThongKe, QLDatDV, QLDDXQ
+                ) VALUES (
+                    @MaTKNV, @TrangChu, @Phong, @DatPhong, @HoaDon, @QLKhachHang, @QLPhong, @QLLoaiPhong,
+                    @QLDichVu, @QLLoaiDichVu, @QLTienNghi, @QLNhanVien, @QLTaiKhoanNV, @QLTaiKhoanKH,
+                    @ThongKe, @QLDatDV, @QLDDXQ
+                )";
+
+					var cmd = new MySqlCommand(query, conn);
+
+					cmd.Parameters.AddWithValue("@MaTKNV", pq.MaTKNV);
+					cmd.Parameters.AddWithValue("@TrangChu", pq.TrangChu);
+					cmd.Parameters.AddWithValue("@Phong", pq.Phong);
+					cmd.Parameters.AddWithValue("@DatPhong", pq.DatPhong);
+					cmd.Parameters.AddWithValue("@HoaDon", pq.HoaDon);
+					cmd.Parameters.AddWithValue("@QLKhachHang", pq.QLKhachHang);
+					cmd.Parameters.AddWithValue("@QLPhong", pq.QLPhong);
+					cmd.Parameters.AddWithValue("@QLLoaiPhong", pq.QLLoaiPhong);
+					cmd.Parameters.AddWithValue("@QLDichVu", pq.QLDichVu);
+					cmd.Parameters.AddWithValue("@QLLoaiDichVu", pq.QLLoaiDichVu);
+					cmd.Parameters.AddWithValue("@QLTienNghi", pq.QLTienNghi);
+					cmd.Parameters.AddWithValue("@QLNhanVien", pq.QLNhanVien);
+					cmd.Parameters.AddWithValue("@QLTaiKhoanNV", pq.QLTaiKhoanNV);
+					cmd.Parameters.AddWithValue("@QLTaiKhoanKH", pq.QLTaiKhoanKH);
+					cmd.Parameters.AddWithValue("@ThongKe", pq.ThongKe);
+					cmd.Parameters.AddWithValue("@QLDatDV", pq.QLDatDV);
+					cmd.Parameters.AddWithValue("@QLDDXQ", pq.QLDDXQ);
+
+					conn.Open();
+					int rowsAffected = cmd.ExecuteNonQuery();
+					return rowsAffected > 0;
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Lỗi thêm phân quyền: {ex.Message}");
+				return false;
+			}
+		}
+
+		public bool xoaPhanQuyenTaiKhoan(PhanQuyen pq)
+		{
+			var connectionString = Properties.Resources.MySqlConnection;
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = "DELETE FROM PhanQuyen WHERE MaPQ = @MaPQ";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaPQ", pq.MaPQ);
+
+					conn.Open();
+					var rowsAffected = cmd.ExecuteNonQuery();
+
+					return rowsAffected > 0;
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message); // Xử lý lỗi nếu cần
+				return false;
+			}
 		}
 	}
 }

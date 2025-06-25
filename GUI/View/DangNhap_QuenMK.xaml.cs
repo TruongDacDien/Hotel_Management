@@ -41,12 +41,12 @@ namespace GUI.View
 				new DialogCustoms("Nhập đầy đủ thông tin để xác nhận!", "Thông báo", DialogCustoms.OK).ShowDialog();
 				return;
 			}	
-			if (!TaiKhoanBUS.GetInstance().kiemTraTrungUsername(txtUsername.Text))
+			if (!TaiKhoanNVBUS.GetInstance().kiemTraTrungUsername(txtUsername.Text))
 			{
 				new DialogCustoms("Không tìm thấy tài khoản!", "Thông báo", DialogCustoms.OK).ShowDialog();
 				return;
 			}
-			if (!TaiKhoanBUS.GetInstance().kiemTraTrungEmail(txtEmail.Text))
+			if (!TaiKhoanNVBUS.GetInstance().kiemTraTrungEmail(txtEmail.Text))
 			{
 				new DialogCustoms("Email chưa được đăng ký!", "Thông báo", DialogCustoms.OK).ShowDialog();
 				return;
@@ -58,7 +58,7 @@ namespace GUI.View
 			}
 
 			// Lấy thông tin tài khoản
-			TaiKhoanNV taiKhoan = TaiKhoanBUS.GetInstance().layTaiKhoanTheoUsername(txtUsername.Text.Trim());
+			TaiKhoanNV taiKhoan = TaiKhoanNVBUS.GetInstance().layTaiKhoanTheoUsername(txtUsername.Text.Trim());
 			if (taiKhoan == null)
 			{
 				new DialogCustoms("Không lấy được thông tin tài khoản!", "Thông báo", DialogCustoms.OK).ShowDialog();
@@ -80,7 +80,7 @@ namespace GUI.View
 			taiKhoan.Password = Bcrypt_HashBUS.GetInstance().HashMatKhau(newPassword);
 
 			// Cập nhật mật khẩu mới vào cơ sở dữ liệu
-			bool isUpdated = TaiKhoanBUS.GetInstance().capNhatTaiKhoan(taiKhoan);
+			bool isUpdated = TaiKhoanNVBUS.GetInstance().capNhatTaiKhoan(taiKhoan);
 			if (!isUpdated)
 			{
 				new DialogCustoms("Không thể cập nhật mật khẩu. Vui lòng thử lại sau!", "Lỗi", DialogCustoms.OK).ShowDialog();

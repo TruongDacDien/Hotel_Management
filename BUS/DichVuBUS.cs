@@ -67,5 +67,10 @@ namespace BUS
 			var url = await _cloudinaryService.UploadImageAsync(filePath, publicId);
 			return url;
 		}
+
+		public void capNhatHinhAnhDichVu(int maDV, string imageId, string imageUrl)
+		{
+			DichVuDAL.GetInstance().capNhatHinhAnhDichVu(maDV, imageId, imageUrl);
+		}
 	}
 }

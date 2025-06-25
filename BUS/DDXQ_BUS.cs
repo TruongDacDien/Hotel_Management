@@ -20,32 +20,37 @@ namespace BUS
             return Instance;
         }
 
-        public List<DDXQ> GetAllDDXQ()
+        public async Task<List<DDXQ>> GetAllDDXQ()
         {
-            return DDXQ_DAL.GetInstance().GetAllDDXQ();
+            return await DDXQ_DAL.GetInstance().GetAllAsync();
         }
 
-        public DDXQ GetDDXQByMaDD(int maDD)
+        public async Task<DDXQ> GetDDXQByMaDD(int maDD)
         {
-            return DDXQ_DAL.GetInstance().GetDDXQByMaDD(maDD);
+            return await DDXQ_DAL.GetInstance().GetByIdAsync(maDD);
         }
 
         // Thêm mới DDXQ
-        public bool ThemDDXQ(DDXQ ddxq)
+        public async Task<int> ThemDDXQ(DDXQ ddxq)
         {
-            return DDXQ_DAL.GetInstance().AddDDXQ(ddxq);
+            return await DDXQ_DAL.GetInstance().CreateAsync(ddxq);
         }
 
         // Cập nhật DDXQ
-        public bool CapNhatDDXQ(DDXQ ddxq)
+        public async Task<bool> CapNhatDDXQ(int id, DDXQ ddxq)
         {
-            return DDXQ_DAL.GetInstance().UpdateDDXQ(ddxq);
+            return await DDXQ_DAL.GetInstance().UpdateAsync(id, ddxq);
         }
 
         // Xóa DDXQ
-        public bool XoaDDXQ(int maDD)
+        public async Task<bool> XoaDDXQ(int maDD)
         {
-            return DDXQ_DAL.GetInstance().DeleteDDXQ(maDD);
+            return await DDXQ_DAL.GetInstance().DeleteAsync(maDD);
         }
-    }
+
+		public async Task<string> FetchAndSaveNearbyLocationsAsync(int branchId, int radius, string type, int limit)
+        {
+            return await DDXQ_DAL.GetInstance().FetchAndSaveNearbyLocationsAsync(branchId, radius, type, limit);
+        }
+	}
 }

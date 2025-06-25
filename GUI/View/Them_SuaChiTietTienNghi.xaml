@@ -13,7 +13,7 @@
         <RectangleGeometry Rect="0,0,500,400" RadiusX="10" RadiusY="10" />
     </Window.Clip>
 
-    <Border BorderThickness="1" BorderBrush="#2C2A2A" CornerRadius="10">
+    <!--<Border BorderThickness="1" BorderBrush="#2C2A2A" CornerRadius="10">
 
         <Grid>
 
@@ -23,7 +23,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <!--Làm phần tiêu đề -->
+            --><!--Làm phần tiêu đề --><!--
             <Grid Grid.Row="0">
                 <TextBlock Name="txbTitle" Text="Chi tiết tiện nghi"
                            HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -32,7 +32,7 @@
                            Foreground="#00A3FF" />
 
             </Grid>
-            <!--Làm phần phần nhập thông tin -->
+            --><!--Làm phần phần nhập thông tin --><!--
             <Grid Grid.Row="1" Width="250" Height="250"
                   HorizontalAlignment="Center"
                   Background="#F2F1F1">
@@ -41,7 +41,7 @@
                 </Grid.Clip>
 
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <!--Làm phần nhập tình trạng phòng -->
+                    --><!--Làm phần nhập tình trạng phòng --><!--
                     <Grid HorizontalAlignment="Center" Margin="0 0 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="30" />
@@ -101,7 +101,7 @@
             </Grid>
 
 
-            <!--Làm nút nhập thêm hoặc hủy -->
+            --><!--Làm nút nhập thêm hoặc hủy --><!--
             <Grid Grid.Row="2">
                 <Grid Width="190" Margin="190 0 0 0">
                     <Grid.ColumnDefinitions>
@@ -155,5 +155,5 @@
                 </Grid>
             </Grid>
         </Grid>
-    </Border>
+    </Border>-->
 </Window>

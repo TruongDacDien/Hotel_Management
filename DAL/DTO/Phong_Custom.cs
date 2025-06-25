@@ -26,7 +26,7 @@ namespace DAL.DTO
 
 		public DateTime? NgayDi { get; set; }
 
-		public int? SoGio { get; set; }
+		public decimal? SoGio { get; set; }
 
 		public bool IsDay
 		{

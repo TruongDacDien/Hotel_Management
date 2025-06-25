@@ -31,66 +31,62 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"SELECT ct.MaCTPT,
-                                    COALESCE(kh.TenKH, '') AS TenKH,
-                                    p.SoPhong AS MaPhong,
-                                    p.DonDep AS DonDep,
-                                    COALESCE(ct.TinhTrangThue, 'Phòng trống') AS TinhTrang,
-                                    lp.TenLoaiPhong AS LoaiPhong,
-                                    ct.NgayBD AS NgayDen,
-                                    CASE 
-										WHEN ct.NgayBD IS NULL OR ct.NgayKT IS NULL THEN 0
-										ELSE CEIL(TIMESTAMPDIFF(MINUTE, ct.NgayBD, ct.NgayKT) / 1440.0)
-									END AS SoNgayO,
-                                    CASE 
-										WHEN ct.NgayBD IS NULL OR ct.NgayKT IS NULL THEN 0
-										ELSE TIMESTAMPDIFF(MINUTE, ct.NgayBD, ct.NgayKT) / 60
-									END AS SoGio,
-                                    ct.NgayKT AS NgayDi,
-                                    COALESCE(ct.SoNguoiO, 0) AS SoNguoi
-                                    FROM Phong p
-                                    LEFT JOIN CT_PhieuThue ct ON p.SoPhong = ct.SoPhong AND ((@ngayChon BETWEEN ct.NgayBD AND ct.NgayKT)
-                                                                                            OR (ct.NgayBD > @ngayChon) 
-                                                                                            OR ct.NgayBD IS NULL) 
-                                                                                        AND ct.TinhTrangThue <> 'Đã thanh toán'
-                                    LEFT JOIN PhieuThue pt ON ct.MaPhieuThue = pt.MaPhieuThue
-                                    LEFT JOIN KhachHang kh ON pt.MaKH = kh.MaKH
-                                    LEFT JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
-                                    WHERE p.IsDeleted = 0";
+					var query = @"
+                SELECT ct.MaCTPT,
+                       COALESCE(kh.TenKH, '') AS TenKH,
+                       p.SoPhong AS MaPhong,
+                       p.DonDep AS DonDep,
+                       COALESCE(ct.TinhTrangThue, 'Phòng trống') AS TinhTrang,
+                       lp.TenLoaiPhong AS LoaiPhong,
+                       ct.NgayBD AS NgayDen,
+                       CASE 
+                           WHEN ct.NgayBD IS NULL OR ct.NgayKT IS NULL THEN 0
+                           ELSE CEIL(DATEDIFF(ct.NgayKT, ct.NgayBD))
+                       END AS SoNgayO,
+                       CASE 
+                           WHEN ct.NgayBD IS NULL OR ct.NgayKT IS NULL THEN 0
+                           ELSE TIMESTAMPDIFF(HOUR, ct.NgayBD, ct.NgayKT)
+                       END AS SoGio,
+                       ct.NgayKT AS NgayDi,
+                       COALESCE(ct.SoNguoiO, 0) AS SoNguoi
+                FROM Phong p
+                LEFT JOIN CT_PhieuThue ct ON p.SoPhong = ct.SoPhong 
+                    AND @ngayChon BETWEEN ct.NgayBD AND ct.NgayKT 
+                    AND ct.TinhTrangThue <> 'Đã thanh toán'
+                LEFT JOIN PhieuThue pt ON ct.MaPhieuThue = pt.MaPhieuThue AND pt.IsDeleted = 0
+                LEFT JOIN KhachHang kh ON pt.MaKH = kh.MaKH AND kh.IsDeleted = 0
+                LEFT JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong AND lp.IsDeleted = 0
+                WHERE p.IsDeleted = 0";
 
 					var cmd = new MySqlCommand(query, conn);
-					cmd.Parameters.AddWithValue("@ngayChon", ngayChon);
+					cmd.Parameters.AddWithValue("@ngayChon", ngayChon ?? DateTime.Now);
 
 					conn.Open();
 					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
+						{
 							ls.Add(new Phong_Custom
 							{
-								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT"))
-									? 0
-									: reader.GetInt32(reader.GetOrdinal("MaCTPT")),
-								TenKH = reader.GetString(reader.GetOrdinal("TenKH")),
-								MaPhong = reader.GetString(reader.GetOrdinal("MaPhong")),
-								DonDep = reader.GetString(reader.GetOrdinal("DonDep")),
-								TinhTrang = reader.GetString(reader.GetOrdinal("TinhTrang")),
-								LoaiPhong = reader.GetString(reader.GetOrdinal("LoaiPhong")),
-								NgayDen = reader.IsDBNull(reader.GetOrdinal("NgayDen"))
-									? (DateTime?)null
-									: reader.GetDateTime(reader.GetOrdinal("NgayDen")),
-								SoNgayO = reader.GetInt32(reader.GetOrdinal("SoNgayO")),
-								SoGio = reader.GetInt32(reader.GetOrdinal("SoGio")),
-								NgayDi = reader.IsDBNull(reader.GetOrdinal("NgayDi"))
-									? (DateTime?)null
-									: reader.GetDateTime(reader.GetOrdinal("NgayDi")),
-								SoNguoi = reader.GetInt32(reader.GetOrdinal("SoNguoi"))
+								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? 0 : reader.GetInt32("MaCTPT"),
+								TenKH = reader.GetString("TenKH"),
+								MaPhong = reader.GetString("MaPhong"),
+								DonDep = reader.GetString("DonDep"),
+								TinhTrang = reader.GetString("TinhTrang"),
+								LoaiPhong = reader.GetString("LoaiPhong"),
+								NgayDen = reader.IsDBNull(reader.GetOrdinal("NgayDen")) ? null : reader.GetDateTime("NgayDen"),
+								SoNgayO = reader.GetInt32("SoNgayO"),
+								SoGio = reader.GetDecimal("SoGio"), // Sửa thành decimal
+								NgayDi = reader.IsDBNull(reader.GetOrdinal("NgayDi")) ? null : reader.GetDateTime("NgayDi"),
+								SoNguoi = reader.GetInt32("SoNguoi")
 							});
+						}
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				Console.WriteLine($"Lỗi khi lấy danh sách phòng theo ngày: {ex.Message}\nStackTrace: {ex.StackTrace}");
 			}
 
 			return ls;
@@ -105,61 +101,58 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"SELECT ct.MaCTPT,
-                                    COALESCE(kh.TenKH, '') AS TenKH,
-                                    p.SoPhong AS MaPhong,
-                                    p.DonDep AS DonDep,
-                                    COALESCE(ct.TinhTrangThue, 'Phòng trống') AS TinhTrang,
-                                    lp.TenLoaiPhong AS LoaiPhong,
-                                    ct.NgayBD AS NgayDen,
-                                    CASE 
-										WHEN ct.NgayBD IS NULL OR ct.NgayKT IS NULL THEN 0
-										ELSE CEIL(TIMESTAMPDIFF(MINUTE, ct.NgayBD, ct.NgayKT) / 1440.0)
-									END AS SoNgayO,
-                                    CASE 
-										WHEN ct.NgayBD IS NULL OR ct.NgayKT IS NULL THEN 0
-										ELSE TIMESTAMPDIFF(MINUTE, ct.NgayBD, ct.NgayKT) / 60
-									END AS SoGio,
-                                    ct.NgayKT AS NgayDi,
-                                    COALESCE(ct.SoNguoiO, 0) AS SoNguoi
-                                    FROM Phong p
-                                    LEFT JOIN CT_PhieuThue ct ON p.SoPhong = ct.SoPhong
-                                    LEFT JOIN PhieuThue pt ON ct.MaPhieuThue = pt.MaPhieuThue
-                                    LEFT JOIN KhachHang kh ON pt.MaKH = kh.MaKH
-                                    LEFT JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
-                                    WHERE p.IsDeleted = 0";
+					var query = @"
+                SELECT ct.MaCTPT,
+                       COALESCE(kh.TenKH, '') AS TenKH,
+                       p.SoPhong AS MaPhong,
+                       p.DonDep AS DonDep,
+                       COALESCE(ct.TinhTrangThue, 'Phòng trống') AS TinhTrang,
+                       lp.TenLoaiPhong AS LoaiPhong,
+                       ct.NgayBD AS NgayDen,
+                       CASE 
+                           WHEN ct.NgayBD IS NULL OR ct.NgayKT IS NULL THEN 0
+                           ELSE CEIL(DATEDIFF(ct.NgayKT, ct.NgayBD))
+                       END AS SoNgayO,
+                       CASE 
+                           WHEN ct.NgayBD IS NULL OR ct.NgayKT IS NULL THEN 0
+                           ELSE TIMESTAMPDIFF(HOUR, ct.NgayBD, ct.NgayKT)
+                       END AS SoGio,
+                       ct.NgayKT AS NgayDi,
+                       COALESCE(ct.SoNguoiO, 0) AS SoNguoi
+                FROM Phong p
+                LEFT JOIN CT_PhieuThue ct ON p.SoPhong = ct.SoPhong AND ct.TinhTrangThue <> 'Đã thanh toán'
+                LEFT JOIN PhieuThue pt ON ct.MaPhieuThue = pt.MaPhieuThue AND pt.IsDeleted = 0
+                LEFT JOIN KhachHang kh ON pt.MaKH = kh.MaKH AND kh.IsDeleted = 0
+                LEFT JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong AND lp.IsDeleted = 0
+                WHERE p.IsDeleted = 0";
 
 					var cmd = new MySqlCommand(query, conn);
 					conn.Open();
 					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
+						{
 							ls.Add(new Phong_Custom
 							{
-								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT"))
-									? 0
-									: reader.GetInt32(reader.GetOrdinal("MaCTPT")),
-								TenKH = reader.GetString(reader.GetOrdinal("TenKH")),
-								MaPhong = reader.GetString(reader.GetOrdinal("MaPhong")),
-								DonDep = reader.GetString(reader.GetOrdinal("DonDep")),
-								TinhTrang = reader.GetString(reader.GetOrdinal("TinhTrang")),
-								LoaiPhong = reader.GetString(reader.GetOrdinal("LoaiPhong")),
-								NgayDen = reader.IsDBNull(reader.GetOrdinal("NgayDen"))
-									? (DateTime?)null
-									: reader.GetDateTime(reader.GetOrdinal("NgayDen")),
-								SoNgayO = reader.GetInt32(reader.GetOrdinal("SoNgayO")),
-								SoGio = reader.GetInt32(reader.GetOrdinal("SoGio")),
-								NgayDi = reader.IsDBNull(reader.GetOrdinal("NgayDi"))
-									? (DateTime?)null
-									: reader.GetDateTime(reader.GetOrdinal("NgayDi")),
-								SoNguoi = reader.GetInt32(reader.GetOrdinal("SoNguoi"))
+								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT")) ? 0 : reader.GetInt32("MaCTPT"),
+								TenKH = reader.GetString("TenKH"),
+								MaPhong = reader.GetString("MaPhong"),
+								DonDep = reader.GetString("DonDep"),
+								TinhTrang = reader.GetString("TinhTrang"),
+								LoaiPhong = reader.GetString("LoaiPhong"),
+								NgayDen = reader.IsDBNull(reader.GetOrdinal("NgayDen")) ? null : reader.GetDateTime("NgayDen"),
+								SoNgayO = reader.GetInt32("SoNgayO"),
+								SoGio = reader.GetDecimal("SoGio"),
+								NgayDi = reader.IsDBNull(reader.GetOrdinal("NgayDi")) ? null : reader.GetDateTime("NgayDi"),
+								SoNguoi = reader.GetInt32("SoNguoi")
 							});
+						}
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				Console.WriteLine($"Lỗi khi lấy danh sách phòng: {ex.Message}\nStackTrace: {ex.StackTrace}");
 			}
 
 			return ls;
@@ -173,9 +166,15 @@ namespace DAL.Data
 
 			try
 			{
+				if (string.IsNullOrEmpty(maPhong) || string.IsNullOrEmpty(text) || text.Length > 80)
+				{
+					error = "Số phòng hoặc trạng thái không hợp lệ.";
+					return false;
+				}
+
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = "UPDATE Phong SET DonDep = @DonDep WHERE SoPhong = @MaPhong";
+					var query = "UPDATE Phong SET DonDep = @DonDep WHERE SoPhong = @MaPhong AND IsDeleted = 0";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@DonDep", text);
 					cmd.Parameters.AddWithValue("@MaPhong", maPhong);
@@ -185,46 +184,54 @@ namespace DAL.Data
 
 					if (rowsAffected == 0)
 					{
-						error = "Không tồn tại phòng có số phòng: " + maPhong;
+						error = $"Không tìm thấy phòng có số phòng: {maPhong} hoặc phòng đã bị xóa.";
 						return false;
 					}
-				}
 
-				return true;
+					return true;
+				}
 			}
 			catch (Exception ex)
 			{
-				error = ex.Message;
+				error = $"Lỗi khi cập nhật trạng thái phòng: {ex.Message}";
 				return false;
 			}
 		}
 
 		// Lấy giá tiền của phòng theo mã phòng
-		public decimal layGiaTienTheoMaPhong(string maphong, bool isday)
+		public decimal layGiaTienTheoMaPhong(string maPhong, bool isDay)
 		{
 			var connectionString = Properties.Resources.MySqlConnection;
 
-			using (var conn = new MySqlConnection(connectionString))
+			try
 			{
-				var query = "SELECT LoaiPhong.GiaNgay, LoaiPhong.GiaGio FROM Phong p " +
-				            "INNER JOIN LoaiPhong ON p.MaLoaiPhong = LoaiPhong.MaLoaiPhong " +
-				            "WHERE p.SoPhong = @MaPhong";
-				var cmd = new MySqlCommand(query, conn);
-				cmd.Parameters.AddWithValue("@MaPhong", maphong);
-
-				conn.Open();
-				using (var reader = cmd.ExecuteReader())
+				using (var conn = new MySqlConnection(connectionString))
 				{
-					if (reader.Read())
+					var query = @"
+                SELECT lp.GiaNgay, lp.GiaGio 
+                FROM Phong p 
+                INNER JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong 
+                WHERE p.SoPhong = @MaPhong AND p.IsDeleted = 0 AND lp.IsDeleted = 0";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaPhong", maPhong);
+
+					conn.Open();
+					using (var reader = cmd.ExecuteReader())
 					{
-						if (isday)
-							return reader.GetDecimal(reader.GetOrdinal("GiaNgay"));
-						return reader.GetDecimal(reader.GetOrdinal("GiaGio"));
+						if (reader.Read())
+						{
+							return isDay ? reader.GetDecimal("GiaNgay") : reader.GetDecimal("GiaGio");
+						}
 					}
+
+					throw new Exception($"Không tìm thấy phòng có số phòng: {maPhong} hoặc phòng/loại phòng đã bị xóa.");
 				}
 			}
-
-			return 0; // Default giá tiền
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Lỗi khi lấy giá phòng: {ex.Message}");
+				return 0; // Giá trị mặc định
+			}
 		}
 
 		// Lấy danh sách phòng trống
@@ -235,18 +242,25 @@ namespace DAL.Data
 
 			try
 			{
+				if (!ngayBD.HasValue || !ngayKT.HasValue || ngayBD > ngayKT)
+				{
+					throw new ArgumentException("Ngày bắt đầu và ngày kết thúc không hợp lệ.");
+				}
+
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = @"
-                        SELECT p.SoPhong, lp.TenLoaiPhong
-                        FROM Phong p
-                        JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
-                        WHERE p.IsDeleted = 0 AND p.DonDep NOT IN ('Sửa chữa', 'Chưa dọn dẹp')
-                        AND p.SoPhong NOT IN (
-                            SELECT ct.SoPhong
-                            FROM CT_PhieuThue ct
-                            WHERE ((ct.NgayBD <= @NgayKT AND ct.NgayKT >= @NgayBD)) AND ct.TinhTrangThue != 'Đã thanh toán'
-                        )";
+                SELECT p.SoPhong, lp.TenLoaiPhong
+                FROM Phong p
+                INNER JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
+                WHERE p.IsDeleted = 0 AND lp.IsDeleted = 0 
+                    AND p.DonDep NOT IN ('Sửa chữa', 'Chưa dọn dẹp')
+                    AND p.SoPhong NOT IN (
+                        SELECT ct.SoPhong
+                        FROM CT_PhieuThue ct
+                        WHERE ct.NgayBD <= @NgayKT AND ct.NgayKT >= @NgayBD 
+                            AND ct.TinhTrangThue != 'Đã thanh toán'
+                    )";
 
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@NgayBD", ngayBD);
@@ -256,17 +270,19 @@ namespace DAL.Data
 					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
+						{
 							lsPTrong.Add(new PhongTrong
 							{
-								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
-								TenLoaiPhong = reader.GetString(reader.GetOrdinal("TenLoaiPhong"))
+								SoPhong = reader.GetString("SoPhong"),
+								TenLoaiPhong = reader.GetString("TenLoaiPhong")
 							});
+						}
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				Console.WriteLine($"Lỗi khi lấy danh sách phòng trống: {ex.Message}\nStackTrace: {ex.StackTrace}");
 			}
 
 			return lsPTrong;
@@ -278,24 +294,61 @@ namespace DAL.Data
 			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
+				if (string.IsNullOrEmpty(phong.SoPhong) || phong.DonDep?.Length > 80)
+				{
+					throw new ArgumentException("Số phòng hoặc trạng thái dọn dẹp không hợp lệ.");
+				}
+
+				// Kiểm tra MaLoaiPhong tồn tại
+				if (!KiemTraMaLoaiPhongTonTai(phong.MaLoaiPhong))
+				{
+					throw new ArgumentException($"Loại phòng với MaLoaiPhong {phong.MaLoaiPhong} không tồn tại hoặc đã bị xóa.");
+				}
+
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query =
-						"INSERT INTO Phong (SoPhong, MaLoaiPhong, DonDep, IsDeleted) VALUES (@SoPhong, @MaLoaiPhong, @DonDep, 0)";
-
+					var query = @"
+                INSERT INTO Phong (SoPhong, MaLoaiPhong, DonDep, IsSelected, IsDeleted) 
+                VALUES (@SoPhong, @MaLoaiPhong, @DonDep, 0, 0)";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
 					cmd.Parameters.AddWithValue("@MaLoaiPhong", phong.MaLoaiPhong);
-					cmd.Parameters.AddWithValue("@DonDep", phong.DonDep);
+					cmd.Parameters.AddWithValue("@DonDep", phong.DonDep ?? "Đã dọn dẹp");
 					conn.Open();
 					cmd.ExecuteNonQuery();
+					return true;
 				}
-
-				return true;
+			}
+			catch (MySqlException ex) when (ex.Number == 1062) // Duplicate key
+			{
+				Console.WriteLine($"Lỗi: Số phòng '{phong.SoPhong}' đã tồn tại.");
+				return false;
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log error if needed
+				Console.WriteLine($"Lỗi khi thêm phòng: {ex.Message}\nStackTrace: {ex.StackTrace}");
+				return false;
+			}
+		}
+
+		// Thêm phương thức kiểm tra MaLoaiPhong
+		private bool KiemTraMaLoaiPhongTonTai(int maLoaiPhong)
+		{
+			var connectionString = Properties.Resources.MySqlConnection;
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = "SELECT COUNT(*) FROM LoaiPhong WHERE MaLoaiPhong = @MaLoaiPhong AND IsDeleted = 0";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaLoaiPhong", maLoaiPhong);
+					conn.Open();
+					return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Lỗi khi kiểm tra MaLoaiPhong: {ex.Message}");
 				return false;
 			}
 		}
@@ -306,13 +359,25 @@ namespace DAL.Data
 			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
+				if (string.IsNullOrEmpty(phong.SoPhong) || phong.DonDep?.Length > 80)
+				{
+					throw new ArgumentException("Số phòng hoặc trạng thái dọn dẹp không hợp lệ.");
+				}
+
+				if (!KiemTraMaLoaiPhongTonTai(phong.MaLoaiPhong))
+				{
+					throw new ArgumentException($"Loại phòng với MaLoaiPhong {phong.MaLoaiPhong} không tồn tại hoặc đã bị xóa.");
+				}
+
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query =
-						"UPDATE Phong SET MaLoaiPhong = @MaLoaiPhong, DonDep = @DonDep WHERE SoPhong = @SoPhong";
+					var query = @"
+                UPDATE Phong 
+                SET MaLoaiPhong = @MaLoaiPhong, DonDep = @DonDep 
+                WHERE SoPhong = @SoPhong AND IsDeleted = 0";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaLoaiPhong", phong.MaLoaiPhong);
-					cmd.Parameters.AddWithValue("@DonDep", phong.DonDep);
+					cmd.Parameters.AddWithValue("@DonDep", phong.DonDep ?? "Đã dọn dẹp");
 					cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
 					conn.Open();
 					var rowsAffected = cmd.ExecuteNonQuery();
@@ -322,7 +387,7 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log error if needed
+				Console.WriteLine($"Lỗi khi cập nhật phòng: {ex.Message}\nStackTrace: {ex.StackTrace}");
 				return false;
 			}
 		}
@@ -333,20 +398,24 @@ namespace DAL.Data
 			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
+				if (string.IsNullOrEmpty(phong.SoPhong))
+				{
+					throw new ArgumentException("Số phòng không hợp lệ.");
+				}
+
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = "UPDATE Phong SET IsDeleted = 1 WHERE SoPhong = @SoPhong";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@SoPhong", phong.SoPhong);
 					conn.Open();
-					cmd.ExecuteNonQuery();
+					var rowsAffected = cmd.ExecuteNonQuery();
+					return rowsAffected > 0;
 				}
-
-				return true;
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log error if needed
+				Console.WriteLine($"Lỗi khi xóa phòng: {ex.Message}\nStackTrace: {ex.StackTrace}");
 				return false;
 			}
 		}
@@ -362,32 +431,30 @@ namespace DAL.Data
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = @"
-                                    SELECT 
-                                        p.SoPhong, 
-                                        p.MaLoaiPhong, 
-                                        p.DonDep, 
-                                        lp.TenLoaiPhong AS LoaiPhong 
-                                    FROM Phong p
-                                    INNER JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
-                                    WHERE p.IsDeleted = 0";
+                SELECT p.SoPhong, p.MaLoaiPhong, p.DonDep, lp.TenLoaiPhong AS LoaiPhong 
+                FROM Phong p
+                INNER JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
+                WHERE p.IsDeleted = 0 AND lp.IsDeleted = 0";
 					var cmd = new MySqlCommand(query, conn);
 					conn.Open();
 					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
+						{
 							lstPhong.Add(new Phong
 							{
-								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
-								MaLoaiPhong = reader.GetInt32(reader.GetOrdinal("MaLoaiPhong")),
-								DonDep = reader.GetString(reader.GetOrdinal("DonDep")),
-								LoaiPhong = reader.GetString(reader.GetOrdinal("LoaiPhong")) // Lấy tên loại phòng
+								SoPhong = reader.GetString("SoPhong"),
+								MaLoaiPhong = reader.GetInt32("MaLoaiPhong"),
+								DonDep = reader.GetString("DonDep"),
+								LoaiPhong = reader.GetString("LoaiPhong")
 							});
+						}
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("Lỗi khi lấy danh sách phòng: " + ex.Message); // Log lỗi nếu cần
+				Console.WriteLine($"Lỗi khi lấy danh sách phòng: {ex.Message}\nStackTrace: {ex.StackTrace}");
 			}
 
 			return lstPhong;
@@ -398,36 +465,39 @@ namespace DAL.Data
 			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
+				if (string.IsNullOrEmpty(soPhong))
+				{
+					throw new ArgumentException("Số phòng không hợp lệ.");
+				}
+
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = @"
-                                    SELECT 
-                                        p.SoPhong, 
-                                        p.MaLoaiPhong, 
-                                        p.DonDep, 
-                                        lp.TenLoaiPhong AS LoaiPhong 
-                                    FROM Phong p
-                                    INNER JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
-                                    WHERE p.IsDeleted = 0 AND p.SoPhong = @SoPhong";
+                SELECT p.SoPhong, p.MaLoaiPhong, p.DonDep, lp.TenLoaiPhong AS LoaiPhong 
+                FROM Phong p
+                INNER JOIN LoaiPhong lp ON p.MaLoaiPhong = lp.MaLoaiPhong
+                WHERE p.IsDeleted = 0 AND lp.IsDeleted = 0 AND p.SoPhong = @SoPhong";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@SoPhong", soPhong);
 					conn.Open();
 					using (var reader = cmd.ExecuteReader())
 					{
 						if (reader.Read())
+						{
 							return new Phong
 							{
-								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
-								MaLoaiPhong = reader.GetInt32(reader.GetOrdinal("MaLoaiPhong")),
-								DonDep = reader.GetString(reader.GetOrdinal("DonDep")),
-								LoaiPhong = reader.GetString(reader.GetOrdinal("LoaiPhong")) // Lấy tên loại phòng
+								SoPhong = reader.GetString("SoPhong"),
+								MaLoaiPhong = reader.GetInt32("MaLoaiPhong"),
+								DonDep = reader.GetString("DonDep"),
+								LoaiPhong = reader.GetString("LoaiPhong")
 							};
+						}
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("Lỗi khi lấy danh sách phòng: " + ex.Message); // Log lỗi nếu cần
+				Console.WriteLine($"Lỗi khi lấy thông tin phòng: {ex.Message}\nStackTrace: {ex.StackTrace}");
 			}
 
 			return null;
@@ -440,6 +510,11 @@ namespace DAL.Data
 
 			try
 			{
+				if (string.IsNullOrEmpty(soPhong))
+				{
+					throw new ArgumentException("Số phòng không hợp lệ.");
+				}
+
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = "UPDATE Phong SET IsDeleted = 0 WHERE SoPhong = @SoPhong";
@@ -455,13 +530,13 @@ namespace DAL.Data
 						return true;
 					}
 
-					Console.WriteLine($"Không tìm thấy loại phòng với tên: {soPhong}");
+					Console.WriteLine($"Không tìm thấy phòng với số: {soPhong}");
 					return false;
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				Console.WriteLine($"Lỗi khi khôi phục phòng: {ex.Message}\nStackTrace: {ex.StackTrace}");
 				return false;
 			}
 		}

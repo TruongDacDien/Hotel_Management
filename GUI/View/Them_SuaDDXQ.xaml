@@ -80,7 +80,7 @@
             <!-- Nút -->
             <Grid Grid.Row="2">
                 <Button Content="Lưu" Width="100" Height="36" Background="#478C10"
-                        HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 120 0"
+                        HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 150 0"
                         Click="click_Luu">
                     <Button.Clip>
                         <RectangleGeometry Rect="0,0,100,36" RadiusX="10" RadiusY="10"/>

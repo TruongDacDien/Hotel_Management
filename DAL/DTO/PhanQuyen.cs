@@ -28,13 +28,11 @@
 
 		public bool QLNhanVien { get; set; }
 			 
-		public bool QLTaiKhoan { get; set; }
+		public bool QLTaiKhoanNV { get; set; }
+
+		public bool QLTaiKhoanKH { get; set; }
 
 		public bool ThongKe { get; set; }
-
-		public bool ThongBao { get; set; }
-
-		public bool LichSuHoatDong { get; set; }
 
         public bool QLDatDV { get; set; }
 

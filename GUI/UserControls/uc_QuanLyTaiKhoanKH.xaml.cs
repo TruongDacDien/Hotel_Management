@@ -1,23 +1,33 @@
-﻿using System;
+﻿using BUS;
+using DAL.DTO;
+using GUI.View;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using BUS;
-using DAL.DTO;
-using GUI.View;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace GUI.UserControls
 {
 	/// <summary>
-	///     Interaction logic for uc_QuanLyTaiKhoan.xaml
+	/// Interaction logic for uc_QuanLyTaiKhoanKH.xaml
 	/// </summary>
-	public partial class uc_QuanLyTaiKhoan : UserControl
+	public partial class uc_QuanLyTaiKhoanKH : UserControl
 	{
-		private ObservableCollection<TaiKhoanNV> list;
+		private ObservableCollection<TaiKhoanKH> list;
 		private CollectionView view;
 
-		public uc_QuanLyTaiKhoan()
+		public uc_QuanLyTaiKhoanKH()
 		{
 			InitializeComponent();
 			TaiDanhSach();
@@ -25,7 +35,7 @@ namespace GUI.UserControls
 
 		private void TaiDanhSach()
 		{
-			list = new ObservableCollection<TaiKhoanNV>(TaiKhoanBUS.GetInstance().getDataTaiKhoan());
+			list = new ObservableCollection<TaiKhoanKH>(TaiKhoanKHBUS.GetInstance().getDataTaiKhoan());
 			lsvTaiKhoan.ItemsSource = list;
 			view = (CollectionView)CollectionViewSource.GetDefaultView(list);
 			view.Filter = TaiKhoanFilter;
@@ -35,32 +45,34 @@ namespace GUI.UserControls
 		{
 			if (string.IsNullOrEmpty(txtFilter.Text))
 				return true;
-			return (obj as TaiKhoanNV).Username.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
+			return (obj as TaiKhoanKH).Username.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
 		}
 
-		private void nhanData(TaiKhoanNV taiKhoan)
+		private bool nhanData(TaiKhoanKH taiKhoan)
 		{
-			if (!TaiKhoanBUS.GetInstance().kiemTraTrungUsername(taiKhoan.Username))
+			if (!TaiKhoanKHBUS.GetInstance().kiemTraTrungUsername(taiKhoan.Username))
 			{
-				if (TaiKhoanBUS.GetInstance().themTaiKhoan(taiKhoan))
+				if (TaiKhoanKHBUS.GetInstance().themTaiKhoan(taiKhoan))
 				{
 					new DialogCustoms("Thêm tài khoản thành công", "Thông báo", DialogCustoms.OK).Show();
 					TaiDanhSach();
+					return true;
 				}
 			}
 			else
 			{
-				if (TaiKhoanBUS.GetInstance().hienThiLaiTaiKhoan(taiKhoan.Username))
+				if (TaiKhoanKHBUS.GetInstance().hienThiLaiTaiKhoan(taiKhoan.Username))
 				{
 					new DialogCustoms("Tên tài khoản đã tồn tại trong hệ thống", "Thông báo", DialogCustoms.OK).Show();
 					TaiDanhSach();
 				}
 			}
+			return false;
 		}
 
-		private void capNhatData(TaiKhoanNV taiKhoan)
+		private void capNhatData(TaiKhoanKH taiKhoan)
 		{
-			if (TaiKhoanBUS.GetInstance().capNhatTaiKhoan(taiKhoan))
+			if (TaiKhoanKHBUS.GetInstance().capNhatTaiKhoan(taiKhoan))
 			{
 				new DialogCustoms("Cập nhật tài khoản thành công", "Thông báo", DialogCustoms.OK).Show();
 				TaiDanhSach();
@@ -74,7 +86,7 @@ namespace GUI.UserControls
 
 		private void btnXoa_Click(object sender, RoutedEventArgs e)
 		{
-			var taiKhoan = (sender as Button).DataContext as TaiKhoanNV;
+			var taiKhoan = (sender as Button).DataContext as TaiKhoanKH;
 
 			var thongbao = new DialogCustoms("Bạn có thật sự muốn xóa " + taiKhoan.Username, "Thông báo",
 				DialogCustoms.YesNo);
@@ -82,22 +94,22 @@ namespace GUI.UserControls
 			if (thongbao.ShowDialog() == true)
 			{
 				new DialogCustoms("Xoá thành công", "Thông báo", DialogCustoms.OK).Show();
-				TaiKhoanBUS.GetInstance().xoaTaiKhoan(taiKhoan);
+				TaiKhoanKHBUS.GetInstance().xoaTaiKhoan(taiKhoan);
 				TaiDanhSach();
 			}
 		}
 
 		private void btnThem_Click(object sender, RoutedEventArgs e)
 		{
-			var ThemTaiKhoan = new Them_SuaTaiKhoan();
+			var ThemTaiKhoan = new Them_SuaTaiKhoanKH();
 			ThemTaiKhoan.truyenTaiKhoan = nhanData;
 			ThemTaiKhoan.ShowDialog();
 		}
 
 		private void btnCapNhat_Click(object sender, RoutedEventArgs e)
 		{
-			var taiKhoan = (sender as Button).DataContext as TaiKhoanNV;
-			var CapNhatTaiKhoan = new Them_SuaTaiKhoan(true, taiKhoan);
+			var taiKhoan = (sender as Button).DataContext as TaiKhoanKH;
+			var CapNhatTaiKhoan = new Them_SuaTaiKhoanKH(true, taiKhoan);
 			CapNhatTaiKhoan.suaTaiKhoan = capNhatData;
 			CapNhatTaiKhoan.ShowDialog();
 		}

@@ -4,26 +4,26 @@ using DAL.DTO;
 
 namespace BUS
 {
-	public class TaiKhoanBUS
+	public class TaiKhoanNVBUS
 	{
-		private static TaiKhoanBUS Instance;
+		private static TaiKhoanNVBUS Instance;
 
 		private readonly CloudinaryService _cloudinaryService = new CloudinaryService();
 
-		private TaiKhoanBUS()
+		private TaiKhoanNVBUS()
 		{
 		}
 
-		public static TaiKhoanBUS GetInstance()
+		public static TaiKhoanNVBUS GetInstance()
 		{
-			if (Instance == null) Instance = new TaiKhoanBUS();
+			if (Instance == null) Instance = new TaiKhoanNVBUS();
 			return Instance;
 		}
 
 		public TaiKhoanNV kiemTraTKTonTaiKhong(string username, string pass)
 		{
 			// Lấy tài khoản từ cơ sở dữ liệu theo username
-			TaiKhoanNV taiKhoan = TaiKhoanDAL.GetInstance().layTaiKhoanTheoUsername(username);
+			TaiKhoanNV taiKhoan = TaiKhoanNVDAL.GetInstance().layTaiKhoanTheoUsername(username);
 
 			if (taiKhoan == null)
 				// Không tồn tại tài khoản
@@ -36,7 +36,7 @@ namespace BUS
 
 		public async Task<string> UploadAvatarAsync(string filePath, string publicId, string oldAvatarId)
 		{
-			if(publicId != oldAvatarId && publicId != "hotel_management/user_default_m4o3wc")
+			if(publicId != oldAvatarId && publicId != "hotel_management/user_default")
 			{
 				// Xoá ảnh cũ nếu có up ảnh mới
 				await _cloudinaryService.DeleteImageAsync(publicId);
@@ -47,54 +47,69 @@ namespace BUS
 			return url;
 		}
 
-		public bool capNhatAvatar(string username, string avatarId, string avatarURL, out string error)
+		public bool capNhatAvatar(int maTKNV, string avatarId, string avatarURL)
 		{
-			return TaiKhoanDAL.GetInstance().capNhatAvatar(username, avatarId, avatarURL, out error);
+			return TaiKhoanNVDAL.GetInstance().capNhatAvatar(maTKNV, avatarId, avatarURL);
 		}
 
 		public List<TaiKhoanNV> getDataTaiKhoan()
 		{
-			return TaiKhoanDAL.GetInstance().getDataTaiKhoan();
+			return TaiKhoanNVDAL.GetInstance().getDataTaiKhoan();
 		}
 
 		public TaiKhoanNV layTaiKhoanTheoUsername(string username)
 		{
-			return TaiKhoanDAL.GetInstance().layTaiKhoanTheoUsername(username);
+			return TaiKhoanNVDAL.GetInstance().layTaiKhoanTheoUsername(username);
 		}
 
 		public bool kiemTraTrungUsername(string username)
 		{
-			return TaiKhoanDAL.GetInstance().kiemTraTrungUsername(username);
+			return TaiKhoanNVDAL.GetInstance().kiemTraTrungUsername(username);
 		}
 
 		public bool kiemTraTrungEmail(string email)
 		{
-			return TaiKhoanDAL.GetInstance().kiemTraTrungEmail(email);
+			return TaiKhoanNVDAL.GetInstance().kiemTraTrungEmail(email);
 		}
 
 		public bool xoaTaiKhoan(TaiKhoanNV taiKhoan)
 		{
-			return TaiKhoanDAL.GetInstance().xoaTaiKhoan(taiKhoan);
+			return TaiKhoanNVDAL.GetInstance().xoaTaiKhoan(taiKhoan);
 		}
 
 		public bool themTaiKhoan(TaiKhoanNV taiKhoan)
 		{
-			return TaiKhoanDAL.GetInstance().themTaiKhoan(taiKhoan);
+			return TaiKhoanNVDAL.GetInstance().themTaiKhoan(taiKhoan);
 		}
 
 		public bool capNhatTaiKhoan(TaiKhoanNV taiKhoan)
 		{
-			return TaiKhoanDAL.GetInstance().capNhatTaiKhoan(taiKhoan);
+			return TaiKhoanNVDAL.GetInstance().capNhatTaiKhoan(taiKhoan);
 		}
 
 		public bool hienThiLaiTaiKhoan(string username)
 		{
-			return TaiKhoanDAL.GetInstance().hienThiLaiTaiKhoan(username);
+			return TaiKhoanNVDAL.GetInstance().hienThiLaiTaiKhoan(username);
 		}
 
 		public PhanQuyen layPhanQuyenTaiKhoan(int maTKNV)
 		{
-			return TaiKhoanDAL.GetInstance().layPhanQuyenTaiKhoan(maTKNV);
+			return TaiKhoanNVDAL.GetInstance().layPhanQuyenTaiKhoan(maTKNV);
+		}
+
+		public bool capNhatPhanQuyenTaiKhoan(PhanQuyen pq)
+		{
+			return TaiKhoanNVDAL.GetInstance().capNhatPhanQuyenTaiKhoan(pq);
+		}
+
+		public bool themPhanQuyenTaiKhoan(PhanQuyen pq)
+		{
+			return TaiKhoanNVDAL.GetInstance().themPhanQuyenTaiKhoan(pq);
+		}
+
+		public bool xoaPhanQuyenTaiKhoan(PhanQuyen pq)
+		{
+			return TaiKhoanNVDAL.GetInstance().xoaPhanQuyenTaiKhoan(pq);
 		}
 	}
 }

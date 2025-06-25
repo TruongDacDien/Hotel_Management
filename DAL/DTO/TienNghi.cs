@@ -1,17 +1,52 @@
-﻿namespace DAL.DTO
+﻿using System.ComponentModel;
+
+namespace DAL.DTO
 {
-	public class TienNghi
+	public class TienNghi : INotifyPropertyChanged
 	{
-		public int MaTN { get; set; }
+		private int _soLuong;
+		private string _tenTN;
+		private int _maTN;
 
-		public string TenTN { get; set; }
+		public int MaTN
+		{
+			get => _maTN;
+			set
+			{
+				_maTN = value;
+				OnPropertyChanged("MaTN");
+			}
+		}
 
-		public string ImageId { get; set; }
+		public string TenTN
+		{
+			get => _tenTN;
+			set
+			{
+				_tenTN = value;
+				OnPropertyChanged("TenTN");
+			}
+		}
 
-		public string ImageURL { get; set; }
+		public int SoLuong
+		{
+			get => _soLuong;
+			set
+			{
+				_soLuong = value;
+				OnPropertyChanged("SoLuong");
+			}
+		}
 
-		public int SoLuong { get; set; }
+		public int SoLuongBanDau { get; set; }
 
 		public bool IsDeleted { get; set; }
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected virtual void OnPropertyChanged(string newName)
+		{
+			if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(newName));
+		}
 	}
 }

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using DAL.DTO;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
-using DAL.DTO;
-using MySql.Data.MySqlClient;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DAL.Data
 {
@@ -40,8 +41,6 @@ namespace DAL.Data
 						{
 							MaTN = reader.GetInt32(reader.GetOrdinal("MaTN")),
 							TenTN = reader.GetString(reader.GetOrdinal("TenTN")),
-							ImageId = reader["ImageId"].ToString(),
-							ImageURL = reader["ImageURL"].ToString(),
 							SoLuong = reader.GetInt32(reader.GetOrdinal("SoLuong")),
 						};
 						tienNghiList.Add(tn);
@@ -60,12 +59,10 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"INSERT INTO TienNghi (TenTN, ImageId, ImageURL, SoLuong,IsDeleted)
+					var query = @"INSERT INTO TienNghi (TenTN, SoLuong,IsDeleted)
                           VALUES (@TenTN, @ImageId, @ImageURL, @SoLuong,0)";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenTN", tn.TenTN);
-					cmd.Parameters.AddWithValue("@ImageId", tn.ImageId);
-					cmd.Parameters.AddWithValue("@ImageURL", tn.ImageURL);
 					cmd.Parameters.AddWithValue("@SoLuong", tn.SoLuong);
 
 					conn.Open();
@@ -111,12 +108,10 @@ namespace DAL.Data
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = @"UPDATE TienNghi 
-                          SET TenTN = @TenTN, ImageId = @ImageId, ImageURL = @ImageURL, SoLuong = @SoLuong 
+                          SET TenTN = @TenTN, SoLuong = @SoLuong 
                           WHERE MaTN = @MaTN";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenTN", tn.TenTN);
-					cmd.Parameters.AddWithValue("@ImageId", tn.ImageId);
-					cmd.Parameters.AddWithValue("@ImageURL", tn.ImageURL);
 					cmd.Parameters.AddWithValue("@SoLuong", tn.SoLuong);
 					cmd.Parameters.AddWithValue("@MaTN", tn.MaTN);
 
@@ -184,6 +179,33 @@ namespace DAL.Data
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.Message); // Log lỗi nếu cần
+				return false;
+			}
+		}
+
+		public bool capNhatSoLuongTienNghi(int maTN, int soLuongThayDoi)
+		{
+			var connectionString = Properties.Resources.MySqlConnection;
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = "UPDATE TienNghi SET SoLuong = SoLuong + @SoLuongThayDoi WHERE MaTN = @MaTN";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@SoLuongThayDoi", soLuongThayDoi);
+					cmd.Parameters.AddWithValue("@MaTN", maTN);
+					conn.Open();
+					var rowsAffected = cmd.ExecuteNonQuery();
+					if (rowsAffected > 0)
+					{
+						return true;
+					}
+					return false;
+				}
+			}
+			catch (Exception ex)
+			{
+				throw new Exception($"Lỗi khi cập nhật số lượng tiện nghi: {ex.Message}");
 				return false;
 			}
 		}

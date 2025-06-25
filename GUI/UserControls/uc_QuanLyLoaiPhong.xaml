@@ -88,7 +88,12 @@
                             <GridViewColumn Header="Ảnh" Width="170">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Image Source="{Binding ImageURL}" Width="150" Height="100" Stretch="UniformToFill" />
+                                        <Grid Width="150" Height="100" ClipToBounds="True">
+                                            <Image Source="{Binding ImageURL}"
+                                               Stretch="UniformToFill"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"/>
+                                        </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>

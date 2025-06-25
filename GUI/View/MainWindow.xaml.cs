@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using BUS;
 using DAL.DTO;
+using DAL.Data;
 using GUI.UserControls;
 using Microsoft.Win32;
 
@@ -31,7 +32,7 @@ namespace GUI.View
 		{
 			taiKhoan = tk;
 			MaNV = tk.MaNV;
-			phanQuyen = TaiKhoanBUS.GetInstance().layPhanQuyenTaiKhoan(tk.MaTKNV);
+			phanQuyen = TaiKhoanNVBUS.GetInstance().layPhanQuyenTaiKhoan(tk.MaTKNV);
 			MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
 			MaxWidth = SystemParameters.MaximizedPrimaryScreenWidth;
 		}
@@ -41,15 +42,17 @@ namespace GUI.View
 		private uc_Home Home;
 		private uc_Phong Phong_UC;
 		private uc_PhieuThue ThuePhong_UC;
+		//private uc_QuanLyDatDV QuanLyDatDV_UC;
 		private uc_NhanVien NhanVien_UC;
 		private uc_QuanLyPhong QuanLyPhong_UC;
 		private uc_QuanLyKhachHang QuanLyKhachHang_UC;
+		private uc_QuanLyTaiKhoanKH QuanLyTaiKhoanKH_UC;
 		private uc_QuanLyLoaiPhong QuanLyLoaiPhong_UC;
 		private uc_QuanLyDichVu QuanLyDichVu_UC;
 		private uc_QuanLyTienNghi QuanLyTienNghi_UC;
 		//private uc_QuanLyChiTietTienNghi QuanLyChiTietTienNghi_UC;
 		private uc_QuanLyLoaiDichVu QuanLyLoaiDichVu_UC;
-		private uc_QuanLyTaiKhoan QuanLyTaiKhoan_UC;
+		private uc_QuanLyTaiKhoanNV QuanLyTaiKhoanNV_UC;
 		private uc_HoaDon HoaDon_UC;
 		private uc_ThongKe ThongKe_UC;
 		private uc_DDXQ DDXQ_UC;
@@ -126,11 +129,17 @@ namespace GUI.View
 			if (phanQuyen.DatPhong)
 				listMenu.Add(new ItemMenuMainWindow { name = "Đặt Phòng", foreColor = "Green", kind_Icon = "BookAccount" });
 
+			//if (phanQuyen.QLDatDV)
+			//	listMenu.Add(new ItemMenuMainWindow { name = "Đặt dịch vụ", foreColor = "Green", kind_Icon = "BookAccount" });
+
 			if (phanQuyen.HoaDon)
 				listMenu.Add(new ItemMenuMainWindow { name = "Hóa đơn", foreColor = "#FFD41515", kind_Icon = "Receipt" });
 
 			if (phanQuyen.QLKhachHang)
 				listMenu.Add(new ItemMenuMainWindow { name = "QL khách hàng", foreColor = "#FFD41515", kind_Icon = "AccountGroup" });
+
+			if (phanQuyen.QLTaiKhoanKH)
+				listMenu.Add(new ItemMenuMainWindow { name = "QL tài khoản khách hàng", foreColor = "Blue", kind_Icon = "AccountCog" });
 
 			if (phanQuyen.QLPhong)
 				listMenu.Add(new ItemMenuMainWindow { name = "QL phòng", foreColor = "#FFE6A701", kind_Icon = "StarCircle" });
@@ -147,26 +156,17 @@ namespace GUI.View
 			if (phanQuyen.QLTienNghi)
 				listMenu.Add(new ItemMenuMainWindow { name = "QL tiện nghi", foreColor = "#FFF08033", kind_Icon = "Fridge" });
 
-			// Nếu có thêm QLChiTietTienNghi, bạn thêm ở đây
-
 			if (phanQuyen.QLNhanVien)
-				listMenu.Add(new ItemMenuMainWindow { name = "QL nhân Viên", foreColor = "#FFD41515", kind_Icon = "AccountHardHat" });
+				listMenu.Add(new ItemMenuMainWindow { name = "QL nhân viên", foreColor = "#FFD41515", kind_Icon = "AccountHardHat" });
 
-			if (phanQuyen.QLTaiKhoan)
-				listMenu.Add(new ItemMenuMainWindow { name = "QL tài khoản", foreColor = "Blue", kind_Icon = "AccountCog" });
+			if (phanQuyen.QLTaiKhoanNV)
+				listMenu.Add(new ItemMenuMainWindow { name = "QL tài khoản nhân viên", foreColor = "Blue", kind_Icon = "AccountCog" });
 
 			if (phanQuyen.ThongKe)
 				listMenu.Add(new ItemMenuMainWindow { name = "Thống kê", foreColor = "#FF0069C1", kind_Icon = "ChartAreaspline" });
 
             if (phanQuyen.QLDDXQ)
                 listMenu.Add(new ItemMenuMainWindow { name = "QL DĐXQ", foreColor = "#FF0069C1", kind_Icon = "MapMarker" });
-
-            // Tùy chọn thêm nếu bạn có các chức năng thông báo và lịch sử hoạt động
-            if (phanQuyen.ThongBao)
-				listMenu.Add(new ItemMenuMainWindow { name = "Thông báo", foreColor = "Orange", kind_Icon = "Bell" });
-
-			if (phanQuyen.LichSuHoatDong)
-				listMenu.Add(new ItemMenuMainWindow { name = "Lịch sử hoạt động", foreColor = "Gray", kind_Icon = "History" });
 
 			lisviewMenu.ItemsSource = listMenu;
 			lisviewMenu.SelectedValuePath = "name";
@@ -214,73 +214,78 @@ namespace GUI.View
 		{
 			if (lisviewMenu.SelectedValue != null)
 			{
-				switch (lisviewMenu.SelectedIndex)
+				string selectedName = lisviewMenu.SelectedValue.ToString();
+
+				if (Title_Main.Equals(selectedName)) return;
+
+				switch (selectedName)
 				{
-					case 0:
-						//Đang là Home rồi thì không set nữa
-						if (Title_Main.Equals(lisviewMenu.SelectedValue.ToString())) break;
+					case "Trang Chủ":
 						contenDisplayMain.Content = Home;
 						break;
-					case 1:
+					case "Phòng":
 						Phong_UC = new uc_Phong(MaNV);
 						contenDisplayMain.Content = Phong_UC;
 						break;
-					case 2:
+					case "Đặt Phòng":
 						ThuePhong_UC = new uc_PhieuThue(MaNV);
 						contenDisplayMain.Content = ThuePhong_UC;
 						break;
-					case 3:
+					//case "Đặt dịch vụ":
+					//	QuanLyDatDV_UC = new uc_QuanLyDatDV();
+					//	contenDisplayMain.Content = QuanLyDatDV_UC;
+					//	break;
+					case "Hóa đơn":
 						HoaDon_UC = new uc_HoaDon();
 						contenDisplayMain.Content = HoaDon_UC;
 						break;
-					case 4:
+					case "QL khách hàng":
 						QuanLyKhachHang_UC = new uc_QuanLyKhachHang();
 						contenDisplayMain.Content = QuanLyKhachHang_UC;
 						break;
-					case 5:
+					case "QL tài khoản khách hàng":
+						QuanLyTaiKhoanKH_UC = new uc_QuanLyTaiKhoanKH();
+						contenDisplayMain.Content = QuanLyTaiKhoanKH_UC;
+						break;
+					case "QL phòng":
 						QuanLyPhong_UC = new uc_QuanLyPhong();
 						contenDisplayMain.Content = QuanLyPhong_UC;
 						break;
-					case 6:
+					case "QL loại phòng":
 						QuanLyLoaiPhong_UC = new uc_QuanLyLoaiPhong();
 						contenDisplayMain.Content = QuanLyLoaiPhong_UC;
 						break;
-					case 7:
+					case "QL dịch vụ":
 						QuanLyDichVu_UC = new uc_QuanLyDichVu();
 						contenDisplayMain.Content = QuanLyDichVu_UC;
 						break;
-					case 8:
+					case "QL loại dịch vụ":
 						QuanLyLoaiDichVu_UC = new uc_QuanLyLoaiDichVu();
 						contenDisplayMain.Content = QuanLyLoaiDichVu_UC;
 						break;
-					case 9:
+					case "QL tiện nghi":
 						QuanLyTienNghi_UC = new uc_QuanLyTienNghi();
 						contenDisplayMain.Content = QuanLyTienNghi_UC;
 						break;
-					//case 10:
-					//	QuanLyChiTietTienNghi_UC = new uc_QuanLyChiTietTienNghi();
-					//	contenDisplayMain.Content = QuanLyChiTietTienNghi_UC;
-					//	break;
-					case 10:
+					case "QL nhân viên":
 						NhanVien_UC = new uc_NhanVien();
 						contenDisplayMain.Content = NhanVien_UC;
 						break;
-					case 11:
-						QuanLyTaiKhoan_UC = new uc_QuanLyTaiKhoan();
-						contenDisplayMain.Content = QuanLyTaiKhoan_UC;
+					case "QL tài khoản nhân viên":
+						QuanLyTaiKhoanNV_UC = new uc_QuanLyTaiKhoanNV();
+						contenDisplayMain.Content = QuanLyTaiKhoanNV_UC;
 						break;
-					case 12:
+					case "Thống kê":
 						ThongKe_UC = new uc_ThongKe();
 						contenDisplayMain.Content = ThongKe_UC;
 						break;
-                    case 13:
-                        DDXQ_UC = new uc_DDXQ();
-                        contenDisplayMain.Content = DDXQ_UC;
-                        break;
-                }
+					case "QL DĐXQ":
+						DDXQ_UC = new uc_DDXQ();
+						contenDisplayMain.Content = DDXQ_UC;
+						break;
+				}
 
-				Title_Main = lisviewMenu.SelectedValue.ToString();
-				//Tự động hóa việc click Button toggleBtnMenu_Close
+				Title_Main = selectedName;
 				btnCloseLVMenu.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 			}
 		}

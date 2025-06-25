@@ -20,6 +20,8 @@
 
 		public bool Disabled { get; set; }
 
+		public bool IsDeleted { get; set; }
+
 		public string MaXacNhan { get; set; }
 
 		public DateTime ThoiGianHetHan {  get; set; }

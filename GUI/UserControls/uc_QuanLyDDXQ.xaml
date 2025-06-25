@@ -34,6 +34,13 @@
                         <RectangleGeometry Rect="0,0,150,38" RadiusX="10" RadiusY="10" />
                     </Button.Clip>
                 </Button>
+                <Button Width="150" Height="38" Content="Cập nhật dữ liệu" FontSize="15"
+FontFamily="Roboto" FontWeight="Bold" Background="#FF478C10"
+Margin="85 0 0 0" Click="click_CapNhatDDXQ">
+                    <Button.Clip>
+                        <RectangleGeometry Rect="0,0,150,38" RadiusX="10" RadiusY="10" />
+                    </Button.Clip>
+                </Button>
             </StackPanel>
 
             <Grid Grid.Column="0">
