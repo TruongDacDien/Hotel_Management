@@ -93,17 +93,14 @@ namespace GUI.UserControls
 
 		private void capNhatData(TienNghi tn)
 		{
-			if (!TienNghiBUS.GetInstance().KiemTraTenTienNghi(tn))
+			if (TienNghiBUS.GetInstance().capNhatTienNghi(tn))
 			{
-				if (TienNghiBUS.GetInstance().capNhatTienNghi(tn))
-				{
-					new DialogCustoms("Cập nhật thành công", "Thông báo", DialogCustoms.OK).ShowDialog();
-					TaiDanhSach();
-				}
+				new DialogCustoms("Cập nhật thành công", "Thông báo", DialogCustoms.OK).ShowDialog();
+				TaiDanhSach();
 			}
 			else
 			{
-				new DialogCustoms("Tên tiện nghi đã tồn tại", "Thông báo", DialogCustoms.OK).ShowDialog();
+				new DialogCustoms("Cập nhật tiện nghi không thành công", "Thông báo", DialogCustoms.OK).ShowDialog();
 			}
 		}
 
