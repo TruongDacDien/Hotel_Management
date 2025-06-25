@@ -42,6 +42,7 @@ namespace DAL.Data
 							MaTN = reader.GetInt32(reader.GetOrdinal("MaTN")),
 							TenTN = reader.GetString(reader.GetOrdinal("TenTN")),
 							SoLuong = reader.GetInt32(reader.GetOrdinal("SoLuong")),
+							IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
 						};
 						tienNghiList.Add(tn);
 					}
@@ -59,8 +60,8 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"INSERT INTO TienNghi (TenTN, SoLuong,IsDeleted)
-                          VALUES (@TenTN, @ImageId, @ImageURL, @SoLuong,0)";
+					var query = @"INSERT INTO TienNghi (TenTN, SoLuong, IsDeleted)
+                          VALUES (@TenTN, @SoLuong, 0)";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenTN", tn.TenTN);
 					cmd.Parameters.AddWithValue("@SoLuong", tn.SoLuong);
