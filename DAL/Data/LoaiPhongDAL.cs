@@ -1,8 +1,9 @@
-﻿using System;
+﻿using DAL.DTO;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
-using DAL.DTO;
-using MySql.Data.MySqlClient;
+using System.Transactions;
 
 namespace DAL.Data
 {
@@ -105,14 +106,20 @@ namespace DAL.Data
 		public bool addLoaiPhong(LoaiPhong loaiPhong)
 		{
 			var connectionString = Properties.Resources.MySqlConnection;
+			int maLoaiPhong = 0;
 
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
+					conn.Open(); // ✅ Mở kết nối trước
+
 					var query = @"
-				INSERT INTO LoaiPhong (TenLoaiPhong, MoTa, ChinhSach, ChinhSachHuy, SoNguoiToiDa, GiaNgay, GiaGio, ImageId, ImageURL, IsDeleted)
-				VALUES (@TenLoaiPhong, @MoTa, @ChinhSach, @ChinhSachHuy, @SoNguoiToiDa, @GiaNgay, @GiaGio, @ImageId, @ImageURL, 0)";
+				INSERT INTO LoaiPhong 
+					(TenLoaiPhong, MoTa, ChinhSach, ChinhSachHuy, SoNguoiToiDa, GiaNgay, GiaGio, ImageId, ImageURL, IsDeleted)
+				VALUES 
+					(@TenLoaiPhong, @MoTa, @ChinhSach, @ChinhSachHuy, @SoNguoiToiDa, @GiaNgay, @GiaGio, @ImageId, @ImageURL, 0);
+				SELECT LAST_INSERT_ID();";
 
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenLoaiPhong", loaiPhong.TenLoaiPhong);
@@ -122,21 +129,26 @@ namespace DAL.Data
 					cmd.Parameters.AddWithValue("@SoNguoiToiDa", loaiPhong.SoNguoiToiDa);
 					cmd.Parameters.AddWithValue("@GiaNgay", loaiPhong.GiaNgay);
 					cmd.Parameters.AddWithValue("@GiaGio", loaiPhong.GiaGio);
-					cmd.Parameters.AddWithValue("@ImageId", loaiPhong.ImageId);
-					cmd.Parameters.AddWithValue("@ImageURL", loaiPhong.ImageURL);
+					cmd.Parameters.AddWithValue("@ImageId", loaiPhong.ImageId ?? "hotel_management/image_default");
+					cmd.Parameters.AddWithValue("@ImageURL", loaiPhong.ImageURL ?? "https://res.cloudinary.com/dzaoyffio/image/upload/v1750100245/image_default.png");
 
-					conn.Open();
-					cmd.ExecuteNonQuery();
+					object result = cmd.ExecuteScalar();
+					if (result == null || result == DBNull.Value)
+						throw new Exception("Không thể lấy mã loại phòng.");
+
+					maLoaiPhong = Convert.ToInt32(result);
 				}
 
+				loaiPhong.MaLoaiPhong = maLoaiPhong;
 				return true;
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+				Console.WriteLine("Lỗi thêm loại phòng: " + ex.Message);
 				return false;
 			}
 		}
+
 
 		// Xóa loại phòng
 		public bool xoaLoaiPhong(LoaiPhong loaiPhong)
@@ -262,6 +274,23 @@ namespace DAL.Data
 			{
 				Console.WriteLine(ex.Message); // Log lỗi nếu cần
 				return false;
+			}
+		}
+
+		public void capNhatHinhAnhLoaiPhong(int maLoaiPhong, string imageId, string imageUrl)
+		{
+			var connectionString = Properties.Resources.MySqlConnection;
+			using (var conn = new MySqlConnection(connectionString))
+			{
+				conn.Open();
+				var query = @"UPDATE LoaiPhong 
+							SET ImageId = @ImageId, ImageURL = @ImageURL 
+							WHERE MaLoaiPhong = @MaLoaiPhong";
+				var cmd = new MySqlCommand(query, conn);
+				cmd.Parameters.AddWithValue("@ImageId", imageId);
+				cmd.Parameters.AddWithValue("@ImageURL", imageUrl);
+				cmd.Parameters.AddWithValue("@MaLoaiPhong", maLoaiPhong);
+				cmd.ExecuteNonQuery();
 			}
 		}
 	}

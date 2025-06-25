@@ -31,10 +31,9 @@ namespace DAL.Data
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = @"
-					SELECT CT.MaCTTN, CT.SoPhong, CT.SL, TN.TenTN, CT.MaTN, CT.IsDeleted
+					SELECT CT.MaCTTN, CT.MaLoaiPhong, CT.SL, TN.TenTN, CT.MaTN
 					FROM CT_TienNghi CT
-					JOIN TienNghi TN ON CT.MaTN = TN.MaTN
-					WHERE CT.IsDeleted = 0";
+					JOIN TienNghi TN ON CT.MaTN = TN.MaTN";
 					var cmd = new MySqlCommand(query, conn);
 					conn.Open();
 
@@ -46,10 +45,9 @@ namespace DAL.Data
 							{
 								MaCTTN = reader.GetInt32(reader.GetOrdinal("MaCTTN")),
 								MaTN = reader.GetInt32(reader.GetOrdinal("MaTN")),
-								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
+								MaLoaiPhong = reader.GetInt32(reader.GetOrdinal("MaLoaiPhong")),
 								SL = reader.GetInt32(reader.GetOrdinal("SL")),
 								TenTN = reader.GetString(reader.GetOrdinal("TenTN")),
-								IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
 							};
 							listCTTienNghi.Add(ctTienNghi);
 						}
@@ -73,13 +71,11 @@ namespace DAL.Data
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = @"
-					INSERT INTO CT_TienNghi (MaTN, SoPhong, SL, TenTN, IsDeleted)
-					SELECT @MaTN, @SoPhong, @SL, tn.TenTN, 0
-					FROM TienNghi tn
-					WHERE tn.MaTN = @MaTN";
+				INSERT INTO CT_TienNghi (MaTN, MaLoaiPhong, SL)
+				VALUES (@MaTN, @MaLoaiPhong, @SL)";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
-					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
+					cmd.Parameters.AddWithValue("@MaLoaiPhong", chiTietTN.MaLoaiPhong);
 					cmd.Parameters.AddWithValue("@SL", chiTietTN.SL);
 
 					conn.Open();
@@ -90,11 +86,10 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message); // Xử lý lỗi nếu cần
+				Console.WriteLine(ex.Message);
 				return false;
 			}
 		}
-
 
 		// Xóa chi tiết tiện nghi
 		public bool xoaCTTienNghi(CT_TienNghi chiTietTN)
@@ -104,7 +99,7 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = "UPDATE CT_TienNghi SET IsDeleted = 1 WHERE MaCTTN = @MaCTTN";
+					var query = "DELETE FROM CT_TienNghi WHERE MaCTTN = @MaCTTN";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaCTTN", chiTietTN.MaCTTN);
 
@@ -127,42 +122,28 @@ namespace DAL.Data
 			var connectionString = Properties.Resources.MySqlConnection;
 			try
 			{
-				Console.WriteLine(chiTietTN.MaCTTN + " " + chiTietTN.MaTN + " " + chiTietTN.SoPhong + " " +
-				                  chiTietTN.SL + " " + chiTietTN.TenTN);
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"
-					UPDATE CT_TienNghi
-					SET 
-						MaTN = @MaTN,
-						SoPhong = @SoPhong,
-						SL = @SL,
-						TenTN = @TenTN
-					WHERE MaCTTN = @MaCTTN";
+					var query = @"UPDATE CT_TienNghi
+									SET SL = @SL
+									WHERE MaTN = @MaTN AND MaLoaiPhong = @MaLoaiPhong";
 					var cmd = new MySqlCommand(query, conn);
-					cmd.Parameters.AddWithValue("@MaCTTN", chiTietTN.MaCTTN);
+					//cmd.Parameters.AddWithValue("@MaCTTN", chiTietTN.MaCTTN);
 					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
-					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
+					cmd.Parameters.AddWithValue("@MaLoaiPhong", chiTietTN.MaLoaiPhong);
 					cmd.Parameters.AddWithValue("@SL", chiTietTN.SL);
-					cmd.Parameters.AddWithValue("@TenTN", chiTietTN.TenTN);
 
 					conn.Open();
-
 					var rowsAffected = cmd.ExecuteNonQuery();
-
-					Console.WriteLine($"Rows affected: {rowsAffected}");
-
 					return rowsAffected > 0;
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Lỗi: {ex.Message}");
-				Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+				Console.WriteLine(ex.Message);
 				return false;
 			}
 		}
-
 
 		// Kiểm tra chi tiết tiện nghi có tồn tại hay không
 		public bool KiemTraTonTai(CT_TienNghi chiTietTN)
@@ -172,10 +153,10 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = "SELECT COUNT(1) FROM CT_TienNghi WHERE MaTN = @MaTN AND SoPhong = @SoPhong";
+					var query = "SELECT COUNT(1) FROM CT_TienNghi WHERE MaTN = @MaTN AND MaLoaiPhong = @MaLoaiPhong";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaTN", chiTietTN.MaTN);
-					cmd.Parameters.AddWithValue("@SoPhong", chiTietTN.SoPhong);
+					cmd.Parameters.AddWithValue("@MaLoaiPhong", chiTietTN.MaLoaiPhong);
 
 					conn.Open();
 					var count = Convert.ToInt32(cmd.ExecuteScalar());
@@ -191,7 +172,7 @@ namespace DAL.Data
 		}
 
 		// Hiển thị lại chi tiết tiện nghi đã xóa
-		public bool hienThiLaiCT_TienNghi(int maTN, string soPhong)
+		public bool hienThiLaiCT_TienNghi(int maTN, int maLoaiPhong)
 		{
 			var connectionString = Properties.Resources.MySqlConnection;
 
@@ -199,10 +180,10 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = "UPDATE CT_TienNghi SET IsDeleted = 0 WHERE MaTN = @MaTN AND SoPhong = @SoPhong";
+					var query = "UPDATE CT_TienNghi SET IsDeleted = 0 WHERE MaTN = @MaTN AND MaLoaiPhong = @MaLoaiPhong";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaTN", maTN);
-					cmd.Parameters.AddWithValue("@SoPhong", soPhong);
+					cmd.Parameters.AddWithValue("@MaLoaiPhong", maLoaiPhong);
 
 					conn.Open();
 					var rowsAffected = cmd.ExecuteNonQuery();
@@ -218,5 +199,49 @@ namespace DAL.Data
 				return false;
 			}
 		}
+
+		public List<CT_TienNghi> getCTTienNghiByLoaiPhong(int maLoaiPhong)
+		{
+			var list = new List<CT_TienNghi>();
+			var connectionString = Properties.Resources.MySqlConnection;
+
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = @"
+				SELECT CT.MaCTTN, CT.MaTN, CT.MaLoaiPhong, CT.SL, TN.TenTN
+				FROM CT_TienNghi CT
+				JOIN TienNghi TN ON CT.MaTN = TN.MaTN
+				WHERE CT.MaLoaiPhong = @MaLoaiPhong";
+
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaLoaiPhong", maLoaiPhong);
+					conn.Open();
+
+					using (var reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+						{
+							list.Add(new CT_TienNghi
+							{
+								MaCTTN = reader.GetInt32("MaCTTN"),
+								MaTN = reader.GetInt32("MaTN"),
+								MaLoaiPhong = reader.GetInt32("MaLoaiPhong"),
+								SL = reader.GetInt32("SL"),
+								TenTN = reader["TenTN"].ToString()
+							});
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+
+			return list;
+		}
+
 	}
 }

@@ -4,13 +4,13 @@ namespace DAL.DTO
 {
 	public class TienNghi_DaChon : INotifyPropertyChanged
 	{
-		private decimal? soLuong;
+		private int soLuong;
 
 		public string TenTN { get; set; }
 
-		public int? MaTN { get; set; }
+		public int MaTN { get; set; }
 
-		public decimal? SoLuong
+		public int SoLuong
 		{
 			get => soLuong;
 			set
@@ -19,6 +19,8 @@ namespace DAL.DTO
 				OnPropertyChanged("SoLuong");
 			}
 		}
+
+		public int SoLuongTruKhoLucThem { get; set; }
 
 		public event PropertyChangedEventHandler PropertyChanged;
 

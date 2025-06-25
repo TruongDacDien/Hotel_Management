@@ -116,31 +116,37 @@ namespace DAL.Data
 		public bool addDichVu(DichVu dv)
 		{
 			var connectionString = Properties.Resources.MySqlConnection;
+
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"
-				INSERT INTO DichVu (TenDV, MoTa, MaLoaiDV, Gia, SoLuong, ImageId, ImageURL, IsDeleted)
-				VALUES (@TenDV, @MoTa, @MaLoaiDV, @Gia, @SoLuong, @ImageId, @ImageURL, 0)";
+					conn.Open();
 
+					var query = @"INSERT INTO DichVu (TenDV, MoTa, MaLoaiDV, Gia, SoLuong, ImageId, ImageURL, IsDeleted)
+								VALUES (@TenDV, @MoTa, @MaLoaiDV, @Gia, @SoLuong, @ImageId, @ImageURL, 0);
+								SELECT LAST_INSERT_ID();";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@TenDV", dv.TenDV);
 					cmd.Parameters.AddWithValue("@MoTa", dv.MoTa);
 					cmd.Parameters.AddWithValue("@MaLoaiDV", dv.MaLoaiDV);
 					cmd.Parameters.AddWithValue("@Gia", dv.Gia);
 					cmd.Parameters.AddWithValue("@SoLuong", dv.SoLuong);
-					cmd.Parameters.AddWithValue("@ImageId", dv.ImageId ?? (object)DBNull.Value);
-					cmd.Parameters.AddWithValue("@ImageURL", dv.ImageURL ?? (object)DBNull.Value);
+					cmd.Parameters.AddWithValue("@ImageId", dv.ImageId ?? "hotel_management/image_default");
+					cmd.Parameters.AddWithValue("@ImageURL", dv.ImageURL ?? "https://res.cloudinary.com/dzaoyffio/image/upload/v1750100245/image_default.png");
 
-					conn.Open();
-					var rowsAffected = cmd.ExecuteNonQuery();
-					return rowsAffected > 0;
+					object result = cmd.ExecuteScalar();
+					if (result == null || result == DBNull.Value)
+						throw new Exception("Không thể lấy mã dịch vụ sau khi thêm.");
+
+					dv.MaDV = Convert.ToInt32(result);
+
+					return true;
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+				Console.WriteLine("Lỗi khi thêm dịch vụ: " + ex.Message);
 				return false;
 			}
 		}
@@ -253,6 +259,23 @@ namespace DAL.Data
 			{
 				Console.WriteLine(ex.Message); // Log lỗi nếu cần
 				return false;
+			}
+		}
+
+		public void capNhatHinhAnhDichVu(int maDV, string imageId, string imageUrl)
+		{
+			var connectionString = Properties.Resources.MySqlConnection;
+			using (var conn = new MySqlConnection(connectionString))
+			{
+				conn.Open();
+				var query = @"UPDATE DichVu 
+							SET ImageId = @ImageId, ImageURL = @ImageURL 
+							WHERE MaDV = @MaDV";
+				var cmd = new MySqlCommand(query, conn);
+				cmd.Parameters.AddWithValue("@ImageId", imageId);
+				cmd.Parameters.AddWithValue("@ImageURL", imageUrl);
+				cmd.Parameters.AddWithValue("@MaDV", maDV);
+				cmd.ExecuteNonQuery();
 			}
 		}
 	}

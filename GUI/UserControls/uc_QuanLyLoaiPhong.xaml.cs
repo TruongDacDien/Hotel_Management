@@ -45,7 +45,7 @@ namespace GUI.UserControls
 			return (obj as LoaiPhong).TenLoaiPhong.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
 		}
 
-		private void nhanData(LoaiPhong loaiPhong)
+		private bool nhanData(LoaiPhong loaiPhong)
 		{
 			if (!LoaiPhongBUS.GetInstance().KiemTraTrungTen(loaiPhong))
 			{
@@ -53,6 +53,7 @@ namespace GUI.UserControls
 				{
 					new DialogCustoms("Thêm thành công", "Thông báo", DialogCustoms.OK).Show();
 					TaiDanhSach();
+					return true;
 				}
 			}
 			else
@@ -64,6 +65,7 @@ namespace GUI.UserControls
 					TaiDanhSach();
 				}
 			}
+			return false;
 		}
 
 		private void capNhatData(LoaiPhong loaiPhong)

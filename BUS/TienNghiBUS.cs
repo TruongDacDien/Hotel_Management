@@ -47,5 +47,10 @@ namespace BUS
 		{
 			return TienNghiDAL.GetInstance().hienThiLaiTienNghi(tenTN);
 		}
+
+		public bool capNhatSoLuongTienNghi(int maTN, int soLuongThayDoi)
+		{
+			return TienNghiDAL.GetInstance().capNhatSoLuongTienNghi(maTN, soLuongThayDoi);
+		}
 	}
 }

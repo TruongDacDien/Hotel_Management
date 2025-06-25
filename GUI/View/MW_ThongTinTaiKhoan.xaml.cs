@@ -91,7 +91,7 @@ namespace GUI.View
 				try
 				{
 					this.SelectedAvatarPath = openFile.FileName; //lưu đường dẫn file để upload
-					this.AvatarId = $"hotel_management/avatar_{TaiKhoan.Username}";
+					this.AvatarId = $"staff_{TaiKhoan.MaTKNV}";
 					// Hiển thị lên giao diện
 					var bitmap = new BitmapImage(new Uri(SelectedAvatarPath));
 					imgAvatar.Fill = new ImageBrush(bitmap);
@@ -124,9 +124,9 @@ namespace GUI.View
 				try
 				{
 					// Upload lên Cloudinary → lấy URL
-					var url = await TaiKhoanBUS.GetInstance().UploadAvatarAsync(this.SelectedAvatarPath, this.AvatarId, TaiKhoan.AvatarId);
+					var url = await TaiKhoanNVBUS.GetInstance().UploadAvatarAsync(this.SelectedAvatarPath, this.AvatarId, TaiKhoan.AvatarId);
 					this.AvatarURL = url.ToString();
-					this.AvatarId = $"hotel_management/avatar_{TaiKhoan.Username}"; // dùng đúng tên publicId
+					this.AvatarId = $"hotel_management/staff_{TaiKhoan.MaTKNV}"; // dùng đúng tên publicId
 				}
 				catch (Exception ex)
 				{
@@ -135,10 +135,10 @@ namespace GUI.View
 			}
 
 			// Cập nhật thông tin tài khoản
-			bool isAccountUpdated = TaiKhoanBUS.GetInstance().capNhatTaiKhoan(this.TaiKhoan);
+			bool isAccountUpdated = TaiKhoanNVBUS.GetInstance().capNhatTaiKhoan(this.TaiKhoan);
 
 			// Cập nhật ảnh đại diện
-			bool isAvatarUpdated = TaiKhoanBUS.GetInstance().capNhatAvatar(this.TaiKhoan.Username, this.AvatarId, this.AvatarURL, out error);
+			bool isAvatarUpdated = TaiKhoanNVBUS.GetInstance().capNhatAvatar(this.TaiKhoan.MaTKNV, this.AvatarId, this.AvatarURL);
 			if (isAvatarUpdated)
 			{
 				TaiKhoan.AvatarURL = this.AvatarURL; // Gán lại ảnh đại diện mới vào đối tượng

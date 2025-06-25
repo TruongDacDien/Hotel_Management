@@ -43,9 +43,14 @@ namespace BUS
 			return CT_TienNghiDAL.GetInstance().KiemTraTonTai(chiTietTN);
 		}
 
-		public bool hienThiLaiCT_TienNghi(int maTN, string soPhong)
+		public bool hienThiLaiCT_TienNghi(int maTN, int maLoaiPhong)
 		{
-			return CT_TienNghiDAL.GetInstance().hienThiLaiCT_TienNghi(maTN, soPhong);
+			return CT_TienNghiDAL.GetInstance().hienThiLaiCT_TienNghi(maTN, maLoaiPhong);
+		}
+
+		public List<CT_TienNghi> getCTTienNghiByLoaiPhong(int maLoaiPhong) 
+		{
+			return CT_TienNghiDAL.GetInstance().getCTTienNghiByLoaiPhong(maLoaiPhong);
 		}
 	}
 }

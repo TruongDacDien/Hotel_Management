@@ -79,6 +79,7 @@ namespace DAL.Data
 								TenKH = reader.GetString(reader.GetOrdinal("TenKH")),
 								GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
 								CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
+								CCCDImage = reader.GetString(reader.GetOrdinal("CCCDImage")),
 								DiaChi = reader.GetString(reader.GetOrdinal("DiaChi")),
 								SDT = reader.GetString(reader.GetOrdinal("SDT")),
 								QuocTich = reader.GetString(reader.GetOrdinal("QuocTich")),
@@ -118,9 +119,11 @@ namespace DAL.Data
 								TenKH = reader.GetString(reader.GetOrdinal("TenKH")),
 								GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
 								CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
+								CCCDImage = reader.GetString(reader.GetOrdinal("CCCDImage")),
 								DiaChi = reader.GetString(reader.GetOrdinal("DiaChi")),
 								SDT = reader.GetString(reader.GetOrdinal("SDT")),
-								QuocTich = reader.GetString(reader.GetOrdinal("QuocTich"))
+								QuocTich = reader.GetString(reader.GetOrdinal("QuocTich")),
+								IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
 							});
 					}
 				}

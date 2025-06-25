@@ -38,7 +38,7 @@ namespace GUI.UserControls
 			return (obj as DichVu).TenDV.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0;
 		}
 
-		private void nhanData(DichVu dv)
+		private bool nhanData(DichVu dv)
 		{
 			if (!DichVuBUS.GetInstance().KiemTraTrungTen(dv))
 			{
@@ -46,6 +46,7 @@ namespace GUI.UserControls
 				{
 					new DialogCustoms("Thêm thành công", "Thông báo", DialogCustoms.OK).Show();
 					TaiDanhSach();
+					return true;
 				}
 			}
 			else
@@ -57,6 +58,7 @@ namespace GUI.UserControls
 					TaiDanhSach();
 				}
 			}
+			return false;
 		}
 
 		private void capNhatData(DichVu dv)

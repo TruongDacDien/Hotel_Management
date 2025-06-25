@@ -46,7 +46,7 @@
     <Page Update="UserControls\uc_QuanLyPhong.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="UserControls\uc_QuanLyTaiKhoan.xaml">
+    <Page Update="UserControls\uc_QuanLyTaiKhoanNV.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UserControls\uc_QuanLyTienNghi.xaml">
@@ -106,7 +106,7 @@
     <Page Update="View\Them_SuaPhong.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="View\Them_SuaTaiKhoan.xaml">
+    <Page Update="View\Them_SuaTaiKhoanNV.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\Them_SuaTienNghi.xaml">
@@ -123,10 +123,25 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="UserControls\uc_QuanLyDatDV.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="UserControls\uc_QuanLyDDXQ.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="UserControls\uc_QuanLyTaiKhoanKH.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\CheckIn_CheckOut.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\PhanQuyenTKNV.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\Them_SuaDDXQ.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\Them_SuaTaiKhoanKH.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\WebThanhToan.xaml.cs">

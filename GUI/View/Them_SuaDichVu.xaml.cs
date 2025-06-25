@@ -19,7 +19,7 @@ namespace GUI.View
 	{
 		public delegate void SuaDuLieu(DichVu dv);
 
-		public delegate void TryenDuLieu(DichVu dv);
+		public delegate bool TryenDuLieu(DichVu dv);
 
 		private readonly bool isEditing;
 		private readonly string maDV;
@@ -64,6 +64,13 @@ namespace GUI.View
 		#endregion
 
 		#region Update Image
+		private string GenerateImageId()
+		{
+			if (dichVu != null && dichVu.MaDV > 0)
+				return $"service_{dichVu.MaDV}";
+			return $"service_{Guid.NewGuid():N}";
+		}
+
 		private void click_ThayDoiAnh(object sender, RoutedEventArgs e)
 		{
 			var openFile = new OpenFileDialog
@@ -77,7 +84,7 @@ namespace GUI.View
 				try
 				{
 					this.SelectedImagePath = openFile.FileName; //lưu đường dẫn file để upload
-					this.ImageId = $"hotel_management/service_{dichVu.MaDV}";
+					this.ImageId = GenerateImageId();
 					// Hiển thị lên giao diện
 					var bitmap = new BitmapImage(new Uri(SelectedImagePath));
 					imgAvatar.Fill = new ImageBrush(bitmap);
@@ -91,17 +98,22 @@ namespace GUI.View
 		#endregion
 
 		#region Upload Image to Cloudinary
-		private async void UploadImageToCloudinary()
+		private async Task UploadImageToCloudinary()
 		{
 			// Upload avatar mới nếu người dùng có chọn
 			if (!string.IsNullOrEmpty(SelectedImagePath))
 			{
 				try
 				{
+					string oldImageId = this.dichVu != null ? this.dichVu.ImageId : null;
 					// Upload lên Cloudinary → lấy URL
-					var url = await DichVuBUS.GetInstance().UploadImageAsync(this.SelectedImagePath, this.ImageId, this.dichVu.ImageId);
+					var url = await LoaiPhongBUS.GetInstance().UploadImageAsync(this.SelectedImagePath, this.ImageId, oldImageId);
 					this.ImageURL = url.ToString();
-					this.ImageId = $"hotel_management/service_{this.dichVu.MaDV}"; // dùng đúng tên publicId
+					// Cập nhật ImageId theo chuẩn nếu đã có MaDV (chỉ trong sửa)
+					if (this.dichVu != null)
+					{
+						this.ImageId = $"hotel_management/service_{this.dichVu.MaDV}";
+					}
 				}
 				catch (Exception ex)
 				{
@@ -129,6 +141,9 @@ namespace GUI.View
 				maDV = dv.MaDV.ToString();
 				txtMoTaDichVu.Text = dv.MoTa;
 				txtSoLuong.Text = dv.SoLuong.ToString();
+				this.ImageId = dv.ImageId;
+				this.ImageURL = dv.ImageURL;
+				LoadImage();
 			}
 			else
 			{
@@ -155,7 +170,7 @@ namespace GUI.View
 		{
 			if (!KiemTra()) return;
 
-			UploadImageToCloudinary();
+			await UploadImageToCloudinary();
 
 			if (isEditing)
 			{
@@ -181,7 +196,7 @@ namespace GUI.View
 			wd.Close();
 		}
 
-		private void btnThem_Click(object sender, RoutedEventArgs e)
+		private async void btnThem_Click(object sender, RoutedEventArgs e)
 		{
 			if (!KiemTra()) return;
 
@@ -195,7 +210,25 @@ namespace GUI.View
 				ImageId = this.ImageId,
 				ImageURL = this.ImageURL,
 			};
-			if (truyen != null) truyen(dichVu);
+			if (truyen != null)
+			{
+				if (truyen(dichVu))
+				{
+					// Nếu thêm thành công, cập nhật ImageId và ImageURL nếu có
+					if (!string.IsNullOrEmpty(SelectedImagePath) && dichVu.MaDV > 0)
+					{
+						this.ImageId = $"service_{dichVu.MaDV}";
+						await UploadImageToCloudinary();
+						this.ImageId = $"hotel_management/service_{dichVu.MaDV}";
+						DichVuBUS.GetInstance().capNhatHinhAnhDichVu(dichVu.MaDV, this.ImageId, this.ImageURL);
+					}
+				}
+				else
+				{
+					new DialogCustoms("Lỗi: Không thể tạo loại phòng mới!", "Lỗi", DialogCustoms.OK).ShowDialog();
+					return;
+				}
+			}
 			var wd = GetWindow(sender as Button);
 			wd.Close();
 		}

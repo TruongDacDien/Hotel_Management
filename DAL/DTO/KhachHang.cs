@@ -10,6 +10,8 @@
 
 		public string CCCD { get; set; }
 
+		public string CCCDImage { get; set; }
+
 		public string SDT { get; set; }
 
 		public string DiaChi { get; set; }
@@ -17,5 +19,7 @@
 		public string QuocTich { get; set; }
 
 		public bool IsDeleted { get; set; }
+
+		public string DisplayInfo => $"{MaKH} - {TenKH}";
 	}
 }

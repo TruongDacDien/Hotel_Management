@@ -83,10 +83,16 @@ namespace GUI.View
 			}
 
 			var pass = txtPasswordHidden.Password;
-			var taiKhoan = TaiKhoanBUS.GetInstance().kiemTraTKTonTaiKhong(username, pass);
+			var taiKhoan = TaiKhoanNVBUS.GetInstance().kiemTraTKTonTaiKhong(username, pass);
 
 			if (taiKhoan != null)
 			{
+				if (taiKhoan.IsDeleted)
+				{
+					new DialogCustoms("Tài khoản không tồn tại!", "Thông báo", DialogCustoms.OK).ShowDialog();
+					return;
+				}
+
 				if (taiKhoan.Disabled)
 				{
 					new DialogCustoms("Tài khoản đã bị vô hiệu hóa!", "Thông báo", DialogCustoms.OK).ShowDialog();
