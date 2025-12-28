@@ -34,6 +34,12 @@
                                      Foreground="White" Opacity="0.7" />
         </Button>
 
+        <TextBlock x:Name="txt_TrangThaiKetNoi" 
+                   Height="Auto" Width="Auto" FontSize="20" FontWeight="Medium" 
+                   Foreground="#33CC33" Margin="0,0,20,20"
+                   HorizontalAlignment="Right" VerticalAlignment="Bottom" TextAlignment="Center"
+                   > Trạng thái kết nối </TextBlock>
+
         <materialDesign:Card Width="300" Height="325" Background="#FFFFFF"
                              VerticalAlignment="Top" HorizontalAlignment="Left"
                              Margin="65 80 0 0">

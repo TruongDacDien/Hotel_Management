@@ -1,11 +1,12 @@
-﻿using System;
+﻿using DAL.DTO;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using DAL.DTO;
-using MySql.Data.MySqlClient;
+using System.Windows;
 
 namespace DAL.Data
 {
@@ -82,7 +83,7 @@ namespace DAL.Data
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("Lỗi: " + ex.Message);
+				MessageBox.Show(ex.ToString(), "Lỗi kết nối DB");
 			}
 
 			return null;

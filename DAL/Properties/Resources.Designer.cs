@@ -88,7 +88,7 @@ namespace DAL.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AIzaSyCfDHPbyqGPwBRCsUCQE0nxUzDHCNndbn8.
+        ///   Looks up a localized string similar to AIzaSyAwqEULaX23ac3gSjlF_Y-lqcdHWE1aqlQ.
         /// </summary>
         internal static string Google_API_Key {
             get {
@@ -97,7 +97,7 @@ namespace DAL.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Server=sql12.freesqldatabase.com;Database=sql12739505;User Id=sql12739505;Password=bI2s32U2vF;Port=3306;Charset=utf8mb4;.
+        ///   Looks up a localized string similar to Server=sql12.freesqldatabase.com;Database=sql12800857;User Id=sql12800857;Password=Bx7ugvF8CB;Port=3306;Charset=utf8mb4;.
         /// </summary>
         internal static string MySqlConnection {
             get {

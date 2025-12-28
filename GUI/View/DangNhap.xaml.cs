@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using BUS;
 using MySql.Data.MySqlClient;
+using System.Windows.Media;
 
 namespace GUI.View
 {
@@ -24,6 +25,16 @@ namespace GUI.View
 		public DangNhap()
 		{
 			InitializeComponent();
+			if (KiemTraKetNoiDatabase())
+			{
+				txt_TrangThaiKetNoi.Text = "Đã kết nối tới cơ sở dữ liệu";
+				txt_TrangThaiKetNoi.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#33CC33"));
+			}
+			else
+			{
+				txt_TrangThaiKetNoi.Text = "Không thể kết nối tới cơ sở dữ liệu";
+				txt_TrangThaiKetNoi.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF3300"));
+			}
 			MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
 			// Khởi tạo trạng thái checkbox
 			if (Properties.Settings.Default.RememberMe)
