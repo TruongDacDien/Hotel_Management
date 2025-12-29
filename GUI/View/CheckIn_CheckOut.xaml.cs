@@ -104,7 +104,7 @@ namespace GUI.View
             // 3) Vẫn có thể thông báo sớm/trễ so với giờ chính sách (nhưng đã nằm trong ±1 tiếng)
             if (!isBypass)
             {
-            ShowPolicyNotice(now);
+                ShowPolicyNotice(now);
             }
 
             DialogResult = true;
