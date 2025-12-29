@@ -1,0 +1,6 @@
+Step 1: Install Extension ".NET Install Tool"
+Step 2: Open terminal of project "HOTEL_MANAGEMENT"
+Step 3: Run the following 3 code snippets in order.
+    1. dotnet restore .\Hotel_Management.sln
+    2. dotnet build .\Hotel_Management.sln
+    3. dotnet run --project .\GUI\GUI.csproj

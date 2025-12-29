@@ -1,1 +1,52 @@
+# Visual Studio
 .vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+*.userprefs
+
+# VS Code / JetBrains (nếu có dùng)
+.vscode/
+.idea/
+
+# Build outputs
+[Bb]in/
+[Oo]bj/
+**/[Bb]in/
+**/[Oo]bj/
+**/Debug/
+**/Release/
+**/x64/
+**/x86/
+**/AnyCPU/
+**/publish/
+artifacts/
+
+# Test
+TestResults/
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+.nuget/
+
+# Logs / temp
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# Windows / macOS trash
+Thumbs.db
+.DS_Store
+
+# Local secrets (bạn tự tạo file local để chứa key/connection string)
+secrets.json
+*.local.json
+*.local.config
+.env
+.env.*
