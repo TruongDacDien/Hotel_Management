@@ -29,6 +29,7 @@
     <None Remove="Res\IncreaseIcon.png" />
     <None Remove="Res\logo.png" />
     <None Remove="Res\notification_sound.wav" />
+    <None Remove="Res\reload.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -82,6 +83,7 @@
   <ItemGroup>
     <Resource Include="Res\logo.png" />
     <Resource Include="Res\notification_sound.wav" />
+    <Resource Include="Res\reload.png" />
   </ItemGroup>
 
   <ItemGroup>

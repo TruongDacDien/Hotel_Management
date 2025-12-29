@@ -209,11 +209,66 @@
 
         </Grid>
 
-        <Button x:Name="btnReload" Width="48" Height="48" Grid.RowSpan="2"
-                HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20"
-                Background="White" BorderThickness="0" Click="btnReload_Click"
-                Panel.ZIndex="999">
-            <Image Source="/GUI;component/Res/reload.png" Width="26" Height="26" Stretch="Uniform" />
+        <Button x:Name="btnReload"
+        Width="40" Height="40"
+        Grid.RowSpan="2"
+        HorizontalAlignment="Right" VerticalAlignment="Bottom"
+        Margin="0,0,20,20"
+        Background="White"
+        BorderThickness="0"
+        Click="btnReload_Click"
+        Padding="0"
+        Panel.ZIndex="999"
+        RenderTransformOrigin="0.5,0.5">
+
+            <Button.RenderTransform>
+                <ScaleTransform x:Name="btnScale" ScaleX="1" ScaleY="1"/>
+            </Button.RenderTransform>
+
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <!-- Nền + viền -->
+                        <Ellipse x:Name="e"
+                         Fill="{TemplateBinding Background}"
+                         Stroke="Black"
+                         StrokeThickness="1"/>
+
+                        <!-- Nội dung -->
+                        <ContentPresenter x:Name="cp"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <!-- Hover -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="e" Property="Opacity" Value="0.92"/>
+                        </Trigger>
+
+                        <!-- Press: mờ + thu nhỏ nhẹ -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="e" Property="Opacity" Value="0.65"/>
+                            <Setter TargetName="cp" Property="Opacity" Value="0.85"/>
+                            <Setter Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+
+                        <!-- Disable -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="e" Property="Opacity" Value="0.4"/>
+                            <Setter TargetName="cp" Property="Opacity" Value="0.4"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+
+            <Image Width="32" Height="32"
+           Stretch="Uniform"
+           Source="/Res/reload.png"/>
         </Button>
 
     </Grid>
