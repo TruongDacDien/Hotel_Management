@@ -187,6 +187,11 @@ namespace GUI.View
 			initListViewMenu();
 		}
 
+		private void btnReload_Click(object sender, RoutedEventArgs e)
+		{
+			ReloadCurrentTab();
+		}
+
 		private void LoadAvatar()
 		{
 			try
@@ -235,7 +240,7 @@ namespace GUI.View
 						QuanLyDatDV_UC = new uc_QuanLyDatDV(MaNV);
 						contenDisplayMain.Content = QuanLyDatDV_UC;
 						break;
-					case "Hóa don":
+					case "Hóa đơn":
 						HoaDon_UC = new uc_HoaDon();
 						contenDisplayMain.Content = HoaDon_UC;
 						break;
@@ -287,6 +292,83 @@ namespace GUI.View
 
 				Title_Main = selectedName;
 				btnCloseLVMenu.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+			}
+		}
+
+		private void ReloadCurrentTab()
+		{
+			var selectedName = Title_Main;
+			if (string.IsNullOrWhiteSpace(selectedName) && lisviewMenu.SelectedValue != null)
+				selectedName = lisviewMenu.SelectedValue.ToString();
+
+			if (string.IsNullOrWhiteSpace(selectedName)) return;
+
+			switch (selectedName)
+			{
+				case "Trang Chủ":
+					Home = new uc_Home();
+					contenDisplayMain.Content = Home;
+					break;
+				case "Phòng":
+					Phong_UC = new uc_Phong(MaNV);
+					contenDisplayMain.Content = Phong_UC;
+					break;
+				case "Đặt phòng":
+					ThuePhong_UC = new uc_PhieuThue(MaNV);
+					contenDisplayMain.Content = ThuePhong_UC;
+					break;
+				case "Đặt dịch vụ":
+					QuanLyDatDV_UC = new uc_QuanLyDatDV(MaNV);
+					contenDisplayMain.Content = QuanLyDatDV_UC;
+					break;
+				case "Hóa đơn":
+					HoaDon_UC = new uc_HoaDon();
+					contenDisplayMain.Content = HoaDon_UC;
+					break;
+				case "QL khách hàng":
+					QuanLyKhachHang_UC = new uc_QuanLyKhachHang();
+					contenDisplayMain.Content = QuanLyKhachHang_UC;
+					break;
+				case "QL tài khoản khách hàng":
+					QuanLyTaiKhoanKH_UC = new uc_QuanLyTaiKhoanKH();
+					contenDisplayMain.Content = QuanLyTaiKhoanKH_UC;
+					break;
+				case "QL phòng":
+					QuanLyPhong_UC = new uc_QuanLyPhong();
+					contenDisplayMain.Content = QuanLyPhong_UC;
+					break;
+				case "QL loại phòng":
+					QuanLyLoaiPhong_UC = new uc_QuanLyLoaiPhong();
+					contenDisplayMain.Content = QuanLyLoaiPhong_UC;
+					break;
+				case "QL dịch vụ":
+					QuanLyDichVu_UC = new uc_QuanLyDichVu();
+					contenDisplayMain.Content = QuanLyDichVu_UC;
+					break;
+				case "QL loại dịch vụ":
+					QuanLyLoaiDichVu_UC = new uc_QuanLyLoaiDichVu();
+					contenDisplayMain.Content = QuanLyLoaiDichVu_UC;
+					break;
+				case "QL tiện nghi":
+					QuanLyTienNghi_UC = new uc_QuanLyTienNghi();
+					contenDisplayMain.Content = QuanLyTienNghi_UC;
+					break;
+				case "QL nhân viên":
+					NhanVien_UC = new uc_NhanVien();
+					contenDisplayMain.Content = NhanVien_UC;
+					break;
+				case "QL tài khoản nhân viên":
+					QuanLyTaiKhoanNV_UC = new uc_QuanLyTaiKhoanNV();
+					contenDisplayMain.Content = QuanLyTaiKhoanNV_UC;
+					break;
+				case "Thống kê":
+					ThongKe_UC = new uc_ThongKe();
+					contenDisplayMain.Content = ThongKe_UC;
+					break;
+				case "QL DDXQ":
+					DDXQ_UC = new uc_DDXQ();
+					contenDisplayMain.Content = DDXQ_UC;
+					break;
 			}
 		}
 

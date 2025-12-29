@@ -92,6 +92,46 @@ namespace DAL.Data
 				return false;
 			}
 		}
+		public bool suaTinhTrangThuePhong(int? maCTPT, string tinhtrangthuephong, bool? daThanhToan, string hinhThucThanhToan, out string error)
+		{
+			error = string.Empty;
+			if (maCTPT == null)
+			{
+				error = "Khong ton tai ma chi tiet phieu thue";
+				return false;
+			}
+
+			var connectionString = Properties.Resources.MySqlConnection;
+
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = "UPDATE CT_PhieuThue SET TinhTrangThue = @TinhTrangThue, DaThanhToan = @DaThanhToan, HinhThucThanhToan = @HinhThucThanhToan WHERE MaCTPT = @MaCTPT";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@TinhTrangThue", tinhtrangthuephong);
+					cmd.Parameters.AddWithValue("@DaThanhToan", daThanhToan.HasValue ? (object)daThanhToan.Value : DBNull.Value);
+					cmd.Parameters.AddWithValue("@HinhThucThanhToan", string.IsNullOrWhiteSpace(hinhThucThanhToan) ? (object)DBNull.Value : hinhThucThanhToan);
+					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
+
+					conn.Open();
+					var rowsAffected = cmd.ExecuteNonQuery();
+					if (rowsAffected == 0)
+					{
+						error = "Khong ton tai chi tiet phieu thue co ma: " + maCTPT;
+						return false;
+					}
+				}
+
+				return true;
+			}
+			catch (Exception ex)
+			{
+				error = ex.Message;
+				return false;
+			}
+		}
+
 
 		// Lấy danh sách phiếu thuê theo mã phiếu thuê
 		public List<CT_PhieuThue> getPhieuThueTheoMaPT(int maPT)

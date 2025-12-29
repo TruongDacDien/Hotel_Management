@@ -38,6 +38,11 @@ namespace BUS
 		{
 			return CT_PhieuThueDAL.GetInstance().suaTinhTrangThuePhong(maCTPT, tinhtrangthuephong, out error);
 		}
+		public bool suaTinhTrangThuePhong(int? maCTPT, string tinhtrangthuephong, bool? daThanhToan, string hinhThucThanhToan, out string error)
+		{
+			return CT_PhieuThueDAL.GetInstance().suaTinhTrangThuePhong(maCTPT, tinhtrangthuephong, daThanhToan, hinhThucThanhToan, out error);
+		}
+
 
 		public bool capNhatNgayBD(int? maCTPT, DateTime ngayBD, out string error)
 		{

@@ -29,6 +29,11 @@ namespace BUS
 			return CTSDDV_DAL.GetInstance().getCTSDDVtheoMaCTPT(maCTPT);
 		}
 
+		public CT_SDDichVu getCTSDDVTheoMaCTSDDV(int maCTSDDV)
+		{
+			return CTSDDV_DAL.GetInstance().getCTSDDVTheoMaCTSDDV(maCTSDDV);
+		}
+
 		public decimal? tinhTongTienDichVuTheoMaCTPT(int? maCTPT)
 		{
 			var ls = CTSDDV_DAL.GetInstance().tongTienChiTietSuDungDichVu(maCTPT);

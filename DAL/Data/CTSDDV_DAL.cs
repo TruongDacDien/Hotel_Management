@@ -134,7 +134,83 @@ namespace DAL.Data
 			return ls;
 		}
 
-		// Lấy danh sách CT_SDDichVu để quản lý
+		// Lay chi tiet CT_SDDichVu theo ma
+		public CT_SDDichVu getCTSDDVTheoMaCTSDDV(int maCTSDDV)
+		{
+			var connectionString = Properties.Resources.MySqlConnection;
+
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = @"
+                        SELECT 
+                            ct.MaCTSDDV,
+                            ct.MaCTPT,
+                            ct.MaKH,
+                            ct.MaDV,
+                            ct.SL,
+                            ct.ThanhTien,
+                            ct.NgayApDung,
+                            ct.TrangThai,
+                            ct.DaThanhToan,
+                            ct.HinhThucThanhToan,
+                            kh.TenKH,
+                            dv.TenDV,
+                            ctpt.SoPhong
+                        FROM CT_SDDichVu ct
+                        INNER JOIN KhachHang kh ON ct.MaKH = kh.MaKH
+                        INNER JOIN DichVu dv ON ct.MaDV = dv.MaDV
+                        LEFT JOIN CT_PhieuThue ctpt ON ct.MaCTPT = ctpt.MaCTPT
+                        WHERE ct.MaCTSDDV = @MaCTSDDV";
+
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaCTSDDV", maCTSDDV);
+
+					conn.Open();
+					using (var reader = cmd.ExecuteReader())
+					{
+						if (reader.Read())
+						{
+							return new CT_SDDichVu
+							{
+								MaCTSDDV = reader.GetInt32(reader.GetOrdinal("MaCTSDDV")),
+								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT"))
+									? null
+									: (int?)reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+								MaKH = reader.GetInt32(reader.GetOrdinal("MaKH")),
+								MaDV = reader.GetInt32(reader.GetOrdinal("MaDV")),
+								SL = reader.GetInt32(reader.GetOrdinal("SL")),
+								ThanhTien = reader.GetDecimal(reader.GetOrdinal("ThanhTien")),
+								NgayApDung = reader.GetDateTime(reader.GetOrdinal("NgayApDung")),
+								TrangThai = reader.IsDBNull(reader.GetOrdinal("TrangThai"))
+									? null
+									: reader.GetString(reader.GetOrdinal("TrangThai")),
+								DaThanhToan = reader.IsDBNull(reader.GetOrdinal("DaThanhToan"))
+									? (bool?)null
+									: reader.GetBoolean(reader.GetOrdinal("DaThanhToan")),
+								HinhThucThanhToan = reader.IsDBNull(reader.GetOrdinal("HinhThucThanhToan"))
+									? null
+									: reader.GetString(reader.GetOrdinal("HinhThucThanhToan")),
+								TenKH = reader.GetString(reader.GetOrdinal("TenKH")),
+								TenDV = reader.GetString(reader.GetOrdinal("TenDV")),
+								SoPhong = reader.IsDBNull(reader.GetOrdinal("SoPhong"))
+									? null
+									: reader.GetString(reader.GetOrdinal("SoPhong"))
+							};
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+
+			return null;
+		}
+
+		// Lay danh sach CT_SDDichVu de quan ly
 		public List<CT_SDDichVu> getCTSDDVQuanLy()
 		{
 			var ls = new List<CT_SDDichVu>();

@@ -28,7 +28,7 @@
                     </Button>
                     <TextBox Grid.Column="1" Name="txtFilter" TextChanged="txtFilter_TextChanged"
                              Margin="0 0 10 0"
-                             materialDesign:HintAssist.Hint="Tim khach hang / dich vu"
+                             materialDesign:HintAssist.Hint="Tìm khách hàng / dịch vụ"
                              materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
                              BorderThickness="0"
                              MinWidth="200"

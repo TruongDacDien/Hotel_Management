@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
@@ -199,75 +199,101 @@ namespace GUI.View
 			try
 			{
 				groupButton.Visibility = Visibility.Hidden;
-				txbNhanVien.Text = hoaDon.NhanVien.HoTen;
-				txbSoPhong.Text = hoaDon.CT_PhieuThue.SoPhong;
-
-				var ngayBD = hoaDon.CT_PhieuThue.NgayBD;
-				var ngayKT = hoaDon.CT_PhieuThue.NgayKT;
-
-				// Phân tích số ngày và giờ
-				var time = ngayKT - ngayBD;
-				var songay = (int)time.TotalDays; // Số ngày đã thuê
-
-				// Tính số giờ
-				decimal sogio = (decimal)time.TotalHours;
-
-				// Làm tròn giờ: nếu số giờ dư trong ngày > 12 giờ thì tính thêm 1 ngày
-				decimal gioDu = (decimal)(time.TotalHours % 24);
-				if (gioDu > 12)
+				ls = new List<DichVu_DaChon>();
+				if (hoaDon == null)
 				{
-					songay++;  // Trên 12 giờ: tính thêm 1 ngày
-					sogio = 0; // Sau khi tính thêm 1 ngày thì không cần tính giờ nữa
+					new DialogCustoms("Khong tim thay hoa don.", "Thong bao", DialogCustoms.OK).ShowDialog();
+					return;
 				}
-				else
-				{
-					// Trường hợp còn lại: làm tròn số giờ thuê theo yêu cầu
-					sogio = sogio == 0 ? 1 : (time.Hours + (time.Minutes > 30 || time.Seconds > 0 ? 1 : 0));
-				}
-
-				var thoiGianThue = $"{songay} ngày {sogio} giờ";
-
-				// Hiển thị thời gian thuê
-				txbSoNgayOrGio.Text = "Thời gian thuê: ";
-				txbSoNgay.Text = thoiGianThue;
 
 				txbSoHoaDon.Text = hoaDon.MaHD.ToString();
-				txbTenKH.Text = "Khách hàng: " +
-								KhachHangBUS.GetInstance().layTenKhachHangTheoMaPT(hoaDon.CT_PhieuThue.MaPhieuThue);
-				txbSoNguoi.Text = hoaDon.CT_PhieuThue.SoNguoiO.ToString();
+				txbNhanVien.Text = hoaDon.NhanVien?.HoTen ?? "N/A";
 				txbNgayLapHD.Text = hoaDon.NgayLap.ToString();
 				txbTongTien.Text = string.Format("{0:0,0 VND}", hoaDon.TongTien);
 
-				// Danh sách dịch vụ đã sử dụng
-				ls = new List<DichVu_DaChon>(CTSDDV_BUS.GetInstance().getCTSDDVtheoMaCTPT(hoaDon.MaCTPT));
-
-				// Thêm dịch vụ thuê phòng (theo ngày) vào danh sách dịch vụ đã sử dụng
-				if (songay > 0)
+				if (hoaDon.MaCTPT.HasValue && hoaDon.CT_PhieuThue != null)
 				{
-					var dvNgay = new DichVu_DaChon
+					txbSoPhong.Text = hoaDon.CT_PhieuThue.SoPhong ?? "N/A";
+
+					var ngayBD = hoaDon.CT_PhieuThue.NgayBD;
+					var ngayKT = hoaDon.CT_PhieuThue.NgayKT;
+
+					var time = ngayKT - ngayBD;
+					var songay = (int)time.TotalDays;
+					decimal sogio = (decimal)time.TotalHours;
+
+					decimal gioDu = (decimal)(time.TotalHours % 24);
+					if (gioDu > 12)
 					{
-						SoLuong = songay,
-						TenDV = "Thuê phòng (theo ngày)",
-						Gia = PhongDAL.GetInstance().layGiaTienTheoMaPhong(hoaDon.CT_PhieuThue.SoPhong, true),
-						ThanhTien = PhongDAL.GetInstance().layGiaTienTheoMaPhong(hoaDon.CT_PhieuThue.SoPhong, true) * songay
-					};
-					ls.Add(dvNgay);
+						songay++;
+						sogio = 0;
+					}
+					else
+					{
+						sogio = sogio == 0 ? 1 : (time.Hours + (time.Minutes > 30 || time.Seconds > 0 ? 1 : 0));
+					}
+
+					var thoiGianThue = $"{songay} ngày {sogio} giờ";
+					txbSoNgayOrGio.Text = "Thời gian thuê: ";
+					txbSoNgay.Text = thoiGianThue;
+
+					var tenKh = KhachHangBUS.GetInstance().layTenKhachHangTheoMaPT(hoaDon.CT_PhieuThue.MaPhieuThue);
+					txbTenKH.Text = "Khách hàng: " + (string.IsNullOrWhiteSpace(tenKh) ? "N/A" : tenKh);
+					txbSoNguoi.Text = hoaDon.CT_PhieuThue.SoNguoiO.ToString();
+
+					ls = new List<DichVu_DaChon>(CTSDDV_BUS.GetInstance().getCTSDDVtheoMaCTPT(hoaDon.MaCTPT));
+
+					if (songay > 0)
+					{
+						var dvNgay = new DichVu_DaChon
+						{
+							SoLuong = songay,
+							TenDV = "Thuê phòng (theo ngày)",
+							Gia = PhongDAL.GetInstance().layGiaTienTheoMaPhong(hoaDon.CT_PhieuThue.SoPhong, true),
+							ThanhTien = PhongDAL.GetInstance().layGiaTienTheoMaPhong(hoaDon.CT_PhieuThue.SoPhong, true) * songay
+						};
+						ls.Add(dvNgay);
+					}
+
+					if (sogio > 0)
+					{
+						var dvGio = new DichVu_DaChon
+						{
+							SoLuong = sogio,
+							TenDV = "Thuê phòng (theo giờ)",
+							Gia = PhongDAL.GetInstance().layGiaTienTheoMaPhong(hoaDon.CT_PhieuThue.SoPhong, false),
+							ThanhTien = PhongDAL.GetInstance().layGiaTienTheoMaPhong(hoaDon.CT_PhieuThue.SoPhong, false) * sogio
+						};
+						ls.Add(dvGio);
+					}
+
+					lvDichVuDaSD.ItemsSource = ls;
+					return;
 				}
 
-				// Thêm dịch vụ thuê phòng (theo giờ) vào danh sách dịch vụ đã sử dụng
-				if (sogio > 0)
+				var ct = hoaDon.MaCTSDDV.HasValue
+					? CTSDDV_BUS.GetInstance().getCTSDDVTheoMaCTSDDV(hoaDon.MaCTSDDV.Value)
+					: null;
+
+				txbTenKH.Text = "Khách hàng: " + (ct?.TenKH ?? "N/A");
+				txbSoPhong.Text = ct?.SoPhong ?? "N/A";
+				txbSoNguoi.Text = "N/A";
+				txbSoNgayOrGio.Text = "Thời gian thuê: ";
+				txbSoNgay.Text = "N/A";
+
+				ls = new List<DichVu_DaChon>();
+				if (ct != null)
 				{
-					var dvGio = new DichVu_DaChon
+					var gia = ct.SL > 0 ? ct.ThanhTien / ct.SL : ct.ThanhTien;
+					ls.Add(new DichVu_DaChon
 					{
-						SoLuong = sogio,
-						TenDV = "Thuê phòng (theo giờ)",
-						Gia = PhongDAL.GetInstance().layGiaTienTheoMaPhong(hoaDon.CT_PhieuThue.SoPhong, false),
-						ThanhTien = PhongDAL.GetInstance().layGiaTienTheoMaPhong(hoaDon.CT_PhieuThue.SoPhong, false) * sogio
-					};
-					ls.Add(dvGio);
+						TenDV = ct.TenDV ?? "N/A",
+						Gia = gia,
+						SoLuong = ct.SL,
+						ThanhTien = ct.ThanhTien
+					});
 				}
 
-				// Thêm danh sách dịch vụ khác
 				lvDichVuDaSD.ItemsSource = ls;
 			}
 			catch (Exception ex)
@@ -320,10 +346,17 @@ namespace GUI.View
 
 			// Sửa trạng thái của phiếu thuê
 			var errorSuaCTPT = string.Empty;
-			if (!CT_PhieuThueBUS.GetInstance().suaTinhTrangThuePhong(Phong.MaCTPT, "Đã thanh toán", out errorSuaCTPT))
+			if (!CT_PhieuThueBUS.GetInstance().suaTinhTrangThuePhong(Phong.MaCTPT, "Đã thanh toán", true, "Direct", out errorSuaCTPT))
 			{
 				new DialogCustoms("Lỗi sửa CTPT\nLỗi: " + errorSuaCTPT, "Thông báo", DialogCustoms.OK).ShowDialog();
 				return;
+			}
+
+			var errorSuaPhong = string.Empty;
+			if (!PhongBUS.GetInstance().suaTinhTrangPhong(Phong.MaPhong, "Chưa dọn dẹp", out errorSuaPhong))
+			{
+				new DialogCustoms("Lỗi sửa trạng thái phòng\nLỗi: " + errorSuaPhong, "Thông báo", DialogCustoms.OK)
+					.ShowDialog();
 			}
 
 			// Cập nhật thời gian kết thúc thuê phòng

@@ -23,6 +23,7 @@ namespace GUI.View
 
 		public int SelectedYear { get; set; }
 
+// Ghi gia tri tong doanh thu o cot cuoi cung (cot 6)
 		public decimal TotalRevenue { get; set; }
 
 		public XuatBaoCaoThongKe()
@@ -109,7 +110,7 @@ namespace GUI.View
 						titleCell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
 						// Gộp ô cho tiêu đề
-						worksheet.Range(2, 1, 2, 5).Merge();
+						worksheet.Range(2, 1, 2, 6).Merge();
 
 						// Ghi ngày lập báo cáo
 						var dateCell = worksheet.Cell(3, 1);
@@ -119,11 +120,11 @@ namespace GUI.View
 						dateCell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
 						// Gộp ô cho ngày lập báo cáo
-						worksheet.Range(3, 1, 3, 5).Merge();
+						worksheet.Range(3, 1, 3, 6).Merge();
 
 						// Ghi tiêu đề bảng dữ liệu
 						var headers = new[]
-							{ "Mã hóa đơn", "Ngày lập", "Tên nhân viên", "Mã chi tiết phiếu thuê", "Tổng tiền" };
+							{ "Mã hoá đơn", "Ngày lập", "Tên nhân viên", "Mã chi tiết phiếu thuê", "Mã chi tiết sử dụng dịch vụ", "Tổng tiền" };
 						for (var i = 0; i < headers.Length; i++)
 						{
 							var headerCell = worksheet.Cell(5, i + 1);
@@ -142,8 +143,9 @@ namespace GUI.View
 							worksheet.Cell(i + 6, 2).Value = item.NgayLap.ToString("dd/MM/yyyy hh:mm tt");
 							worksheet.Cell(i + 6, 3).Value = item.NhanVien.HoTen;
 							worksheet.Cell(i + 6, 4).Value = item.MaCTPT;
-							worksheet.Cell(i + 6, 5).Value = item.TongTien;
-							worksheet.Cell(i + 6, 5).Style.NumberFormat.Format = "#,##0 ₫";
+							worksheet.Cell(i + 6, 5).Value = item.MaCTSDDV;
+							worksheet.Cell(i + 6, 6).Value = item.TongTien;
+							worksheet.Cell(i + 6, 6).Style.NumberFormat.Format = "#,##0 ₫";
 
 							// Áp dụng định dạng cho các ô dữ liệu
 							for (var j = 1; j <= headers.Length; j++)
@@ -159,24 +161,25 @@ namespace GUI.View
 						var rowAfterData = BaoCaoData.Count + 7;
 
 						// Ghi "Tổng doanh thu" và giá trị tổng doanh thu
-						worksheet.Cell(rowAfterData, 4).Value = "Tổng doanh thu:";
-						worksheet.Cell(rowAfterData, 4).Style.Font.Bold = true;
-						worksheet.Cell(rowAfterData, 4).Style.Font.FontSize = 12;
-						worksheet.Cell(rowAfterData, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-
-						// Ghi giá trị tổng doanh thu ở cột cuối cùng (cột 5)
-						worksheet.Cell(rowAfterData, 5).Value = TotalRevenue;
-						worksheet.Cell(rowAfterData, 5).Style.NumberFormat.Format = "#,##0 ₫";
+						worksheet.Cell(rowAfterData, 5).Value = "Tổng doanh thu:";
 						worksheet.Cell(rowAfterData, 5).Style.Font.Bold = true;
 						worksheet.Cell(rowAfterData, 5).Style.Font.FontSize = 12;
-						worksheet.Cell(rowAfterData, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+						worksheet.Cell(rowAfterData, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+
+						// Ghi giá trị tổng doanh thu ở cột cuối cùng (cột 5)
+						worksheet.Cell(rowAfterData, 6).Value = TotalRevenue;
+						worksheet.Cell(rowAfterData, 6).Style.NumberFormat.Format = "#,##0 ₫";
+						worksheet.Cell(rowAfterData, 6).Style.Font.Bold = true;
+						worksheet.Cell(rowAfterData, 6).Style.Font.FontSize = 12;
+						worksheet.Cell(rowAfterData, 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
 						// Tự động điều chỉnh kích thước cột
 						worksheet.Column(1).AdjustToContents();
 						worksheet.Column(2).AdjustToContents();
 						worksheet.Column(3).AdjustToContents();
 						worksheet.Column(4).AdjustToContents();
-						worksheet.Column(5).Width = Math.Max(worksheet.Column(5).Width, 20);
+						worksheet.Column(5).AdjustToContents();
+						worksheet.Column(6).Width = Math.Max(worksheet.Column(6).Width, 20);
 
 						// Lưu file Excel
 						workbook.SaveAs(filePath);

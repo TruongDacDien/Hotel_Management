@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Báo cáo" Height="600" Width="950" FontSize="13"
+        Title="Báo cáo" Height="600" Width="1200" FontSize="13"
         WindowStartupLocation="CenterScreen">
 
     <Grid Margin="10">
@@ -53,6 +53,7 @@
                     <DataGridTextColumn Header="Ngày lập" Binding="{Binding NgayLap}" Width="*" />
                     <DataGridTextColumn Header="Tên nhân viên" Binding="{Binding NhanVien.HoTen}" Width="*" />
                     <DataGridTextColumn Header="Mã chi tiết phiếu thuê" Binding="{Binding MaCTPT}" Width="*" />
+                    <DataGridTextColumn Header="Mã chi tiết sử dụng dịch vụ" Binding="{Binding MaCTSDDV}" Width="*" />
                     <DataGridTextColumn Header="Tổng tiền" Binding="{Binding TongTien, StringFormat={}{0:N0} VND}"
                                         Width="*" />
                 </DataGrid.Columns>

@@ -94,6 +94,11 @@ namespace BUS
 			return PhongDAL.GetInstance().suaTinhTrangPhong(maPhong, text, out error);
 		}
 
+		public bool suaTinhTrangPhong(string maPhong, string text, out string error)
+		{
+			return PhongDAL.GetInstance().suaTinhTrangPhong(maPhong, text, out error);
+		}
+
 		public List<Phong> getDataPhong()
 		{
 			return PhongDAL.GetInstance().getDataPhong();

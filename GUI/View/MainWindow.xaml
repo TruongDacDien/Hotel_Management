@@ -209,5 +209,12 @@
 
         </Grid>
 
+        <Button x:Name="btnReload" Width="48" Height="48" Grid.RowSpan="2"
+                HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20"
+                Background="White" BorderThickness="0" Click="btnReload_Click"
+                Panel.ZIndex="999">
+            <Image Source="/GUI;component/Res/reload.png" Width="26" Height="26" Stretch="Uniform" />
+        </Button>
+
     </Grid>
 </Window>

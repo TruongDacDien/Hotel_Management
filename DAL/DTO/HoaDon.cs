@@ -10,6 +10,8 @@ namespace DAL.DTO
 
 		public int? MaCTPT { get; set; }
 
+		public int? MaCTSDDV { get; set; }
+
 		public DateTime NgayLap { get; set; }
 
 		public decimal TongTien { get; set; }

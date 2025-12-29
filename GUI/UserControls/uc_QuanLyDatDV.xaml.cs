@@ -66,14 +66,8 @@ namespace GUI.UserControls
 			var item = (sender as Button)?.DataContext as CT_SDDichVu;
 			if (item == null) return;
 
-			if (!item.MaCTPT.HasValue || item.MaCTPT.Value <= 0)
-			{
-				new DialogCustoms("Khong co ma CTPT de tao hoa don.", "Thong bao", DialogCustoms.OK).ShowDialog();
-				return;
-			}
-
 			var error = string.Empty;
-			var trangThaiDaSuDung = "\u0110\u00e3 s\u1eed d\u1ee5ng";
+			var trangThaiDaSuDung = "Đã sử dụng";
 			if (!CTSDDV_BUS.GetInstance().capNhatTrangThaiSuDung(item.MaCTSDDV, trangThaiDaSuDung, true, "Direct",
 				    out error))
 			{
@@ -88,6 +82,7 @@ namespace GUI.UserControls
 			{
 				MaNV = MaNV,
 				MaCTPT = item.MaCTPT,
+				MaCTSDDV = item.MaCTSDDV,
 				NgayLap = DateTime.Now,
 				TongTien = item.ThanhTien
 			};
@@ -110,4 +105,3 @@ namespace GUI.UserControls
 		}
 	}
 }
-

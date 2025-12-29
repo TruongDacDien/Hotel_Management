@@ -32,13 +32,33 @@ namespace DAL.Data
 				{
 					var query = @"
 					SELECT 
-						hd.MaHD, hd.MaNV, hd.MaCTPT, hd.NgayLap, hd.TongTien,
-						nv.MaNV, nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, 
-						nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong,
-						ctpt.MaCTPT, ctpt.MaPhieuThue, ctpt.SoPhong, ctpt.NgayBD, 
-						ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong
-					FROM HoaDon hd, NhanVien nv, CT_PhieuThue ctpt
-					WHERE hd.MaNV = nv.MaNV AND hd.MaCTPT = ctpt.MaCTPT AND ctpt.TinhTrangThue = 'Đã thanh toán'";
+						hd.MaHD,
+						hd.MaNV AS HD_MaNV,
+						hd.MaCTPT AS HD_MaCTPT,
+						hd.MaCTSDDV,
+						hd.NgayLap,
+						hd.TongTien,
+						nv.MaNV AS NV_MaNV,
+						nv.HoTen,
+						nv.ChucVu,
+						nv.SDT,
+						nv.DiaChi, 
+						nv.CCCD,
+						nv.NTNS,
+						nv.GioiTinh,
+						nv.Luong,
+						ctpt.MaCTPT AS CTPT_MaCTPT,
+						ctpt.MaPhieuThue,
+						ctpt.SoPhong,
+						ctpt.NgayBD, 
+						ctpt.NgayKT,
+						ctpt.SoNguoiO,
+						ctpt.TinhTrangThue,
+						ctpt.TienPhong
+					FROM HoaDon hd
+					INNER JOIN NhanVien nv ON hd.MaNV = nv.MaNV
+					LEFT JOIN CT_PhieuThue ctpt ON hd.MaCTPT = ctpt.MaCTPT
+					";
 
 					var cmd = new MySqlCommand(query, conn);
 					conn.Open();
@@ -50,17 +70,20 @@ namespace DAL.Data
 							var hoaDon = new HoaDon
 							{
 								MaHD = reader.GetInt32(reader.GetOrdinal("MaHD")),
-								MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
-								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT"))
+								MaNV = reader.GetInt32(reader.GetOrdinal("HD_MaNV")),
+								MaCTPT = reader.IsDBNull(reader.GetOrdinal("HD_MaCTPT"))
 									? (int?)null
-									: reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+									: reader.GetInt32(reader.GetOrdinal("HD_MaCTPT")),
+								MaCTSDDV = reader.IsDBNull(reader.GetOrdinal("MaCTSDDV"))
+									? (int?)null
+									: reader.GetInt32(reader.GetOrdinal("MaCTSDDV")),
 								NgayLap = reader.GetDateTime(reader.GetOrdinal("NgayLap")),
 								TongTien = reader.GetDecimal(reader.GetOrdinal("TongTien")),
-								NhanVien = reader.IsDBNull(reader.GetOrdinal("MaNV"))
+								NhanVien = reader.IsDBNull(reader.GetOrdinal("NV_MaNV"))
 									? null
 									: new NhanVien
 									{
-										MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
+										MaNV = reader.GetInt32(reader.GetOrdinal("NV_MaNV")),
 										HoTen = reader.GetString(reader.GetOrdinal("HoTen")),
 										ChucVu = reader.GetString(reader.GetOrdinal("ChucVu")),
 										SDT = reader.GetString(reader.GetOrdinal("SDT")),
@@ -70,11 +93,11 @@ namespace DAL.Data
 										GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
 										Luong = reader.GetDecimal(reader.GetOrdinal("Luong"))
 									},
-								CT_PhieuThue = reader.IsDBNull(reader.GetOrdinal("MaCTPT"))
+								CT_PhieuThue = reader.IsDBNull(reader.GetOrdinal("CTPT_MaCTPT"))
 									? null
 									: new CT_PhieuThue
 									{
-										MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+										MaCTPT = reader.GetInt32(reader.GetOrdinal("CTPT_MaCTPT")),
 										MaPhieuThue = reader.GetInt32(reader.GetOrdinal("MaPhieuThue")),
 										SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
 										NgayBD = reader.GetDateTime(reader.GetOrdinal("NgayBD")),
@@ -108,13 +131,33 @@ namespace DAL.Data
 				{
 					var query = @"
 					SELECT 
-						hd.MaHD, hd.MaNV, hd.MaCTPT, hd.NgayLap, hd.TongTien,
-						nv.MaNV, nv.HoTen, nv.ChucVu, nv.SDT, nv.DiaChi, 
-						nv.CCCD, nv.NTNS, nv.GioiTinh, nv.Luong,
-						ctpt.MaCTPT, ctpt.MaPhieuThue, ctpt.SoPhong, ctpt.NgayBD, 
-						ctpt.NgayKT, ctpt.SoNguoiO, ctpt.TinhTrangThue, ctpt.TienPhong
-					FROM HoaDon hd, NhanVien nv, CT_PhieuThue ctpt
-					WHERE hd.MaNV = nv.MaNV AND hd.MaCTPT = ctpt.MaCTPT AND hd.MaCTPT = @MaCTPT";
+						hd.MaHD,
+						hd.MaNV AS HD_MaNV,
+						hd.MaCTPT AS HD_MaCTPT,
+						hd.MaCTSDDV,
+						hd.NgayLap,
+						hd.TongTien,
+						nv.MaNV AS NV_MaNV,
+						nv.HoTen,
+						nv.ChucVu,
+						nv.SDT,
+						nv.DiaChi, 
+						nv.CCCD,
+						nv.NTNS,
+						nv.GioiTinh,
+						nv.Luong,
+						ctpt.MaCTPT AS CTPT_MaCTPT,
+						ctpt.MaPhieuThue,
+						ctpt.SoPhong,
+						ctpt.NgayBD, 
+						ctpt.NgayKT,
+						ctpt.SoNguoiO,
+						ctpt.TinhTrangThue,
+						ctpt.TienPhong
+					FROM HoaDon hd
+					INNER JOIN NhanVien nv ON hd.MaNV = nv.MaNV
+					LEFT JOIN CT_PhieuThue ctpt ON hd.MaCTPT = ctpt.MaCTPT
+					WHERE hd.MaCTPT = @MaCTPT";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
 
@@ -127,17 +170,20 @@ namespace DAL.Data
 							return new HoaDon
 							{
 								MaHD = reader.GetInt32(reader.GetOrdinal("MaHD")),
-								MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
-								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT"))
+								MaNV = reader.GetInt32(reader.GetOrdinal("HD_MaNV")),
+								MaCTPT = reader.IsDBNull(reader.GetOrdinal("HD_MaCTPT"))
 									? (int?)null
-									: reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+									: reader.GetInt32(reader.GetOrdinal("HD_MaCTPT")),
+								MaCTSDDV = reader.IsDBNull(reader.GetOrdinal("MaCTSDDV"))
+									? (int?)null
+									: reader.GetInt32(reader.GetOrdinal("MaCTSDDV")),
 								NgayLap = reader.GetDateTime(reader.GetOrdinal("NgayLap")),
 								TongTien = reader.GetDecimal(reader.GetOrdinal("TongTien")),
-								NhanVien = reader.IsDBNull(reader.GetOrdinal("MaNV"))
+								NhanVien = reader.IsDBNull(reader.GetOrdinal("NV_MaNV"))
 									? null
 									: new NhanVien
 									{
-										MaNV = reader.GetInt32(reader.GetOrdinal("MaNV")),
+										MaNV = reader.GetInt32(reader.GetOrdinal("NV_MaNV")),
 										HoTen = reader.GetString(reader.GetOrdinal("HoTen")),
 										ChucVu = reader.GetString(reader.GetOrdinal("ChucVu")),
 										SDT = reader.GetString(reader.GetOrdinal("SDT")),
@@ -147,11 +193,11 @@ namespace DAL.Data
 										GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
 										Luong = reader.GetDecimal(reader.GetOrdinal("Luong"))
 									},
-								CT_PhieuThue = reader.IsDBNull(reader.GetOrdinal("MaCTPT"))
+								CT_PhieuThue = reader.IsDBNull(reader.GetOrdinal("CTPT_MaCTPT"))
 									? null
 									: new CT_PhieuThue
 									{
-										MaCTPT = reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+										MaCTPT = reader.GetInt32(reader.GetOrdinal("CTPT_MaCTPT")),
 										MaPhieuThue = reader.GetInt32(reader.GetOrdinal("MaPhieuThue")),
 										SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
 										NgayBD = reader.GetDateTime(reader.GetOrdinal("NgayBD")),
@@ -184,11 +230,12 @@ namespace DAL.Data
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query = @"
-                        INSERT INTO HoaDon (MaCTPT, MaNV, NgayLap, TongTien)
-                        VALUES (@MaCTPT, @MaNV ,@NgayLap, @TongTien)";
+                        INSERT INTO HoaDon (MaCTPT, MaCTSDDV, MaNV, NgayLap, TongTien)
+                        VALUES (@MaCTPT, @MaCTSDDV, @MaNV ,@NgayLap, @TongTien)";
 					var cmd = new MySqlCommand(query, conn);
 
 					cmd.Parameters.AddWithValue("@MaCTPT", hd.MaCTPT);
+					cmd.Parameters.AddWithValue("@MaCTSDDV", hd.MaCTSDDV);
 					cmd.Parameters.AddWithValue("@MaNV", hd.MaNV);
 					cmd.Parameters.AddWithValue("@NgayLap", hd.NgayLap);
 					cmd.Parameters.AddWithValue("@TongTien", hd.TongTien);
