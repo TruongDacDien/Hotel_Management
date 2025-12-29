@@ -53,5 +53,20 @@ namespace BUS
 		{
 			return CT_PhieuThueDAL.GetInstance().capNhatTien(maCTPT, tienPhong, out errorCapNhatCTPT);
 		}
+
+		public int? layMaKHTheoMaCTPT(int? maCTPT)
+		{
+			return CT_PhieuThueDAL.GetInstance().layMaKHTheoMaCTPT(maCTPT);
+		}
+
+		public bool capNhatCheckIn(int? maCTPT, DateTime thoiDiem, string noiDung, out string error)
+		{
+			return CT_PhieuThueDAL.GetInstance().capNhatCheckIn(maCTPT, thoiDiem, noiDung, out error);
+		}
+
+		public bool capNhatCheckOut(int? maCTPT, DateTime thoiDiem, string noiDung, out string error)
+		{
+			return CT_PhieuThueDAL.GetInstance().capNhatCheckOut(maCTPT, thoiDiem, noiDung, out error);
+		}
 	}
 }

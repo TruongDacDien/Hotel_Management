@@ -36,5 +36,17 @@ namespace BUS
 
 			return ls.Sum();
 		}
+
+		public List<CT_SDDichVu> getCTSDDVQuanLy()
+		{
+			return CTSDDV_DAL.GetInstance().getCTSDDVQuanLy();
+		}
+
+		public bool capNhatTrangThaiSuDung(int maCTSDDV, string trangThai, bool daThanhToan, string hinhThucThanhToan,
+			out string error)
+		{
+			return CTSDDV_DAL.GetInstance().capNhatTrangThaiSuDung(maCTSDDV, trangThai, daThanhToan, hinhThucThanhToan,
+				out error);
+		}
 	}
 }

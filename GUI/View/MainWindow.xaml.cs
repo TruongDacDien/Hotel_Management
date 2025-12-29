@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -42,7 +42,7 @@ namespace GUI.View
 		private uc_Home Home;
 		private uc_Phong Phong_UC;
 		private uc_PhieuThue ThuePhong_UC;
-		//private uc_QuanLyDatDV QuanLyDatDV_UC;
+		private uc_QuanLyDatDV QuanLyDatDV_UC;
 		private uc_NhanVien NhanVien_UC;
 		private uc_QuanLyPhong QuanLyPhong_UC;
 		private uc_QuanLyKhachHang QuanLyKhachHang_UC;
@@ -127,10 +127,10 @@ namespace GUI.View
 				listMenu.Add(new ItemMenuMainWindow { name = "Phòng", foreColor = "#FFF08033", kind_Icon = "HomeCity" });
 
 			if (phanQuyen.DatPhong)
-				listMenu.Add(new ItemMenuMainWindow { name = "Đặt Phòng", foreColor = "Green", kind_Icon = "BookAccount" });
+				listMenu.Add(new ItemMenuMainWindow { name = "Đặt phòng", foreColor = "Green", kind_Icon = "BookAccount" });
 
-			//if (phanQuyen.QLDatDV)
-			//	listMenu.Add(new ItemMenuMainWindow { name = "Đặt dịch vụ", foreColor = "Green", kind_Icon = "BookAccount" });
+			if (phanQuyen.QLDatDV)
+				listMenu.Add(new ItemMenuMainWindow { name = "Đặt dịch vụ", foreColor = "Green", kind_Icon = "BookAccount" });
 
 			if (phanQuyen.HoaDon)
 				listMenu.Add(new ItemMenuMainWindow { name = "Hóa đơn", foreColor = "#FFD41515", kind_Icon = "Receipt" });
@@ -166,7 +166,7 @@ namespace GUI.View
 				listMenu.Add(new ItemMenuMainWindow { name = "Thống kê", foreColor = "#FF0069C1", kind_Icon = "ChartAreaspline" });
 
             if (phanQuyen.QLDDXQ)
-                listMenu.Add(new ItemMenuMainWindow { name = "QL DĐXQ", foreColor = "#FF0069C1", kind_Icon = "MapMarker" });
+                listMenu.Add(new ItemMenuMainWindow { name = "QL DDXQ", foreColor = "#FF0069C1", kind_Icon = "MapMarker" });
 
 			lisviewMenu.ItemsSource = listMenu;
 			lisviewMenu.SelectedValuePath = "name";
@@ -199,7 +199,7 @@ namespace GUI.View
 				bitmap.BeginInit();
 				bitmap.UriSource = uri;
 				bitmap.CacheOption = BitmapCacheOption.OnLoad;
-				bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache; // Cũng giúp không dùng cache
+				bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
 				bitmap.EndInit();
 
 				imgAvatar.Fill = new ImageBrush(bitmap);
@@ -227,15 +227,15 @@ namespace GUI.View
 						Phong_UC = new uc_Phong(MaNV);
 						contenDisplayMain.Content = Phong_UC;
 						break;
-					case "Đặt Phòng":
+					case "Đặt phòng":
 						ThuePhong_UC = new uc_PhieuThue(MaNV);
 						contenDisplayMain.Content = ThuePhong_UC;
 						break;
-					//case "Đặt dịch vụ":
-					//	QuanLyDatDV_UC = new uc_QuanLyDatDV();
-					//	contenDisplayMain.Content = QuanLyDatDV_UC;
-					//	break;
-					case "Hóa đơn":
+					case "Đặt dịch vụ":
+						QuanLyDatDV_UC = new uc_QuanLyDatDV(MaNV);
+						contenDisplayMain.Content = QuanLyDatDV_UC;
+						break;
+					case "Hóa don":
 						HoaDon_UC = new uc_HoaDon();
 						contenDisplayMain.Content = HoaDon_UC;
 						break;
@@ -279,7 +279,7 @@ namespace GUI.View
 						ThongKe_UC = new uc_ThongKe();
 						contenDisplayMain.Content = ThongKe_UC;
 						break;
-					case "QL DĐXQ":
+					case "QL DDXQ":
 						DDXQ_UC = new uc_DDXQ();
 						contenDisplayMain.Content = DDXQ_UC;
 						break;

@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using BUS;
+using DAL.DTO;
+using GUI.View;
 
 namespace GUI.UserControls
 {
@@ -20,29 +14,100 @@ namespace GUI.UserControls
 	/// </summary>
 	public partial class uc_QuanLyDatDV : UserControl
 	{
-		public uc_QuanLyDatDV()
+		private ObservableCollection<CT_SDDichVu> list;
+		private CollectionView view;
+
+		public uc_QuanLyDatDV(int maNV) : this()
+		{
+			MaNV = maNV;
+		}
+
+		private uc_QuanLyDatDV()
 		{
 			InitializeComponent();
 		}
 
-		private void click_DatPhong(object sender, RoutedEventArgs e)
+		public int MaNV { get; }
+
+		private void UserControl_Loaded(object sender, RoutedEventArgs e)
 		{
-
-        }
-
-		private void click_ChiTiet(object sender, RoutedEventArgs e)
-		{
-
+			TaiDanhSach();
 		}
 
-		private void click_Xoa(object sender, RoutedEventArgs e)
+		private void TaiDanhSach()
 		{
-
+			list = new ObservableCollection<CT_SDDichVu>(CTSDDV_BUS.GetInstance().getCTSDDVQuanLy());
+			lsvCTSDDV.ItemsSource = list;
+			view = (CollectionView)CollectionViewSource.GetDefaultView(list);
+			view.Filter = FilterCTSDDV;
 		}
 
-		private void txbTimKiem_TextChanged(object sender, TextChangedEventArgs e)
+		private bool FilterCTSDDV(object obj)
 		{
+			if (string.IsNullOrWhiteSpace(txtFilter.Text))
+				return true;
 
+			var item = obj as CT_SDDichVu;
+			if (item == null) return false;
+
+			var keyword = txtFilter.Text.Trim();
+			return (item.TenKH != null && item.TenKH.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0) ||
+			       (item.TenDV != null && item.TenDV.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0) ||
+			       (item.SoPhong != null && item.SoPhong.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0);
+		}
+
+		private void txtFilter_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			view?.Refresh();
+		}
+
+		private void click_SuDung(object sender, RoutedEventArgs e)
+		{
+			var item = (sender as Button)?.DataContext as CT_SDDichVu;
+			if (item == null) return;
+
+			if (!item.MaCTPT.HasValue || item.MaCTPT.Value <= 0)
+			{
+				new DialogCustoms("Khong co ma CTPT de tao hoa don.", "Thong bao", DialogCustoms.OK).ShowDialog();
+				return;
+			}
+
+			var error = string.Empty;
+			var trangThaiDaSuDung = "\u0110\u00e3 s\u1eed d\u1ee5ng";
+			if (!CTSDDV_BUS.GetInstance().capNhatTrangThaiSuDung(item.MaCTSDDV, trangThaiDaSuDung, true, "Direct",
+				    out error))
+			{
+				new DialogCustoms("Loi: " + error, "Thong bao", DialogCustoms.OK).ShowDialog();
+				return;
+			}
+
+			item.TrangThai = trangThaiDaSuDung;
+			item.DaThanhToan = true;
+
+			var hd = new HoaDon
+			{
+				MaNV = MaNV,
+				MaCTPT = item.MaCTPT,
+				NgayLap = DateTime.Now,
+				TongTien = item.ThanhTien
+			};
+
+			if (!HoaDonBUS.GetInstance().themHoaDon(hd, out error))
+			{
+				new DialogCustoms("Loi tao hoa don: " + error, "Thong bao", DialogCustoms.OK).ShowDialog();
+			}
+
+			view?.Refresh();
+		}
+
+		private void click_InPhieu(object sender, RoutedEventArgs e)
+		{
+			var item = (sender as Button)?.DataContext as CT_SDDichVu;
+			if (item == null) return;
+
+			var inPhieu = new XuatPhieuDichVu(item);
+			inPhieu.ShowDialog();
 		}
 	}
 }
+

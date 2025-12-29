@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
@@ -50,39 +50,41 @@ namespace GUI.View
 			MaNV = maNV;
 			Phong = ph;
 			ls = lsDV.ToList();
+
 			try
 			{
 				var error = string.Empty;
+
 				// Lấy thời gian kết thúc thuê phòng là hiện tại
 				ngayKT = DateTime.Now;
 
 				// Lấy thông tin chi tiết phiếu thuê
 				var cT_PhieuThue = CT_PhieuThueBUS.GetInstance().getCTPhieuThueTheoMaCTPT(Phong.MaCTPT);
 
-				// Tính tiền phòng và tiền dịch vụ
+				// Tính tiền phòng và dịch vụ
 				var tienPhong = PhongBUS.GetInstance().tinhTienPhong(Phong, cT_PhieuThue, ngayKT);
 				var tienDV = CTSDDV_BUS.GetInstance().tinhTongTienDichVuTheoMaCTPT(Phong.MaCTPT);
 
 				// Hiển thị thông tin chi tiết
 				txbSoPhong.Text = Phong.MaPhong;
 
-				// Phân tích số ngày và giờ
+				// Phân tích ngày và giờ
 				var time = ngayKT - cT_PhieuThue.NgayBD;
 				var songay = (int)time.TotalDays; // Số ngày đã thuê
 
 				// Tính số giờ
 				decimal sogio = (decimal)time.TotalHours;
 
-				// Làm tròn giờ: nếu thời gian thuê trong ngày vượt quá 6 giờ, tính thêm một ngày
+				// Làm tròn giờ: nếu số giờ dư trong ngày > 12 giờ thì tính thêm 1 ngày
 				decimal gioDu = (decimal)(time.TotalHours % 24);
 				if (gioDu > 12)
 				{
-					songay++; // Trên 12 giờ: Tính thêm 1 ngày
-					sogio = 0; // Sau khi tính thêm 1 ngày thì không cần tính giờ nữa
+					songay++;     // Trên 12 giờ: tính thêm 1 ngày
+					sogio = 0;    // Sau khi tính thêm 1 ngày thì không cần tính giờ nữa
 				}
 				else
 				{
-					// Trường hợp còn lại, làm tròn số giờ thuê theo cách tính đã yêu cầu
+					// Trường hợp còn lại: làm tròn số giờ thuê theo yêu cầu
 					sogio = sogio == 0 ? 1 : (time.Hours + (time.Minutes > 30 || time.Seconds > 0 ? 1 : 0));
 				}
 
@@ -99,7 +101,7 @@ namespace GUI.View
 				txbTongTien.Text = string.Format("{0:0,0 VND}", (tienDV ?? 0) + tienPhong);
 
 				var hoaDonTemp = HoaDonBUS.GetInstance().LayHoaDonThepMaCTPT(Phong.MaCTPT);
-				if ( hoaDonTemp == null)
+				if (hoaDonTemp == null)
 				{
 					// Thêm hóa đơn vào DB
 					var hd = new HoaDon
@@ -111,8 +113,10 @@ namespace GUI.View
 					};
 
 					if (!HoaDonBUS.GetInstance().themHoaDon(hd, out error))
+					{
 						new DialogCustoms("Thêm hóa đơn thất bại!\nLỗi: " + error, "Thông báo", DialogCustoms.OK)
 							.ShowDialog();
+					}
 
 					// Lấy mã hóa đơn mới nhất
 					txbSoHoaDon.Text = HoaDonBUS.GetInstance().layMaHDMoiNhat().ToString();
@@ -120,8 +124,10 @@ namespace GUI.View
 					// Cập nhật tiền phòng cho phiếu thuê
 					var errorCapNhatCTPT = string.Empty;
 					if (!CT_PhieuThueBUS.GetInstance().capNhatTien(ph.MaCTPT, tienPhong, out errorCapNhatCTPT))
+					{
 						new DialogCustoms("Lỗi cập nhật CTPT\nLỗi: " + errorCapNhatCTPT, "Thông báo", DialogCustoms.OK)
 							.ShowDialog();
+					}
 				}
 				else
 				{
@@ -130,12 +136,19 @@ namespace GUI.View
 					hoaDonTemp.NgayLap = ngayKT;
 					hoaDonTemp.TongTien = decimal.Parse(((tienDV ?? 0) + tienPhong).ToString());
 
-					if (!HoaDonBUS.GetInstance().capNhatHoaDon(hoaDonTemp))new DialogCustoms("Cập nhật hóa đơn thất bại!\nLỗi: " + error, "Thông báo", DialogCustoms.OK).ShowDialog();
+					if (!HoaDonBUS.GetInstance().capNhatHoaDon(hoaDonTemp))
+					{
+						new DialogCustoms("Cập nhật hóa đơn thất bại!\nLỗi: " + error, "Thông báo", DialogCustoms.OK)
+							.ShowDialog();
+					}
+
 					// Cập nhật tiền phòng cho phiếu thuê
 					var errorCapNhatCTPT = string.Empty;
 					if (!CT_PhieuThueBUS.GetInstance().capNhatTien(hoaDonTemp.MaCTPT, tienPhong, out errorCapNhatCTPT))
+					{
 						new DialogCustoms("Lỗi cập nhật CTPT\nLỗi: " + errorCapNhatCTPT, "Thông báo", DialogCustoms.OK)
 							.ShowDialog();
+					}
 				}
 
 				// Thêm dịch vụ thuê phòng (theo ngày) vào danh sách dịch vụ đã sử dụng
@@ -176,7 +189,7 @@ namespace GUI.View
 			}
 			catch (Exception ex)
 			{
-				new DialogCustoms("Lỗi load thông tin!\nLỗi: " + ex.Message, "Thông báo", DialogCustoms.OK)
+				new DialogCustoms("Lỗi tải thông tin!\nLỗi: " + ex.Message, "Thông báo", DialogCustoms.OK)
 					.ShowDialog();
 			}
 		}
@@ -199,16 +212,16 @@ namespace GUI.View
 				// Tính số giờ
 				decimal sogio = (decimal)time.TotalHours;
 
-				// Làm tròn giờ: nếu thời gian thuê trong ngày vượt quá 6 giờ, tính thêm một ngày
+				// Làm tròn giờ: nếu số giờ dư trong ngày > 12 giờ thì tính thêm 1 ngày
 				decimal gioDu = (decimal)(time.TotalHours % 24);
 				if (gioDu > 12)
 				{
-					songay++; // Trên 12 giờ: Tính thêm 1 ngày
+					songay++;  // Trên 12 giờ: tính thêm 1 ngày
 					sogio = 0; // Sau khi tính thêm 1 ngày thì không cần tính giờ nữa
 				}
 				else
 				{
-					// Trường hợp còn lại, làm tròn số giờ thuê theo cách tính đã yêu cầu
+					// Trường hợp còn lại: làm tròn số giờ thuê theo yêu cầu
 					sogio = sogio == 0 ? 1 : (time.Hours + (time.Minutes > 30 || time.Seconds > 0 ? 1 : 0));
 				}
 
@@ -227,6 +240,7 @@ namespace GUI.View
 
 				// Danh sách dịch vụ đã sử dụng
 				ls = new List<DichVu_DaChon>(CTSDDV_BUS.GetInstance().getCTSDDVtheoMaCTPT(hoaDon.MaCTPT));
+
 				// Thêm dịch vụ thuê phòng (theo ngày) vào danh sách dịch vụ đã sử dụng
 				if (songay > 0)
 				{
@@ -268,16 +282,17 @@ namespace GUI.View
 			{
 				btnInHoaDon.Visibility = Visibility.Hidden;
 				groupButton.Visibility = Visibility.Hidden;
+
 				var printDialog = new PrintDialog();
 				if (printDialog.ShowDialog() == true)
 				{
-					printDialog.PrintVisual(print, "In Hóa đơn");
+					printDialog.PrintVisual(print, "In hóa đơn");
 					new DialogCustoms("In hóa đơn thành công!", "Thông báo", DialogCustoms.OK).ShowDialog();
 				}
 			}
 			catch (Exception ex)
 			{
-				new DialogCustoms("In hóa đơn thất bại! \n Lỗi: " + ex.Message, "Thông báo", DialogCustoms.OK)
+				new DialogCustoms("In hóa đơn thất bại!\nLỗi: " + ex.Message, "Thông báo", DialogCustoms.OK)
 					.ShowDialog();
 			}
 			finally
@@ -292,7 +307,16 @@ namespace GUI.View
 		private void btnDaThanhToan_Click(object sender, RoutedEventArgs e)
 		{
 			if (isDaThanhToanHandled) return; // Nếu đã xử lý, không làm gì thêm
-			isDaThanhToanHandled = true; // Đặt cờ để đánh dấu đã xử lý
+
+			var phongInfo = PhongBUS.GetInstance().getDataPhongTheoSoPhong(Phong.MaPhong);
+			var loaiPhong = phongInfo != null
+				? LoaiPhongBUS.GetInstance().getLoaiPhongTheoMaLoaiPhong(phongInfo.MaLoaiPhong)
+				: null;
+
+			var checkOut = new CheckIn_CheckOut(false, Phong, loaiPhong);
+			if (checkOut.ShowDialog() != true) return;
+
+			isDaThanhToanHandled = true; // Đánh dấu đã xử lý
 
 			// Sửa trạng thái của phiếu thuê
 			var errorSuaCTPT = string.Empty;
@@ -308,6 +332,7 @@ namespace GUI.View
 			// Disable các nút liên quan
 			btnDaThanhToan.IsEnabled = false;
 			btnDaThanhToan.Background = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#808080"));
+
 			btnQR.IsEnabled = false;
 			btnQR.Background = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#808080"));
 		}
@@ -324,13 +349,18 @@ namespace GUI.View
 				items.Add(item);
 			}
 
-			var noidung = "THANH TOAN KHACH SAN";
+			// Nếu PayOS/đối tác không nhận Unicode, bạn có thể đổi lại thành không dấu.
+			var noidung = "THANH TOÁN KHÁCH SẠN";
+
 			int soHoaDon = Convert.ToInt32(txbSoHoaDon.Text);
+
 			// Lấy thời gian Unix timestamp (mili giây)
 			long unixTimeMilliseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 			int unixTimestampPart = (int)(unixTimeMilliseconds % 10000); // Lấy 4 chữ số cuối
+
 			// Kết hợp số hóa đơn và phần cuối của Unix timestamp
 			var orderID = soHoaDon * 10000 + unixTimestampPart;
+
 			var tongGiaTien = items.Sum(item => item.price * item.quantity);
 
 			PaymentData paymentData = new PaymentData(orderID, tongGiaTien, noidung, items, "https://localhost:3002", "https://localhost:3002");

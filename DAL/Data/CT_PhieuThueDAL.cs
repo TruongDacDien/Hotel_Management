@@ -119,9 +119,27 @@ namespace DAL.Data
 								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
 								NgayBD = reader.GetDateTime(reader.GetOrdinal("NgayBD")),
 								NgayKT = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
+								ThoiDiemCheckIn = reader.IsDBNull(reader.GetOrdinal("ThoiDiemCheckIn"))
+									? (DateTime?)null
+									: reader.GetDateTime(reader.GetOrdinal("ThoiDiemCheckIn")),
+								NoiDungCheckIn = reader.IsDBNull(reader.GetOrdinal("NoiDungCheckIn"))
+									? null
+									: reader.GetString(reader.GetOrdinal("NoiDungCheckIn")),
+								ThoiDiemCheckOut = reader.IsDBNull(reader.GetOrdinal("ThoiDiemCheckOut"))
+									? (DateTime?)null
+									: reader.GetDateTime(reader.GetOrdinal("ThoiDiemCheckOut")),
+								NoiDungCheckOut = reader.IsDBNull(reader.GetOrdinal("NoiDungCheckOut"))
+									? null
+									: reader.GetString(reader.GetOrdinal("NoiDungCheckOut")),
 								SoNguoiO = reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
 								TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue")),
-								TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong"))
+								TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong")),
+								DaThanhToan = reader.IsDBNull(reader.GetOrdinal("DaThanhToan"))
+									? (bool?)null
+									: reader.GetBoolean(reader.GetOrdinal("DaThanhToan")),
+								HinhThucThanhToan = reader.IsDBNull(reader.GetOrdinal("HinhThucThanhToan"))
+									? null
+									: reader.GetString(reader.GetOrdinal("HinhThucThanhToan"))
 							};
 							ls.Add(ctpt);
 						}
@@ -160,9 +178,27 @@ namespace DAL.Data
 								SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
 								NgayBD = reader.GetDateTime(reader.GetOrdinal("NgayBD")),
 								NgayKT = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
+								ThoiDiemCheckIn = reader.IsDBNull(reader.GetOrdinal("ThoiDiemCheckIn"))
+									? (DateTime?)null
+									: reader.GetDateTime(reader.GetOrdinal("ThoiDiemCheckIn")),
+								NoiDungCheckIn = reader.IsDBNull(reader.GetOrdinal("NoiDungCheckIn"))
+									? null
+									: reader.GetString(reader.GetOrdinal("NoiDungCheckIn")),
+								ThoiDiemCheckOut = reader.IsDBNull(reader.GetOrdinal("ThoiDiemCheckOut"))
+									? (DateTime?)null
+									: reader.GetDateTime(reader.GetOrdinal("ThoiDiemCheckOut")),
+								NoiDungCheckOut = reader.IsDBNull(reader.GetOrdinal("NoiDungCheckOut"))
+									? null
+									: reader.GetString(reader.GetOrdinal("NoiDungCheckOut")),
 								SoNguoiO = reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
 								TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue")),
-								TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong"))
+								TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong")),
+								DaThanhToan = reader.IsDBNull(reader.GetOrdinal("DaThanhToan"))
+									? (bool?)null
+									: reader.GetBoolean(reader.GetOrdinal("DaThanhToan")),
+								HinhThucThanhToan = reader.IsDBNull(reader.GetOrdinal("HinhThucThanhToan"))
+									? null
+									: reader.GetString(reader.GetOrdinal("HinhThucThanhToan"))
 							};
 					}
 				}
@@ -284,6 +320,103 @@ namespace DAL.Data
 			catch (Exception ex)
 			{
 				errorCapNhatCTPT = ex.Message;
+				return false;
+			}
+		}
+
+		public int? layMaKHTheoMaCTPT(int? maCTPT)
+		{
+			if (maCTPT == null) return null;
+			var connectionString = Properties.Resources.MySqlConnection;
+
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = @"
+                        SELECT pt.MaKH
+                        FROM CT_PhieuThue ct
+                        INNER JOIN PhieuThue pt ON ct.MaPhieuThue = pt.MaPhieuThue
+                        WHERE ct.MaCTPT = @MaCTPT";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
+
+					conn.Open();
+					var result = cmd.ExecuteScalar();
+					if (result == null || result == DBNull.Value) return null;
+
+					return Convert.ToInt32(result);
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+				return null;
+			}
+		}
+
+		public bool capNhatCheckIn(int? maCTPT, DateTime thoiDiem, string noiDung, out string error)
+		{
+			error = string.Empty;
+			if (maCTPT == null)
+			{
+				error = "Không tồn tại mã chi tiết phiếu thuê";
+				return false;
+			}
+
+			var connectionString = Properties.Resources.MySqlConnection;
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = @"UPDATE CT_PhieuThue 
+								SET ThoiDiemCheckIn = @ThoiDiemCheckIn, NoiDungCheckIn = @NoiDungCheckIn 
+								WHERE MaCTPT = @MaCTPT";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@ThoiDiemCheckIn", thoiDiem);
+					cmd.Parameters.AddWithValue("@NoiDungCheckIn", string.IsNullOrWhiteSpace(noiDung) ? null : noiDung);
+					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
+
+					conn.Open();
+					return cmd.ExecuteNonQuery() > 0;
+				}
+			}
+			catch (Exception ex)
+			{
+				error = ex.Message;
+				return false;
+			}
+		}
+
+		public bool capNhatCheckOut(int? maCTPT, DateTime thoiDiem, string noiDung, out string error)
+		{
+			error = string.Empty;
+			if (maCTPT == null)
+			{
+				error = "Không tồn tại mã chi tiết phiếu thuê";
+				return false;
+			}
+
+			var connectionString = Properties.Resources.MySqlConnection;
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = @"UPDATE CT_PhieuThue 
+								SET ThoiDiemCheckOut = @ThoiDiemCheckOut, NoiDungCheckOut = @NoiDungCheckOut 
+								WHERE MaCTPT = @MaCTPT";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@ThoiDiemCheckOut", thoiDiem);
+					cmd.Parameters.AddWithValue("@NoiDungCheckOut", string.IsNullOrWhiteSpace(noiDung) ? null : noiDung);
+					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
+
+					conn.Open();
+					return cmd.ExecuteNonQuery() > 0;
+				}
+			}
+			catch (Exception ex)
+			{
+				error = ex.Message;
 				return false;
 			}
 		}

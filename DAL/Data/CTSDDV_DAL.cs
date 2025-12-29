@@ -30,13 +30,20 @@ namespace DAL.Data
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"INSERT INTO CT_SDDichVu (MaCTPT, MaDV, SL, ThanhTien) 
-                                     VALUES (@MaCTPT, @MaDV, @SL, @ThanhTien)";
+					var query = @"INSERT INTO CT_SDDichVu 
+                                (MaCTPT, MaKH, MaDV, SL, ThanhTien, NgayApDung, TrangThai, DaThanhToan, HinhThucThanhToan) 
+                                VALUES 
+                                (@MaCTPT, @MaKH, @MaDV, @SL, @ThanhTien, @NgayApDung, @TrangThai, @DaThanhToan, @HinhThucThanhToan)";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaCTPT", ctsddv.MaCTPT);
+					cmd.Parameters.AddWithValue("@MaKH", ctsddv.MaKH);
 					cmd.Parameters.AddWithValue("@MaDV", ctsddv.MaDV);
 					cmd.Parameters.AddWithValue("@SL", ctsddv.SL);
 					cmd.Parameters.AddWithValue("@ThanhTien", ctsddv.ThanhTien);
+					cmd.Parameters.AddWithValue("@NgayApDung", ctsddv.NgayApDung);
+					cmd.Parameters.AddWithValue("@TrangThai", ctsddv.TrangThai);
+					cmd.Parameters.AddWithValue("@DaThanhToan", ctsddv.DaThanhToan.HasValue && ctsddv.DaThanhToan.Value);
+					cmd.Parameters.AddWithValue("@HinhThucThanhToan", ctsddv.HinhThucThanhToan);
 
 					conn.Open();
 					cmd.ExecuteNonQuery();
@@ -125,6 +132,113 @@ namespace DAL.Data
 			}
 
 			return ls;
+		}
+
+		// Lấy danh sách CT_SDDichVu để quản lý
+		public List<CT_SDDichVu> getCTSDDVQuanLy()
+		{
+			var ls = new List<CT_SDDichVu>();
+			var connectionString = Properties.Resources.MySqlConnection;
+
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = @"
+                        SELECT 
+                            ct.MaCTSDDV,
+                            ct.MaCTPT,
+                            ct.MaKH,
+                            ct.MaDV,
+                            ct.SL,
+                            ct.ThanhTien,
+                            ct.NgayApDung,
+                            ct.TrangThai,
+                            ct.DaThanhToan,
+                            ct.HinhThucThanhToan,
+                            kh.TenKH,
+                            dv.TenDV,
+                            ctpt.SoPhong
+                        FROM CT_SDDichVu ct
+                        INNER JOIN KhachHang kh ON ct.MaKH = kh.MaKH
+                        INNER JOIN DichVu dv ON ct.MaDV = dv.MaDV
+                        LEFT JOIN CT_PhieuThue ctpt ON ct.MaCTPT = ctpt.MaCTPT
+                        ORDER BY ct.NgayApDung DESC";
+
+					var cmd = new MySqlCommand(query, conn);
+					conn.Open();
+
+					using (var reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+						{
+							ls.Add(new CT_SDDichVu
+							{
+								MaCTSDDV = reader.GetInt32(reader.GetOrdinal("MaCTSDDV")),
+								MaCTPT = reader.IsDBNull(reader.GetOrdinal("MaCTPT"))
+									? null
+									: (int?)reader.GetInt32(reader.GetOrdinal("MaCTPT")),
+								MaKH = reader.GetInt32(reader.GetOrdinal("MaKH")),
+								MaDV = reader.GetInt32(reader.GetOrdinal("MaDV")),
+								SL = reader.GetInt32(reader.GetOrdinal("SL")),
+								ThanhTien = reader.GetDecimal(reader.GetOrdinal("ThanhTien")),
+								NgayApDung = reader.GetDateTime(reader.GetOrdinal("NgayApDung")),
+								TrangThai = reader.IsDBNull(reader.GetOrdinal("TrangThai"))
+									? null
+									: reader.GetString(reader.GetOrdinal("TrangThai")),
+								DaThanhToan = reader.IsDBNull(reader.GetOrdinal("DaThanhToan"))
+									? (bool?)null
+									: reader.GetBoolean(reader.GetOrdinal("DaThanhToan")),
+								HinhThucThanhToan = reader.IsDBNull(reader.GetOrdinal("HinhThucThanhToan"))
+									? null
+									: reader.GetString(reader.GetOrdinal("HinhThucThanhToan")),
+								TenKH = reader.GetString(reader.GetOrdinal("TenKH")),
+								TenDV = reader.GetString(reader.GetOrdinal("TenDV")),
+								SoPhong = reader.IsDBNull(reader.GetOrdinal("SoPhong"))
+									? null
+									: reader.GetString(reader.GetOrdinal("SoPhong"))
+							});
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+
+			return ls;
+		}
+
+		public bool capNhatTrangThaiSuDung(int maCTSDDV, string trangThai, bool daThanhToan, string hinhThucThanhToan,
+			out string error)
+		{
+			error = string.Empty;
+			var connectionString = Properties.Resources.MySqlConnection;
+
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = @"
+                        UPDATE CT_SDDichVu 
+                        SET TrangThai = @TrangThai, DaThanhToan = @DaThanhToan, HinhThucThanhToan = @HinhThucThanhToan
+                        WHERE MaCTSDDV = @MaCTSDDV";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@TrangThai", trangThai);
+					cmd.Parameters.AddWithValue("@DaThanhToan", daThanhToan);
+					cmd.Parameters.AddWithValue("@HinhThucThanhToan", hinhThucThanhToan);
+					cmd.Parameters.AddWithValue("@MaCTSDDV", maCTSDDV);
+
+					conn.Open();
+					return cmd.ExecuteNonQuery() > 0;
+				}
+			}
+			catch (Exception ex)
+			{
+				error = ex.Message;
+				return false;
+			}
 		}
 	}
 }

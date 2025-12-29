@@ -142,7 +142,7 @@
                                             CellTemplate="{StaticResource dtpCanCuocCongDan}" />
 
 
-                            <GridViewColumn Width="150" Header="Số điện thoạt"
+                            <GridViewColumn Width="150" Header="Số điện thoại"
                                             CellTemplate="{StaticResource dtpSoDienThoai}" />
 
 
