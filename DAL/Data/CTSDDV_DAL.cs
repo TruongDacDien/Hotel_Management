@@ -25,28 +25,54 @@ namespace DAL.Data
 		{
 			error = string.Empty;
 			var connectionString = Properties.Resources.MySqlConnection;
+			var soLuong = ctsddv.SL;
+			if (soLuong <= 0)
+			{
+				error = "So luong dich vu khong hop le.";
+				return false;
+			}
 
 			try
 			{
 				using (var conn = new MySqlConnection(connectionString))
 				{
-					var query = @"INSERT INTO CT_SDDichVu 
+					conn.Open();
+					using (var tran = conn.BeginTransaction())
+					{
+						var insertQuery = @"INSERT INTO CT_SDDichVu 
                                 (MaCTPT, MaKH, MaDV, SL, ThanhTien, NgayApDung, TrangThai, DaThanhToan, HinhThucThanhToan) 
                                 VALUES 
                                 (@MaCTPT, @MaKH, @MaDV, @SL, @ThanhTien, @NgayApDung, @TrangThai, @DaThanhToan, @HinhThucThanhToan)";
-					var cmd = new MySqlCommand(query, conn);
-					cmd.Parameters.AddWithValue("@MaCTPT", ctsddv.MaCTPT);
-					cmd.Parameters.AddWithValue("@MaKH", ctsddv.MaKH);
-					cmd.Parameters.AddWithValue("@MaDV", ctsddv.MaDV);
-					cmd.Parameters.AddWithValue("@SL", ctsddv.SL);
-					cmd.Parameters.AddWithValue("@ThanhTien", ctsddv.ThanhTien);
-					cmd.Parameters.AddWithValue("@NgayApDung", ctsddv.NgayApDung);
-					cmd.Parameters.AddWithValue("@TrangThai", ctsddv.TrangThai);
-					cmd.Parameters.AddWithValue("@DaThanhToan", ctsddv.DaThanhToan.HasValue && ctsddv.DaThanhToan.Value);
-					cmd.Parameters.AddWithValue("@HinhThucThanhToan", ctsddv.HinhThucThanhToan);
+						var insertCmd = new MySqlCommand(insertQuery, conn, tran);
+						insertCmd.Parameters.AddWithValue("@MaCTPT", ctsddv.MaCTPT);
+						insertCmd.Parameters.AddWithValue("@MaKH", ctsddv.MaKH);
+						insertCmd.Parameters.AddWithValue("@MaDV", ctsddv.MaDV);
+						insertCmd.Parameters.AddWithValue("@SL", ctsddv.SL);
+						insertCmd.Parameters.AddWithValue("@ThanhTien", ctsddv.ThanhTien);
+						insertCmd.Parameters.AddWithValue("@NgayApDung", ctsddv.NgayApDung);
+						insertCmd.Parameters.AddWithValue("@TrangThai", ctsddv.TrangThai);
+						insertCmd.Parameters.AddWithValue("@DaThanhToan",
+							ctsddv.DaThanhToan.HasValue && ctsddv.DaThanhToan.Value);
+						insertCmd.Parameters.AddWithValue("@HinhThucThanhToan", ctsddv.HinhThucThanhToan);
 
-					conn.Open();
-					cmd.ExecuteNonQuery();
+						insertCmd.ExecuteNonQuery();
+
+						var updateQuery = @"UPDATE DichVu
+								SET SoLuong = SoLuong - @SL
+								WHERE MaDV = @MaDV AND SoLuong >= @SL";
+						var updateCmd = new MySqlCommand(updateQuery, conn, tran);
+						updateCmd.Parameters.AddWithValue("@MaDV", ctsddv.MaDV);
+						updateCmd.Parameters.AddWithValue("@SL", ctsddv.SL);
+
+						if (updateCmd.ExecuteNonQuery() == 0)
+						{
+							tran.Rollback();
+							error = "So luong dich vu khong du.";
+							return false;
+						}
+
+						tran.Commit();
+					}
 				}
 
 				return true;
@@ -309,6 +335,43 @@ namespace DAL.Data
 					conn.Open();
 					return cmd.ExecuteNonQuery() > 0;
 				}
+			}
+			catch (Exception ex)
+			{
+				error = ex.Message;
+				return false;
+			}
+		}
+
+		public bool capNhatThanhToanTheoMaCTPT(int? maCTPT, bool daThanhToan, string hinhThucThanhToan, out string error)
+		{
+			error = string.Empty;
+			if (maCTPT == null)
+			{
+				error = "MaCTPT is null.";
+				return false;
+			}
+
+			var connectionString = Properties.Resources.MySqlConnection;
+
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = @"
+                        UPDATE CT_SDDichVu 
+                        SET DaThanhToan = @DaThanhToan, HinhThucThanhToan = @HinhThucThanhToan
+                        WHERE MaCTPT = @MaCTPT";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@DaThanhToan", daThanhToan);
+					cmd.Parameters.AddWithValue("@HinhThucThanhToan", hinhThucThanhToan);
+					cmd.Parameters.AddWithValue("@MaCTPT", maCTPT);
+
+					conn.Open();
+					cmd.ExecuteNonQuery();
+				}
+
+				return true;
 			}
 			catch (Exception ex)
 			{

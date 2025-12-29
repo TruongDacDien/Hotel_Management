@@ -53,5 +53,11 @@ namespace BUS
 			return CTSDDV_DAL.GetInstance().capNhatTrangThaiSuDung(maCTSDDV, trangThai, daThanhToan, hinhThucThanhToan,
 				out error);
 		}
+
+		public bool capNhatThanhToanTheoMaCTPT(int? maCTPT, bool daThanhToan, string hinhThucThanhToan, out string error)
+		{
+			return CTSDDV_DAL.GetInstance().capNhatThanhToanTheoMaCTPT(maCTPT, daThanhToan, hinhThucThanhToan,
+				out error);
+		}
 	}
 }

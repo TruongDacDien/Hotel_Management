@@ -59,20 +59,42 @@ namespace GUI.View
 			SelectedYear = (int)YearSelector.SelectedItem;
 
 			// Giả lập dữ liệu báo cáo (lấy từ BUS)
-			BaoCaoData = new ObservableCollection<HoaDon>(HoaDonBUS.GetInstance().GetHoaDons());
+			var allData = HoaDonBUS.GetInstance().GetHoaDons();
 
-			// Lọc dữ liệu theo tháng và năm được chọn
-			var filteredData =
-				BaoCaoData.Where(hd => hd.NgayLap.Month == SelectedMonth && hd.NgayLap.Year == SelectedYear);
+			// Lọc dữ liệu theo tháng, năm và thanh toán
+			var filteredData = allData
+				.Where(hd => hd.NgayLap.Month == SelectedMonth && hd.NgayLap.Year == SelectedYear)
+				.Where(IsHoaDonDaThanhToan)
+				.ToList();
+
+			BaoCaoData = new ObservableCollection<HoaDon>(filteredData);
 
 			// Gán dữ liệu đã lọc vào DataGrid
-			ReportDataGrid.ItemsSource = filteredData;
+			ReportDataGrid.ItemsSource = BaoCaoData;
 
 			// Tính tổng doanh thu từ dữ liệu đã lọc
-			TotalRevenue = filteredData.Sum(hd => hd.TongTien);
+			TotalRevenue = BaoCaoData.Sum(hd => hd.TongTien);
 
 			// Hiển thị tổng doanh thu
 			TotalRevenueText.Text = $"{TotalRevenue:N0} VND";
+		}
+
+		private bool IsHoaDonDaThanhToan(HoaDon hd)
+		{
+			if (hd == null) return false;
+
+			if (hd.MaCTPT.HasValue)
+			{
+				return hd.CT_PhieuThue?.DaThanhToan == true;
+			}
+
+			if (hd.MaCTSDDV.HasValue)
+			{
+				var ct = CTSDDV_BUS.GetInstance().getCTSDDVTheoMaCTSDDV(hd.MaCTSDDV.Value);
+				return ct?.DaThanhToan == true;
+			}
+
+			return false;
 		}
 
 		private void OnMonthYearChanged(object sender, SelectionChangedEventArgs e)

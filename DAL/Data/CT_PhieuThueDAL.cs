@@ -30,8 +30,8 @@ namespace DAL.Data
 				using (var conn = new MySqlConnection(connectionString))
 				{
 					var query =
-						"INSERT INTO CT_PhieuThue (MaPhieuThue, SoPhong, NgayBD, NgayKT, SoNguoiO, TinhTrangThue, TienPhong) " +
-						"VALUES (@MaPhieuThue, @SoPhong, @NgayBD, @NgayKT, @SoNguoiO, @TinhTrangThue, @TienPhong)";
+						"INSERT INTO CT_PhieuThue (MaPhieuThue, SoPhong, NgayBD, NgayKT, SoNguoiO, TinhTrangThue, TienPhong, DaThanhToan, HinhThucThanhToan) " +
+						"VALUES (@MaPhieuThue, @SoPhong, @NgayBD, @NgayKT, @SoNguoiO, @TinhTrangThue, @TienPhong, @DaThanhToan, @HinhThucThanhToan)";
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@MaPhieuThue", ctpt.MaPhieuThue);
 					cmd.Parameters.AddWithValue("@SoPhong", ctpt.SoPhong);
@@ -40,6 +40,8 @@ namespace DAL.Data
 					cmd.Parameters.AddWithValue("@SoNguoiO", ctpt.SoNguoiO);
 					cmd.Parameters.AddWithValue("@TinhTrangThue", ctpt.TinhTrangThue);
 					cmd.Parameters.AddWithValue("@TienPhong", ctpt.TienPhong);
+					cmd.Parameters.AddWithValue("@DaThanhToan", ctpt.DaThanhToan);
+					cmd.Parameters.AddWithValue("@HinhThucThanhToan", ctpt.HinhThucThanhToan);
 
 					conn.Open();
 					cmd.ExecuteNonQuery();

@@ -39,9 +39,9 @@
         </Grid>
 
         <Grid Grid.Row="1">
-            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="1220" Height="520" Background="#F2F1F1">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="1180" Height="520" Background="#F2F1F1">
                 <Grid.Clip>
-                    <RectangleGeometry Rect="0,0,1220,520" RadiusX="10" RadiusY="10" />
+                    <RectangleGeometry Rect="0,0,1180,520" RadiusX="10" RadiusY="10" />
                 </Grid.Clip>
                 <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="lsvCTSDDV">
                     <ListView.View>
@@ -54,50 +54,52 @@
                                 </Style>
                             </GridView.ColumnHeaderContainerStyle>
 
-                            <GridViewColumn Width="90" Header="Mã" DisplayMemberBinding="{Binding MaCTSDDV}" />
+                            <GridViewColumn Width="60" Header="Mã" DisplayMemberBinding="{Binding MaCTSDDV}" />
                             <GridViewColumn Width="160" Header="Khách hàng" DisplayMemberBinding="{Binding TenKH}" />
                             <GridViewColumn Width="160" Header="Dịch vụ" DisplayMemberBinding="{Binding TenDV}" />
-                            <GridViewColumn Width="90" Header="Phòng" DisplayMemberBinding="{Binding SoPhong}" />
+                            <GridViewColumn Width="70" Header="Phòng" DisplayMemberBinding="{Binding SoPhong}" />
                             <GridViewColumn Width="70" Header="Số lượng" DisplayMemberBinding="{Binding SL}" />
-                            <GridViewColumn Width="140" Header="Thành tiền"
+                            <GridViewColumn Width="100" Header="Thành tiền"
                                             DisplayMemberBinding="{Binding ThanhTien, StringFormat={}{0:N0} VND}" />
-                            <GridViewColumn Width="150" Header="Ngày áp dụng"
+                            <GridViewColumn Width="120" Header="Ngày áp dụng"
                                             DisplayMemberBinding="{Binding NgayApDung, StringFormat=dd/MM/yyyy HH:mm}" />
-                            <GridViewColumn Width="130" Header="Trạng thái" DisplayMemberBinding="{Binding TrangThai}" />
-
-                            <GridViewColumn Width="110" Header="Sử dụng">
+                            <GridViewColumn Width="100" Header="Thanh toán">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Content="Sử dụng" Width="90" Height="28" Click="click_SuDung">
-                                            <Button.Style>
-                                                <Style TargetType="Button">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding DaThanhToan}" Value="True">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
+                                        <CheckBox IsThreeState="False"
+                                                  IsEnabled="True"
+                                                  IsHitTestVisible="False"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  IsChecked="{Binding DaThanhToan, TargetNullValue=False}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
+                            <GridViewColumn Width="100" Header="Hình thức"
+                                            DisplayMemberBinding="{Binding HinhThucThanhToan}" />
+                            <GridViewColumn Width="120" Header="Trạng thái" DisplayMemberBinding="{Binding TrangThai}" />
 
-                            <GridViewColumn Width="120" Header="In phiếu">
+                            <GridViewColumn Width="120" Header="Chức năng">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Content="In phiếu" Width="90" Height="28" Click="click_InPhieu">
-                                            <Button.Style>
-                                                <Style TargetType="Button">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding DaThanhToan}" Value="True">
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
+                                        <Button Width="90" Height="28" Click="click_ChucNang">
+											<Button.Style>
+												<Style TargetType="Button">
+													<Setter Property="Visibility" Value="Visible" />
+													<Setter Property="Content" Value="In phiếu" />
+													<Style.Triggers>
+														<MultiDataTrigger>
+															<MultiDataTrigger.Conditions>
+																<Condition Binding="{Binding HasMaCTPT}" Value="False" />
+																<Condition Binding="{Binding TrangThai}" Value="Dịch vụ đã đặt" />
+																<Condition Binding="{Binding DaThanhToan}" Value="False" />
+																<Condition Binding="{Binding HinhThucThanhToan}" Value="Direct" />
+															</MultiDataTrigger.Conditions>
+															<Setter Property="Content" Value="Thanh toán" />
+														</MultiDataTrigger>
+													</Style.Triggers>
+												</Style>
+											</Button.Style>
                                         </Button>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>

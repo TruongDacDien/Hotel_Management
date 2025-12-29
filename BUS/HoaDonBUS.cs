@@ -28,6 +28,11 @@ namespace BUS
 			return HoaDonDAL.GetInstance().LayHoaDonTheoMaCTPT(maCTPT);
 		}
 
+		public HoaDon LayHoaDonTheoMaCTSDDV(int maCTSDDV)
+		{
+			return HoaDonDAL.GetInstance().LayHoaDonTheoMaCTSDDV(maCTSDDV);
+		}
+
 		public bool themHoaDon(HoaDon hd, out string error)
 		{
 			return HoaDonDAL.GetInstance().themHoaDon(hd, out error);

@@ -54,7 +54,8 @@ namespace DAL.Data
 						ctpt.NgayKT,
 						ctpt.SoNguoiO,
 						ctpt.TinhTrangThue,
-						ctpt.TienPhong
+						ctpt.TienPhong,
+						ctpt.DaThanhToan
 					FROM HoaDon hd
 					INNER JOIN NhanVien nv ON hd.MaNV = nv.MaNV
 					LEFT JOIN CT_PhieuThue ctpt ON hd.MaCTPT = ctpt.MaCTPT
@@ -104,7 +105,10 @@ namespace DAL.Data
 										NgayKT = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
 										SoNguoiO = reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
 										TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue")),
-										TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong"))
+										TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong")),
+										DaThanhToan = reader.IsDBNull(reader.GetOrdinal("DaThanhToan"))
+											? (bool?)null
+											: reader.GetBoolean(reader.GetOrdinal("DaThanhToan"))
 									}
 							};
 
@@ -153,7 +157,8 @@ namespace DAL.Data
 						ctpt.NgayKT,
 						ctpt.SoNguoiO,
 						ctpt.TinhTrangThue,
-						ctpt.TienPhong
+						ctpt.TienPhong,
+						ctpt.DaThanhToan
 					FROM HoaDon hd
 					INNER JOIN NhanVien nv ON hd.MaNV = nv.MaNV
 					LEFT JOIN CT_PhieuThue ctpt ON hd.MaCTPT = ctpt.MaCTPT
@@ -204,7 +209,112 @@ namespace DAL.Data
 										NgayKT = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
 										SoNguoiO = reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
 										TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue")),
-										TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong"))
+										TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong")),
+										DaThanhToan = reader.IsDBNull(reader.GetOrdinal("DaThanhToan"))
+											? (bool?)null
+											: reader.GetBoolean(reader.GetOrdinal("DaThanhToan"))
+									}
+							};
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Lỗi: " + ex.Message);
+			}
+
+			return null;
+		}
+
+		public HoaDon LayHoaDonTheoMaCTSDDV(int maCTSDDV)
+		{
+			var connectionString = Properties.Resources.MySqlConnection;
+
+			try
+			{
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					var query = @"
+					SELECT 
+						hd.MaHD,
+						hd.MaNV AS HD_MaNV,
+						hd.MaCTPT AS HD_MaCTPT,
+						hd.MaCTSDDV,
+						hd.NgayLap,
+						hd.TongTien,
+						nv.MaNV AS NV_MaNV,
+						nv.HoTen,
+						nv.ChucVu,
+						nv.SDT,
+						nv.DiaChi, 
+						nv.CCCD,
+						nv.NTNS,
+						nv.GioiTinh,
+						nv.Luong,
+						ctpt.MaCTPT AS CTPT_MaCTPT,
+						ctpt.MaPhieuThue,
+						ctpt.SoPhong,
+						ctpt.NgayBD, 
+						ctpt.NgayKT,
+						ctpt.SoNguoiO,
+						ctpt.TinhTrangThue,
+						ctpt.TienPhong,
+						ctpt.DaThanhToan
+					FROM HoaDon hd
+					INNER JOIN NhanVien nv ON hd.MaNV = nv.MaNV
+					LEFT JOIN CT_PhieuThue ctpt ON hd.MaCTPT = ctpt.MaCTPT
+					WHERE hd.MaCTSDDV = @MaCTSDDV";
+					var cmd = new MySqlCommand(query, conn);
+					cmd.Parameters.AddWithValue("@MaCTSDDV", maCTSDDV);
+
+					conn.Open();
+
+					using (var reader = cmd.ExecuteReader())
+					{
+						if (reader.Read())
+						{
+							return new HoaDon
+							{
+								MaHD = reader.GetInt32(reader.GetOrdinal("MaHD")),
+								MaNV = reader.GetInt32(reader.GetOrdinal("HD_MaNV")),
+								MaCTPT = reader.IsDBNull(reader.GetOrdinal("HD_MaCTPT"))
+									? (int?)null
+									: reader.GetInt32(reader.GetOrdinal("HD_MaCTPT")),
+								MaCTSDDV = reader.IsDBNull(reader.GetOrdinal("MaCTSDDV"))
+									? (int?)null
+									: reader.GetInt32(reader.GetOrdinal("MaCTSDDV")),
+								NgayLap = reader.GetDateTime(reader.GetOrdinal("NgayLap")),
+								TongTien = reader.GetDecimal(reader.GetOrdinal("TongTien")),
+								NhanVien = reader.IsDBNull(reader.GetOrdinal("NV_MaNV"))
+									? null
+									: new NhanVien
+									{
+										MaNV = reader.GetInt32(reader.GetOrdinal("NV_MaNV")),
+										HoTen = reader.GetString(reader.GetOrdinal("HoTen")),
+										ChucVu = reader.GetString(reader.GetOrdinal("ChucVu")),
+										SDT = reader.GetString(reader.GetOrdinal("SDT")),
+										DiaChi = reader.GetString(reader.GetOrdinal("DiaChi")),
+										CCCD = reader.GetString(reader.GetOrdinal("CCCD")),
+										NTNS = reader.GetDateTime(reader.GetOrdinal("NTNS")),
+										GioiTinh = reader.GetString(reader.GetOrdinal("GioiTinh")),
+										Luong = reader.GetDecimal(reader.GetOrdinal("Luong"))
+									},
+								CT_PhieuThue = reader.IsDBNull(reader.GetOrdinal("CTPT_MaCTPT"))
+									? null
+									: new CT_PhieuThue
+									{
+										MaCTPT = reader.GetInt32(reader.GetOrdinal("CTPT_MaCTPT")),
+										MaPhieuThue = reader.GetInt32(reader.GetOrdinal("MaPhieuThue")),
+										SoPhong = reader.GetString(reader.GetOrdinal("SoPhong")),
+										NgayBD = reader.GetDateTime(reader.GetOrdinal("NgayBD")),
+										NgayKT = reader.GetDateTime(reader.GetOrdinal("NgayKT")),
+										SoNguoiO = reader.GetInt32(reader.GetOrdinal("SoNguoiO")),
+										TinhTrangThue = reader.GetString(reader.GetOrdinal("TinhTrangThue")),
+										TienPhong = reader.GetDecimal(reader.GetOrdinal("TienPhong")),
+										DaThanhToan = reader.IsDBNull(reader.GetOrdinal("DaThanhToan"))
+											? (bool?)null
+											: reader.GetBoolean(reader.GetOrdinal("DaThanhToan"))
 									}
 							};
 						}

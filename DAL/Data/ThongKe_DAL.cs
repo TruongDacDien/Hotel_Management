@@ -35,21 +35,31 @@ namespace DAL.Data
 									 JOIN HoaDon HD ON CTPT.MaCTPT = HD.MaCTPT
 									 WHERE MONTH(HD.NgayLap) = @month 
 									   AND YEAR(HD.NgayLap) = @year
-									   AND CTPT.TinhTrangThue = 'Đã thanh toán') AS TongTienPhong,
-									SUM(CTDV.ThanhTien) AS TongTienDV,
-									COUNT(DISTINCT HD.MaHD) AS SoLuongPhongDaDat,
-									(SELECT SUM(CTPT.TienPhong)
-									 FROM CT_PhieuThue CTPT
-									 JOIN HoaDon HD ON CTPT.MaCTPT = HD.MaCTPT
+									   AND CTPT.DaThanhToan = 1) AS TongTienPhong,
+									(SELECT SUM(TienDV)
+									 FROM (
+										SELECT CTDV.ThanhTien AS TienDV
+										FROM CT_SDDichVu CTDV
+										JOIN HoaDon HD ON HD.MaCTPT = CTDV.MaCTPT
+										WHERE CTDV.DaThanhToan = 1
+										  AND CTDV.MaCTPT IS NOT NULL
+										  AND MONTH(HD.NgayLap) = @month
+										  AND YEAR(HD.NgayLap) = @year
+										UNION ALL
+										SELECT CTDV.ThanhTien AS TienDV
+										FROM CT_SDDichVu CTDV
+										JOIN HoaDon HD ON HD.MaCTSDDV = CTDV.MaCTSDDV
+										WHERE CTDV.DaThanhToan = 1
+										  AND CTDV.MaCTPT IS NULL
+										  AND MONTH(HD.NgayLap) = @month
+										  AND YEAR(HD.NgayLap) = @year
+									 ) AS DV) AS TongTienDV,
+									(SELECT COUNT(DISTINCT HD.MaHD)
+									 FROM HoaDon HD
+									 JOIN CT_PhieuThue CTPT ON CTPT.MaCTPT = HD.MaCTPT
 									 WHERE MONTH(HD.NgayLap) = @month 
 									   AND YEAR(HD.NgayLap) = @year
-									   AND CTPT.TinhTrangThue = 'Đã thanh toán') + SUM(CTDV.ThanhTien) AS TongDoanhThu
-								FROM HoaDon HD
-								LEFT JOIN CT_PhieuThue CTPT ON CTPT.MaCTPT = HD.MaCTPT
-								LEFT JOIN CT_SDDichVu CTDV ON CTDV.MaCTPT = CTPT.MaCTPT
-								WHERE MONTH(HD.NgayLap) = @month 
-								  AND YEAR(HD.NgayLap) = @year 
-								  AND CTPT.TinhTrangThue = 'Đã thanh toán'";
+									   AND CTPT.DaThanhToan = 1) AS SoLuongPhongDaDat";
 
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@month", month);
@@ -69,9 +79,7 @@ namespace DAL.Data
 							kq.Sophong = reader.IsDBNull(reader.GetOrdinal("SoLuongPhongDaDat"))
 								? 0
 								: reader.GetInt32(reader.GetOrdinal("SoLuongPhongDaDat"));
-							kq.TongDoanhThu = reader.IsDBNull(reader.GetOrdinal("TongDoanhThu"))
-								? 0
-								: reader.GetDecimal(reader.GetOrdinal("TongDoanhThu"));
+							kq.TongDoanhThu = kq.DoanhthuPhong + kq.DoanhthuDichVu;
 						}
 					}
 				}
@@ -100,9 +108,20 @@ namespace DAL.Data
 									HD.NgayLap
 								FROM HoaDon HD
 								LEFT JOIN CT_PhieuThue CTPT ON CTPT.MaCTPT = HD.MaCTPT
-								LEFT JOIN CT_SDDichVu CTDV ON CTDV.MaCTPT = CTPT.MaCTPT
+								LEFT JOIN CT_SDDichVu CTDV ON CTDV.MaCTPT = CTPT.MaCTPT AND CTDV.DaThanhToan = 1
 								WHERE YEAR(HD.NgayLap) = @year 
-								  AND CTPT.TinhTrangThue = 'Đã thanh toán'";
+								  AND CTPT.DaThanhToan = 1
+								UNION ALL
+								SELECT
+									0 AS TienPhong,
+									CTDV.ThanhTien AS TienDV,
+									CTDV.ThanhTien AS TongTien,
+									HD.NgayLap
+								FROM HoaDon HD
+								JOIN CT_SDDichVu CTDV ON CTDV.MaCTSDDV = HD.MaCTSDDV
+								WHERE YEAR(HD.NgayLap) = @year
+								  AND CTDV.DaThanhToan = 1
+								  AND CTDV.MaCTPT IS NULL";
 
 					var cmd = new MySqlCommand(query, conn);
 					cmd.Parameters.AddWithValue("@year", year);

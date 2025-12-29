@@ -349,6 +349,8 @@ namespace GUI.View
 						{
 							item.MaPhieuThue = PhieuThueBUS.GetInstance().layMaPhieuThueMoiNhat();
 							item.TinhTrangThue = "Phòng đã đặt";
+							item.DaThanhToan = false;
+							item.HinhThucThanhToan = "Direct";
 							if (CT_PhieuThueBUS.GetInstance().addCTPhieuThue(item, out errorCTPT))
 							{
 								dem++;

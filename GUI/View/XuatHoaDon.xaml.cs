@@ -28,6 +28,8 @@ namespace GUI.View
 	public partial class XuatHoaDon : Window
 	{
 		private readonly List<DichVu_DaChon> ls;
+		private CT_SDDichVu? ctSDDV;
+		private bool updateTrangThaiOnPrint;
 		private PayOS payOS { get; set; }
 
 		private DateTime ngayKT { get; set; }
@@ -43,6 +45,17 @@ namespace GUI.View
 			string apiKey = Properties.Resources.apiKey;
 			string checksumKey = Properties.Resources.checksumKey;
 			payOS = new PayOS(clientId, apiKey, checksumKey);
+		}
+
+		public XuatHoaDon(int maNV, CT_SDDichVu ct, bool allowPayment, bool allowPrint, bool capNhatTrangThaiSauIn) : this()
+		{
+			MaNV = maNV;
+			ctSDDV = ct;
+			updateTrangThaiOnPrint = capNhatTrangThaiSauIn;
+
+			ls = new List<DichVu_DaChon>();
+			ConfigureButtons(allowPayment, allowPrint);
+			LoadThongTinDichVu(ct, false);
 		}
 
 		public XuatHoaDon(int maNV, Phong_Custom ph, ObservableCollection<DichVu_DaChon> lsDV) : this()
@@ -62,8 +75,8 @@ namespace GUI.View
 				var cT_PhieuThue = CT_PhieuThueBUS.GetInstance().getCTPhieuThueTheoMaCTPT(Phong.MaCTPT);
 
 				// Tính tiền phòng và dịch vụ
-				var tienPhong = PhongBUS.GetInstance().tinhTienPhong(Phong, cT_PhieuThue, ngayKT);
 				var tienDV = CTSDDV_BUS.GetInstance().tinhTongTienDichVuTheoMaCTPT(Phong.MaCTPT);
+				decimal tienPhong;
 
 				// Hiển thị thông tin chi tiết
 				txbSoPhong.Text = Phong.MaPhong;
@@ -89,6 +102,10 @@ namespace GUI.View
 				}
 
 				var thoiGianThue = $"{songay} ngày {sogio} giờ";
+
+				var giaNgay = PhongDAL.GetInstance().layGiaTienTheoMaPhong(Phong.MaPhong, true);
+				var giaGio = PhongDAL.GetInstance().layGiaTienTheoMaPhong(Phong.MaPhong, false);
+				tienPhong = (songay > 0 ? giaNgay * songay : 0) + (sogio > 0 ? giaGio * sogio : 0);
 
 				// Hiển thị thời gian thuê
 				txbSoNgayOrGio.Text = "Thời gian thuê: ";
@@ -149,6 +166,13 @@ namespace GUI.View
 						new DialogCustoms("Lỗi cập nhật CTPT\nLỗi: " + errorCapNhatCTPT, "Thông báo", DialogCustoms.OK)
 							.ShowDialog();
 					}
+				}
+
+				var errorCapNhatSDDV = string.Empty;
+				if (!CTSDDV_BUS.GetInstance().capNhatThanhToanTheoMaCTPT(Phong.MaCTPT, true, "Direct",
+					    out errorCapNhatSDDV))
+				{
+					Console.WriteLine(errorCapNhatSDDV);
 				}
 
 				// Thêm dịch vụ thuê phòng (theo ngày) vào danh sách dịch vụ đã sử dụng
@@ -302,8 +326,131 @@ namespace GUI.View
 			}
 		}
 
+		private void ConfigureButtons(bool showPayment, bool showPrint)
+		{
+			groupButton.Visibility = showPayment ? Visibility.Visible : Visibility.Hidden;
+			btnInHoaDon.Visibility = showPrint ? Visibility.Visible : Visibility.Hidden;
+		}
+
+		private HoaDon EnsureHoaDonChoDichVu(bool createIfMissing)
+		{
+			if (ctSDDV == null) return null;
+
+			var hoaDon = HoaDonBUS.GetInstance().LayHoaDonTheoMaCTSDDV(ctSDDV.MaCTSDDV);
+			if (hoaDon != null) return hoaDon;
+			if (!createIfMissing) return null;
+
+			var error = string.Empty;
+			var hd = new HoaDon
+			{
+				MaNV = MaNV,
+				MaCTSDDV = ctSDDV.MaCTSDDV,
+				NgayLap = DateTime.Now,
+				TongTien = ctSDDV.ThanhTien
+			};
+
+			if (!HoaDonBUS.GetInstance().themHoaDon(hd, out error))
+			{
+				new DialogCustoms("Thêm hóa đơn thất bại!\nLỗi: " + error, "Thông báo", DialogCustoms.OK).ShowDialog();
+				return null;
+			}
+
+			hd.MaHD = HoaDonBUS.GetInstance().layMaHDMoiNhat();
+			hd.NhanVien = NhanVienBUS.GetInstance().layNhanVienTheoMaNV(MaNV);
+			return hd;
+		}
+
+		private void LoadThongTinDichVu(CT_SDDichVu ct, bool createHoaDon)
+		{
+			if (ct == null)
+			{
+				new DialogCustoms("Không tìm thấy dịch vụ.", "Thông báo", DialogCustoms.OK).ShowDialog();
+				return;
+			}
+
+			var hoaDon = EnsureHoaDonChoDichVu(createHoaDon);
+			var nhanVien = hoaDon?.NhanVien ?? NhanVienBUS.GetInstance().layNhanVienTheoMaNV(MaNV);
+
+			var ctPhieuThue = ct.MaCTPT.HasValue
+				? CT_PhieuThueBUS.GetInstance().getCTPhieuThueTheoMaCTPT(ct.MaCTPT.Value)
+				: null;
+
+			txbTenKH.Text = "Khách hàng: " + (ct.TenKH ?? "N/A");
+			txbSoPhong.Text = ctPhieuThue?.SoPhong ?? ct.SoPhong ?? "N/A";
+			txbSoNguoi.Text = ctPhieuThue != null ? ctPhieuThue.SoNguoiO.ToString() : "N/A";
+			txbSoNgayOrGio.Text = "Thời gian thuê: ";
+			txbSoNgay.Text = "N/A";
+			txbNhanVien.Text = nhanVien?.HoTen ?? "N/A";
+			txbNgayLapHD.Text = (hoaDon?.NgayLap ?? ct.NgayApDung).ToString();
+			txbTongTien.Text = string.Format("{0:0,0 VND}", (hoaDon?.TongTien ?? ct.ThanhTien));
+			txbSoHoaDon.Text = hoaDon != null ? hoaDon.MaHD.ToString() : "N/A";
+
+			var gia = ct.SL > 0 ? ct.ThanhTien / ct.SL : ct.ThanhTien;
+			ls.Add(new DichVu_DaChon
+			{
+				TenDV = ct.TenDV ?? "N/A",
+				Gia = gia,
+				SoLuong = ct.SL,
+				ThanhTien = ct.ThanhTien
+			});
+
+			lvDichVuDaSD.ItemsSource = ls;
+		}
+
+		private void HandleThanhToanDichVu(string hinhThucThanhToan)
+		{
+			if (ctSDDV == null || isDaThanhToanHandled) return;
+
+			var error = string.Empty;
+			var trangThai = string.IsNullOrWhiteSpace(ctSDDV.TrangThai) ? "Dịch vụ đã đặt" : ctSDDV.TrangThai;
+			if (!CTSDDV_BUS.GetInstance().capNhatTrangThaiSuDung(ctSDDV.MaCTSDDV, trangThai, true, hinhThucThanhToan,
+				    out error))
+			{
+				new DialogCustoms("Thanh toán thất bại!\nLỗi: " + error, "Thông báo", DialogCustoms.OK).ShowDialog();
+				return;
+			}
+
+			isDaThanhToanHandled = true;
+			ctSDDV.DaThanhToan = true;
+			ctSDDV.HinhThucThanhToan = hinhThucThanhToan;
+
+			var hoaDon = EnsureHoaDonChoDichVu(true);
+			if (hoaDon != null)
+			{
+				txbSoHoaDon.Text = hoaDon.MaHD.ToString();
+				txbNgayLapHD.Text = hoaDon.NgayLap.ToString();
+				txbTongTien.Text = string.Format("{0:0,0 VND}", hoaDon.TongTien);
+				txbNhanVien.Text = hoaDon.NhanVien?.HoTen ?? txbNhanVien.Text;
+			}
+
+			ConfigureButtons(false, true);
+		}
+
+		private void TryCapNhatTrangThaiSauIn()
+		{
+			if (!updateTrangThaiOnPrint || ctSDDV == null) return;
+
+			var trangThaiDaSuDung = "Đã sử dụng";
+			if (string.Equals(ctSDDV.TrangThai, trangThaiDaSuDung, StringComparison.OrdinalIgnoreCase)) return;
+
+			var error = string.Empty;
+			var daThanhToan = ctSDDV.DaThanhToan.HasValue && ctSDDV.DaThanhToan.Value;
+			var hinhThuc = string.IsNullOrWhiteSpace(ctSDDV.HinhThucThanhToan) ? "Direct" : ctSDDV.HinhThucThanhToan;
+
+			if (!CTSDDV_BUS.GetInstance().capNhatTrangThaiSuDung(ctSDDV.MaCTSDDV, trangThaiDaSuDung, daThanhToan,
+				    hinhThuc, out error))
+			{
+				new DialogCustoms("Lỗi cập nhật trạng thái!\nLỗi: " + error, "Thông báo", DialogCustoms.OK).ShowDialog();
+				return;
+			}
+
+			ctSDDV.TrangThai = trangThaiDaSuDung;
+		}
+
 		private void click_InHoaDon(object sender, RoutedEventArgs e)
 		{
+			var prevPrintVisibility = btnInHoaDon.Visibility;
+			var prevGroupVisibility = groupButton.Visibility;
 			try
 			{
 				btnInHoaDon.Visibility = Visibility.Hidden;
@@ -314,6 +461,7 @@ namespace GUI.View
 				{
 					printDialog.PrintVisual(print, "In hóa đơn");
 					new DialogCustoms("In hóa đơn thành công!", "Thông báo", DialogCustoms.OK).ShowDialog();
+					TryCapNhatTrangThaiSauIn();
 				}
 			}
 			catch (Exception ex)
@@ -323,8 +471,8 @@ namespace GUI.View
 			}
 			finally
 			{
-				btnInHoaDon.Visibility = Visibility.Visible;
-				groupButton.Visibility = Visibility.Visible;
+				btnInHoaDon.Visibility = prevPrintVisibility;
+				groupButton.Visibility = prevGroupVisibility;
 			}
 		}
 
@@ -332,6 +480,12 @@ namespace GUI.View
 
 		private void btnDaThanhToan_Click(object sender, RoutedEventArgs e)
 		{
+			if (ctSDDV != null)
+			{
+				HandleThanhToanDichVu("Direct");
+				return;
+			}
+
 			if (isDaThanhToanHandled) return; // Nếu đã xử lý, không làm gì thêm
 
 			var phongInfo = PhongBUS.GetInstance().getDataPhongTheoSoPhong(Phong.MaPhong);
@@ -382,10 +536,30 @@ namespace GUI.View
 				items.Add(item);
 			}
 
+			if (ctSDDV != null)
+			{
+				var hoaDon = EnsureHoaDonChoDichVu(false);
+				if (hoaDon != null)
+				{
+					txbSoHoaDon.Text = hoaDon.MaHD.ToString();
+					txbNgayLapHD.Text = hoaDon.NgayLap.ToString();
+					txbTongTien.Text = string.Format("{0:0,0 VND}", hoaDon.TongTien);
+					txbNhanVien.Text = hoaDon.NhanVien?.HoTen ?? txbNhanVien.Text;
+				}
+			}
+
 			// Nếu PayOS/đối tác không nhận Unicode, bạn có thể đổi lại thành không dấu.
 			var noidung = "THANH TOÁN KHÁCH SẠN";
 
-			int soHoaDon = Convert.ToInt32(txbSoHoaDon.Text);
+			if (!int.TryParse(txbSoHoaDon.Text, out var soHoaDon))
+			{
+				soHoaDon = ctSDDV?.MaCTSDDV ?? 0;
+				if (soHoaDon <= 0)
+				{
+					new DialogCustoms("Không tìm thấy số hóa đơn hợp lệ.", "Thông báo", DialogCustoms.OK).ShowDialog();
+					return;
+				}
+			}
 
 			// Lấy thời gian Unix timestamp (mili giây)
 			long unixTimeMilliseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -431,7 +605,14 @@ namespace GUI.View
 				// Xử lý khi trạng thái là PAID
 				isPaymentHandled = true; // Đặt cờ để tránh lặp
 				new DialogCustoms("Thanh toán thành công!", "Thông báo", DialogCustoms.OK).ShowDialog();
-				btnDaThanhToan_Click(this, new RoutedEventArgs());
+				if (ctSDDV != null)
+				{
+					HandleThanhToanDichVu("Online");
+				}
+				else
+				{
+					btnDaThanhToan_Click(this, new RoutedEventArgs());
+				}
 			}
 		}
 	}

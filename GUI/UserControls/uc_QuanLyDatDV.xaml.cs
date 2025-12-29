@@ -16,6 +16,10 @@ namespace GUI.UserControls
 	{
 		private ObservableCollection<CT_SDDichVu> list;
 		private CollectionView view;
+		private const string TrangThaiDaDat = "Dịch vụ đã đặt";
+		private const string TrangThaiDaHuyChoHoanTien = "Đã hủy - Chờ hoàn tiền";
+		private const string HinhThucOnline = "Online";
+		private const string HinhThucDirect = "Direct";
 
 		public uc_QuanLyDatDV(int maNV) : this()
 		{
@@ -61,47 +65,33 @@ namespace GUI.UserControls
 			view?.Refresh();
 		}
 
-		private void click_SuDung(object sender, RoutedEventArgs e)
+		private void click_ChucNang(object sender, RoutedEventArgs e)
 		{
 			var item = (sender as Button)?.DataContext as CT_SDDichVu;
 			if (item == null) return;
 
-			var error = string.Empty;
-			var trangThaiDaSuDung = "Đã sử dụng";
-			if (!CTSDDV_BUS.GetInstance().capNhatTrangThaiSuDung(item.MaCTSDDV, trangThaiDaSuDung, true, "Direct",
-				    out error))
+			var trangThai = item.TrangThai ?? string.Empty;
+			var hinhThuc = item.HinhThucThanhToan ?? string.Empty;
+			var daThanhToan = item.DaThanhToan.HasValue && item.DaThanhToan.Value;
+
+			var isThanhToan = !item.MaCTPT.HasValue &&
+			                  trangThai == TrangThaiDaDat &&
+			                  !daThanhToan &&
+			                  string.Equals(hinhThuc, HinhThucDirect, StringComparison.OrdinalIgnoreCase);
+
+			if (isThanhToan)
 			{
-				new DialogCustoms("Loi: " + error, "Thong bao", DialogCustoms.OK).ShowDialog();
-				return;
+				var xuatHoaDon = new XuatHoaDon(MaNV, item, true, false, true);
+				xuatHoaDon.ShowDialog();
 			}
-
-			item.TrangThai = trangThaiDaSuDung;
-			item.DaThanhToan = true;
-
-			var hd = new HoaDon
+			else
 			{
-				MaNV = MaNV,
-				MaCTPT = item.MaCTPT,
-				MaCTSDDV = item.MaCTSDDV,
-				NgayLap = DateTime.Now,
-				TongTien = item.ThanhTien
-			};
-
-			if (!HoaDonBUS.GetInstance().themHoaDon(hd, out error))
-			{
-				new DialogCustoms("Loi tao hoa don: " + error, "Thong bao", DialogCustoms.OK).ShowDialog();
+				var capNhatTrangThaiSauIn = trangThai != TrangThaiDaHuyChoHoanTien;
+				var xuatHoaDon = new XuatHoaDon(MaNV, item, false, true, capNhatTrangThaiSauIn);
+				xuatHoaDon.ShowDialog();
 			}
 
 			view?.Refresh();
-		}
-
-		private void click_InPhieu(object sender, RoutedEventArgs e)
-		{
-			var item = (sender as Button)?.DataContext as CT_SDDichVu;
-			if (item == null) return;
-
-			var inPhieu = new XuatPhieuDichVu(item);
-			inPhieu.ShowDialog();
 		}
 	}
 }

@@ -27,5 +27,7 @@
 		public string TenDV { get; set; }
 
 		public string SoPhong { get; set; }
+
+		public bool HasMaCTPT => MaCTPT.HasValue;
 	}
 }
