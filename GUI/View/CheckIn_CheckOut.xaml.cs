@@ -56,10 +56,13 @@ namespace GUI.View
             }
 
             var now = DateTime.Now;
+            var ghiChu = txbGhiChu.Text;
+            var isBypass = HasBypassKeyword(ghiChu);
 
             // 1) Kiểm tra khoảng thời gian hợp lệ theo chính sách (±1 tiếng)
             if (
-                TryParsePolicyTimes(
+                !isBypass
+                && TryParsePolicyTimes(
                     loaiPhong?.ChinhSach,
                     out var policyCheckIn,
                     out var policyCheckOut
@@ -85,7 +88,6 @@ namespace GUI.View
             }
             // Nếu không parse được chính sách => bỏ qua kiểm tra (tùy bạn; muốn chặn thì đổi logic tại đây)
 
-            var ghiChu = txbGhiChu.Text;
             var error = string.Empty;
 
             // 2) Cập nhật DB
@@ -100,7 +102,10 @@ namespace GUI.View
             }
 
             // 3) Vẫn có thể thông báo sớm/trễ so với giờ chính sách (nhưng đã nằm trong ±1 tiếng)
+            if (!isBypass)
+            {
             ShowPolicyNotice(now);
+            }
 
             DialogResult = true;
             Close();
@@ -185,6 +190,12 @@ namespace GUI.View
         }
 
         // --------- Helpers: ± minutes window ---------
+
+        private static bool HasBypassKeyword(string ghiChu)
+        {
+            return !string.IsNullOrWhiteSpace(ghiChu)
+                && ghiChu.IndexOf("bypass", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
 
         private static bool IsWithinMinutesWindow(TimeSpan actual, TimeSpan target, int minutes)
         {
