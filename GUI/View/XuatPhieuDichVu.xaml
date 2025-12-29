@@ -1,4 +1,4 @@
-<Window x:Class="GUI.View.XuatPhieuDichVu"
+﻿<Window x:Class="GUI.View.XuatPhieuDichVu"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -45,36 +45,36 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Ma phieu:" FontWeight="Bold" />
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Mã phiếu:" FontWeight="Bold" />
                 <TextBlock Grid.Row="0" Grid.Column="1" x:Name="txbMaPhieu" />
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Khach hang:" FontWeight="Bold" Margin="0,8,0,0" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Khách hàng:" FontWeight="Bold" Margin="0,8,0,0" />
                 <TextBlock Grid.Row="1" Grid.Column="1" x:Name="txbTenKH" Margin="0,8,0,0" />
 
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Phong:" FontWeight="Bold" Margin="0,8,0,0" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Phòng:" FontWeight="Bold" Margin="0,8,0,0" />
                 <TextBlock Grid.Row="2" Grid.Column="1" x:Name="txbSoPhong" Margin="0,8,0,0" />
 
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Dich vu:" FontWeight="Bold" Margin="0,8,0,0" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Dịch vụ:" FontWeight="Bold" Margin="0,8,0,0" />
                 <TextBlock Grid.Row="3" Grid.Column="1" x:Name="txbTenDV" Margin="0,8,0,0" />
 
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="So luong:" FontWeight="Bold" Margin="0,8,0,0" />
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Số lượnng:" FontWeight="Bold" Margin="0,8,0,0" />
                 <TextBlock Grid.Row="4" Grid.Column="1" x:Name="txbSoLuong" Margin="0,8,0,0" />
 
-                <TextBlock Grid.Row="5" Grid.Column="0" Text="Ngay ap dung:" FontWeight="Bold" Margin="0,8,0,0" />
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="Ngày áp dụng:" FontWeight="Bold" Margin="0,8,0,0" />
                 <TextBlock Grid.Row="5" Grid.Column="1" x:Name="txbNgayApDung" Margin="0,8,0,0" />
 
-                <TextBlock Grid.Row="6" Grid.Column="0" Text="Thanh tien:" FontWeight="Bold" Margin="0,8,0,0" />
+                <TextBlock Grid.Row="6" Grid.Column="0" Text="Thành tiền:" FontWeight="Bold" Margin="0,8,0,0" />
                 <TextBlock Grid.Row="6" Grid.Column="1" x:Name="txbThanhTien" Margin="0,8,0,0" />
             </Grid>
 
             <Grid Grid.Row="2">
-                <Button Width="130" Height="36" Background="#478C10" Content="In phi&#x1ebf;u"
+                <Button Width="130" Height="36" Background="#478C10" Content="In phiếu"
                         HorizontalAlignment="Right" Margin="0 0 160 0" Click="click_InPhieu">
                     <Button.Clip>
                         <RectangleGeometry Rect="0,0,130,36" RadiusX="10" RadiusY="10" />
                     </Button.Clip>
                 </Button>
-                <Button Width="130" Height="36" Background="#9D9999" Content="Thoat"
+                <Button Width="130" Height="36" Background="#9D9999" Content="Thoát"
                         HorizontalAlignment="Right" Margin="0 0 20 0" Click="click_Thoat">
                     <Button.Clip>
                         <RectangleGeometry Rect="0,0,130,36" RadiusX="10" RadiusY="10" />
