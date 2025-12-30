@@ -87,7 +87,7 @@
                             </GridView.ColumnHeaderContainerStyle>
 
 
-                            <GridViewColumn Header="Số phiếu thuê" Width="190"
+                            <GridViewColumn Header="Mã phiếu thuê" Width="200"
                                             DisplayMemberBinding="{Binding MaPhieuThue}" />
                             <GridViewColumn Header="Tên khách hàng" Width="230" DisplayMemberBinding="{Binding TenKH}" />
                             <GridViewColumn Header="Ngày lập phiếu" Width="230"

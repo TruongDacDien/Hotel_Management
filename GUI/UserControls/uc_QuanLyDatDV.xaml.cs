@@ -42,7 +42,15 @@ namespace GUI.UserControls
 		{
 			list = new ObservableCollection<CT_SDDichVu>(CTSDDV_BUS.GetInstance().getCTSDDVQuanLy());
 			lsvCTSDDV.ItemsSource = list;
+
 			view = (CollectionView)CollectionViewSource.GetDefaultView(list);
+
+			// SORT theo MaCTSDDV (tăng dần)
+			view.SortDescriptions.Clear();
+			view.SortDescriptions.Add(new System.ComponentModel.SortDescription(
+				nameof(CT_SDDichVu.MaCTSDDV),
+				System.ComponentModel.ListSortDirection.Ascending));
+
 			view.Filter = FilterCTSDDV;
 		}
 
